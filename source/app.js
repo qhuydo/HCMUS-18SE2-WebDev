@@ -8,7 +8,7 @@ const app = express();
 require('./views/view.js')(app);
 app.use(morgan('dev'));
 app.use(express.urlencoded({
-  extended: true
+    extended: true
 }));
 app.use(express.static('public'));
 
@@ -16,14 +16,14 @@ routers.setDBObject(db);
 app.use(routers.routes);
 
 app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.send("Error");
-  /*res.render('500', {
-    layout: false
-  })*/
+    console.error(err.stack);
+    res.send("Error");
+    /*res.render('500', {
+        layout: false
+    })*/
 });
 
 const PORT = 3000;
 app.listen(PORT, function () {
-  console.log(`E-Education app is listening at http://localhost:${PORT}`)
+    console.log(`E-Education app is listening at http://localhost:${PORT}`)
 });

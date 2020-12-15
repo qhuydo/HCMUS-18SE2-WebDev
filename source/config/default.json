@@ -1,12 +1,12 @@
 {
-  "mysql": {
-    "host": "localhost",
-    "port": 8889,
-    "user": "root",
-    "password": "root",
-    "database": "qlbh",
-    "waitForConnections": true,
-    "connectionLimit": 50,
-    "queueLimit": 0
-  }
+    "mysql": {
+        "host": "localhost",
+        "port": 8889,
+        "user": "root",
+        "password": "root",
+        "database": "qlbh",
+        "waitForConnections": true,
+        "connectionLimit": 50,
+        "queueLimit": 0
+    }
 }

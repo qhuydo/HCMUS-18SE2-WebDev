@@ -139,5 +139,5 @@ dist
 # Front-end: Tailwind builds
 FrontEnd/src/assets/styles
 
-source/package-lock.json
-source/node_modules/*
+**/package-lock.json
+**/node_modules/*

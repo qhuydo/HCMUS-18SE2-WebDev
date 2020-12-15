@@ -1,24 +1,24 @@
 {
-  "name": "hcmus-18se2-webdev-group05-e-education",
-  "version": "0.0.1",
-  "description": "Project of `Web application development (CSC13008)` course, 18CLC-18SE2, VNU-HCMUS",
-  "main": "index",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app"
-  },
-  "keywords": [
-    "Web",
-    "Education"
-  ],
-  "author": "Hà Thế Hiển, Đỗ Quốc Huy, Đinh Thành Việt",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.17.1",
-    "express-async-errors": "^3.1.1",
-    "express-handlebars": "^5.2.0",
-    "morgan": "^1.10.0",
-    "mysql2": "^2.2.5",
-    "numeral": "^2.0.6"
-  }
+    "name": "hcmus-18se2-webdev-group05-e-education",
+    "version": "0.0.1",
+    "description": "Project of `Web application development (CSC13008)` course, 18CLC-18SE2, VNU-HCMUS",
+    "main": "index",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app"
+    },
+    "keywords": [
+        "Web",
+        "Education"
+    ],
+    "author": "Hà Thế Hiển, Đỗ Quốc Huy, Đinh Thành Việt",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.17.1",
+        "express-async-errors": "^3.1.1",
+        "express-handlebars": "^5.2.0",
+        "morgan": "^1.10.0",
+        "mysql2": "^2.2.5",
+        "numeral": "^2.0.6"
+    }
 }
