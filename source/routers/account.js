@@ -3,7 +3,9 @@ const app = express()
 var db
 
 app.get('/', (i, o) => {
-    o.status(501).send('Not implemented')
+    o.render('login',{
+        style:'login.css'
+    })
 })
 
 app.post('/', (i, o) => {

@@ -1,15 +1,21 @@
 const express = require('express');
 const morgan = require('morgan');
-const routers = require('./routers')
+const routers = require('./routers/router')
+const db = require('./utils/db')
 require('express-async-errors');
 
-const app = express();
 
+const app = express();
+require('./views/view.js')(app);
 app.use(morgan('dev'));
 app.use(express.urlencoded({
   extended: true
 }));
-app.use('/public', express.static('public'));
+app.use(express.static('public'))
+
+routers.setDBObject(db)
+app.use(routers.routes)
+
 
 app.use(function (err, req, res, next) {
     console.error(err.stack);
