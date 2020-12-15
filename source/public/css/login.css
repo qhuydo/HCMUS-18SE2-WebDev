@@ -3,7 +3,7 @@
     background:#475d62 url(../image/star-sky.jpg);
     background-size:cover;
     position:relative;
-  }
+}
   
   .login-dark form {
     max-width:320px;
@@ -69,4 +69,3 @@
   .login-dark form .btn-primary:active {
     transform:translateY(1px);
   }
-  

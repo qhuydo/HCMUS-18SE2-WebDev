@@ -3,7 +3,7 @@ const app = express()
 
 const account = require('./account')
 const lecture = require('./lecturer')
-const course = require('./courses')
+const course = require('./course')
 var db
 
 app.use('/account', account.routes)
