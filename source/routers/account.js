@@ -2,9 +2,15 @@ const express = require('express')
 const app = express()
 var db
 
-app.get('/', (i, o) => {
+app.get('/login', (i, o) => {
     o.render('login',{
         style:'login.css'
+    })
+})
+
+app.get('/register', (i, o) => {
+    o.render('register',{
+        style:'register.css'
     })
 })
 

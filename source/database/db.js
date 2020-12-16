@@ -5,5 +5,5 @@ const pool = mysql.createPool(mysql_opts);
 const promisePool = pool.promise();
 
 module.exports = {
-
+    
 };

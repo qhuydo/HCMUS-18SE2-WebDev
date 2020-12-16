@@ -1,7 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const routers = require('./routers/router');
-const db = require('./utils/db');
+const path = require('path')
+const db = require('./database/db');
 require('express-async-errors');
 
 const app = express();
@@ -10,6 +11,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({
     extended: true
 }));
+app.set('views', path.join(__dirname, '/views'));
 app.use(express.static('public'));
 
 routers.setDBObject(db);
