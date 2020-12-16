@@ -8,8 +8,8 @@ CREATE TABLE course (
   full_price VARCHAR(45) NOT NULL,
   price VARCHAR(45) NULL DEFAULT 0,
   discount VARCHAR(45) NULL DEFAULT 0,
-  image_sm VARCHAR(255) NULL,
-  image VARCHAR(255) NULL,
+  image_sm TEXT NULL,
+  image TEXT NULL,
   short_description VARCHAR(45) NULL,
   full_description VARCHAR(45) NULL,
   last_update VARCHAR(45) NULL,
@@ -24,18 +24,19 @@ CREATE TABLE course (
 -- instructor
 CREATE TABLE instructor (
   username VARCHAR(45) NOT NULL,
-  password VARCHAR(256) NOT NULL,
+  password TEXT NOT NULL,
   fullname VARCHAR(45) NOT NULL,
   birth_date DATE NULL,
   email VARCHAR(45) NOT NULL,
-  photo VARCHAR(255) NULL,
-  bio VARCHAR(45) NULL,
-  about_me VARCHAR(45) NULL,
-  website VARCHAR(45) NULL,
-  twitter VARCHAR(45) NULL,
-  facebook VARCHAR(45) NULL,
-  linkedin VARCHAR(45) NULL,
-  youtube VARCHAR(45) NULL,
+  email VARCHAR(45) NOT NULL,
+  photo TEXT NULL,
+  bio TEXT NULL,
+  about_me TEXT NULL,
+  website TEXT NULL,
+  twitter TEXT NULL,
+  facebook TEXT NULL,
+  linkedin TEXT NULL,
+  youtube TEXT NULL,
   total_students INT NOT NULL DEFAULT 0,
   total_reviews INT NOT NULL DEFAULT 0,
   PRIMARY KEY (username),
@@ -45,18 +46,18 @@ CREATE TABLE instructor (
 -- student
 CREATE TABLE student (
   username VARCHAR(45) NOT NULL,
-  password VARCHAR(256) NOT NULL,
+  password TEXT NOT NULL,
   fullname VARCHAR(45) NOT NULL,
   birth_date DATE NULL,
   email VARCHAR(45) NOT NULL,
-  photo VARCHAR(255) NULL,
-  bio VARCHAR(45) NULL,
-  about_me VARCHAR(45) NULL,
-  website VARCHAR(45) NULL,
-  twitter VARCHAR(45) NULL,
-  facebook VARCHAR(45) NULL,
-  linkedin VARCHAR(45) NULL,
-  youtube VARCHAR(45) NULL,
+  photo TEXT NULL,
+  bio TEXT NULL,
+  about_me TEXT NULL,
+  website TEXT NULL,
+  twitter TEXT NULL,
+  facebook TEXT NULL,
+  linkedin TEXT NULL,
+  youtube TEXT NULL,
   PRIMARY KEY (username),
   UNIQUE INDEX username_UNIQUE (username ASC) VISIBLE,
   UNIQUE INDEX email_UNIQUE (email ASC) VISIBLE);
@@ -83,7 +84,7 @@ CREATE TABLE course_rating (
   course_id INT UNSIGNED NOT NULL,
   username VARCHAR(45) NOT NULL,
   point INT UNSIGNED NOT NULL DEFAULT 1,
-  comment VARCHAR(45) NULL,
+  comment TEXT NULL,
   feedback_date DATETIME NOT NULL,
   PRIMARY KEY (course_id, username),
   INDEX fk_course_rating_student_idx (username ASC) VISIBLE,
@@ -118,7 +119,7 @@ CREATE TABLE lecture (
   course_id INT UNSIGNED NOT NULL,
   chapter_id INT UNSIGNED NOT NULL,
   name VARCHAR(45) NOT NULL,
-  video VARCHAR(255) NULL,
+  video TEXT NULL,
   length VARCHAR(45) NULL,
   PRIMARY KEY (lecture_id, course_id, chapter_id),
   INDEX fk_lecture_course_content_idx (chapter_id ASC) VISIBLE,
@@ -186,9 +187,45 @@ CREATE TABLE watchlist (
 
 -- administrator
 CREATE TABLE administrator (
-  username INT NOT NULL,
-  password VARCHAR(45) NOT NULL,
+  username VARCHAR(45) NOT NULL,
+  password TEXT NOT NULL,
   name VARCHAR(45) NOT NULL,
   email VARCHAR(45) NOT NULL,
   PRIMARY KEY (username),
   UNIQUE INDEX username_UNIQUE (username ASC) VISIBLE);
+
+-- category
+CREATE TABLE category (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(45) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX name_UNIQUE (name ASC) VISIBLE);
+
+-- sub_category
+CREATE TABLE sub_category (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  category_id INT UNSIGNED NOT NULL,
+  name VARCHAR(45) NOT NULL,
+  PRIMARY KEY (id, category_id),
+  INDEX fk_sub_category_category_idx (category_id ASC) VISIBLE,
+  CONSTRAINT fk_sub_category_category
+    FOREIGN KEY (category_id)
+    REFERENCES category (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+-- foreign key
+ALTER TABLE course 
+ADD INDEX fk_course_category_table_idx (category ASC) VISIBLE;
+;
+ALTER TABLE course 
+ADD CONSTRAINT fk_course_category_table
+  FOREIGN KEY (category)
+  REFERENCES category (id)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT fk_course_sub_category_table
+  FOREIGN KEY (sub_category)
+  REFERENCES sub_category (id)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
