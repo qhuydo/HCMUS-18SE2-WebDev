@@ -10,12 +10,12 @@ CREATE TABLE course (
   discount VARCHAR(45) NULL DEFAULT 0,
   image_sm TEXT NULL,
   image TEXT NULL,
-  short_description VARCHAR(45) NULL,
-  full_description VARCHAR(45) NULL,
-  last_update VARCHAR(45) NULL,
+  short_description TEXT NULL,
+  full_description TEXT NULL,
+  last_update DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   view_count INT NULL DEFAULT 0,
   rating_count INT NULL DEFAULT 0,
-  rating_point VARCHAR(45) NULL,
+  total_rating INT UNSIGNED NULL DEFAULT 0,
   student_count INT NULL DEFAULT 0, 
   completion TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
@@ -229,3 +229,20 @@ ADD CONSTRAINT fk_course_sub_category_table
   REFERENCES sub_category (id)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+-- course_instructor
+CREATE TABLE course_instructor (
+  course_id INT UNSIGNED NOT NULL,
+  username VARCHAR(45) NOT NULL,
+  PRIMARY KEY (course_id, username),
+  INDEX fk_course_instructor_instructor_idx (username ASC) VISIBLE,
+  CONSTRAINT fk_course_instructor_course
+    FOREIGN KEY (course_id)
+    REFERENCES course (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_course_instructor_instructor
+    FOREIGN KEY (username)
+    REFERENCES instructor (username)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
