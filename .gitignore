@@ -141,3 +141,4 @@ FrontEnd/src/assets/styles
 
 **/package-lock.json
 **/node_modules/*
+**/sample_data.sql
