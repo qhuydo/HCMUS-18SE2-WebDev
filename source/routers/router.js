@@ -1,10 +1,10 @@
 const express = require('express')
 const app = express()
 
-const account = require('./account')
-const lecture = require('./lecturer')
-const course = require('./course')
-const home = require('./home')
+const account = require('./account.router')
+const lecture = require('./lecturer.router')
+const course = require('./course.router')
+const home = require('./home.router')
 var db
 
 app.use('/account', account.routes)

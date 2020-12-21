@@ -4,7 +4,7 @@
         "port": 8889,
         "user": "root",
         "password": "root",
-        "database": "qlbh",
+        "database": "hcmus-18se2-webdev-group05-e-education",
         "waitForConnections": true,
         "connectionLimit": 50,
         "queueLimit": 0

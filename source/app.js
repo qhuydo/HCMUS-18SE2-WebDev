@@ -1,9 +1,10 @@
 const express = require('express');
 const morgan = require('morgan');
 const routers = require('./routers/router');
-const db = require('./database/db');
+const db = require('./utils/db');
+
 require('express-async-errors');
-   
+
 const app = express();
 app.use(express.static('public'));
 require('./views/view.js')(app);
@@ -29,5 +30,5 @@ app.use(function (err, req, res, next) {
 
 const PORT = 3000;
 app.listen(PORT, function () {
-    console.log(`E-Education app is listening at http://localhost:${PORT}`)
+    console.log(`E-EDU app is listening at http://localhost:${PORT}`)
 });
