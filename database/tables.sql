@@ -1,4 +1,4 @@
--- CREATE SCHEMA hcmus-18se2-webdev-group05-e-education;
+CREATE SCHEMA hcmus-18se2-webdev-group05-e-education;
 --  course
 CREATE TABLE course (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,

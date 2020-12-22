@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 var db
 
-app.get('/', (i, o) => {
-    o.render('home',{
+app.get('/', async(req, res) => {
+    res.render('home',{
         style:'home.css'
     })
 })

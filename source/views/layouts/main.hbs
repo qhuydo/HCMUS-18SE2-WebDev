@@ -71,13 +71,18 @@
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             </form>
           </li>
+          {{#if session.username}}
+          <li class="nav-item mr-2">
+            <a href="/account/logout" class="btn btn-outline-success" type="button">Logout</a>
+          </li>
+          {{else}}
           <li class="nav-item mr-2">
             <a href="/account/login" class="btn btn-outline-success" type="button">Login</a>
           </li>
           <li class="nav-item mr-2">
             <a href="/account/register" class="btn btn-info mr-2" type="button">SignUp</a>
           </li>
-
+          {{/if}}
         </ul>
       </div>
     </div>

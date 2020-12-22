@@ -6,15 +6,24 @@ const db = require('./utils/db');
 require('express-async-errors');
 
 const app = express();
-app.use(express.static('public'));
-require('./views/view.js')(app);
-app.use(morgan('dev'));
 app.use(express.urlencoded({
     extended: true
 }));
+app.use(express.static('public'));
+require('./utils/session')(app);
+require('./views/view.js')(app);
+app.use(morgan('dev'));
+
 
 routers.setDBObject(db);
+
+app.use(function (req, res, next) { // get session and set to handlebar
+    res.locals.session = req.session;
+    next();
+});
+
 app.use(routers.routes);
+
 app.use(function (req, res) {
     res.status(500);
     res.render('error', {
