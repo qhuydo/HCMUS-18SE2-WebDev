@@ -1,10 +1,14 @@
-
-jQuery(() => {
-    if ($(window).width() > 991) {
-        $('.navbar-light .d-menu').on("mouseenter", () => {
-            $(this).find('.sm-menu').first().stop(true, true).slideDown(150);
-        }).on ("mouseleave", ()=> {
-            $(this).find('.sm-menu').first().stop(true, true).delay(120).slideUp(100);
-        });
+$('.dropdown-menu a.dropdown-toggle').on('mouseenter', function (e) {
+    if (!$(this).next().hasClass('show')) {
+        $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
     }
+    var $subMenu = $(this).next(".dropdown-menu");
+    $subMenu.toggleClass('show');
+
+
+    $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function (e) {
+        $('.dropdown-submenu .show').removeClass("show");
+    });
+
+    return false;
 });

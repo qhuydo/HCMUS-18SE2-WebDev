@@ -43,22 +43,25 @@
         <!-- left -->
         <ul class="navbar-nav mr-auto">
 
-          <li class="nav-item px-lg-2 dropdown d-menu">
-            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"><span class="d-inline-block d-lg-none icon-width"><i
-                  class="far fa-caret-square-down"></i></span>Category
-              <svg id="arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+          <!-- category -->
+          <div class="dropdown btn-group shadow-0">
+            <a class="btn btn-light dropdown-toggle" href="/" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Category
             </a>
-            <div class="dropdown-menu shadow-sm sm-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="#">Category</a>
-              <a class="dropdown-item" href="#">Another Category</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <li><a class="dropdown-item" href="/">Science</a></li>
+              <li><a class="dropdown-item" href="/">Commerce</a></li>
+              <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="/">Arts</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/">History</a></li>
+                  <li><a class="dropdown-item" href="/">Geography</a></li>
+                  <li><a class="dropdown-item" href="/">Sociology</a></li>
 
+                </ul>
+              </li>
+            </ul>
+          </div>
         </ul>
 
         <!-- right -->

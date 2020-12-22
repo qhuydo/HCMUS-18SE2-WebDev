@@ -16,11 +16,12 @@ app.use(express.urlencoded({
 routers.setDBObject(db);
 app.use(routers.routes);
 app.use(function (req, res) {
-    res.status(500)
+    res.status(500);
     res.render('error', {
         style:'error.css',
     })
 });
+
 app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.render('error', {

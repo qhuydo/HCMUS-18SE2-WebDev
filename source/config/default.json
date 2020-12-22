@@ -1,7 +1,7 @@
 {
     "mysql": {
         "host": "localhost",
-        "port": 8889,
+        "port": 3306,
         "user": "root",
         "password": "root",
         "database": "hcmus-18se2-webdev-group05-e-education",
