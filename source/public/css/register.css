@@ -1,4 +1,4 @@
-.login-dark {
+/* .login-dark {
     height:1000px;
     background:#475d62 url(../image/star-sky.jpg);
     background-size:cover;
@@ -68,4 +68,64 @@
   
   .login-dark form .btn-primary:active {
     transform:translateY(1px);
+  } */
+
+  /* body { padding-top: 90px; } */
+  
+  html,
+  body,
+  .view {
+    height: 100%;
+  }
+  
+  @media (min-width: 851px) and (max-width: 1440px) {
+    html,
+    body,
+    .view {
+      height: 850px;
+    }
+  }
+
+  @media (min-width: 800px) and (max-width: 850px) {
+    html,
+    body,
+    header,
+    .view {
+      height: 1000px;
+    }
+  }
+
+  @media (min-width: 451px) and (max-width: 740px) {
+    html,
+    body,
+    .view {
+      height: 1200px;
+    }
+  }
+
+  @media (max-width: 450px) {
+    html,
+    body,
+    .view {
+      height: 1400px;
+    }
+  }
+
+  .intro-2 {
+    background: url(../image/gradient3.png)no-repeat center center;
+    background-size: cover;
+  }
+
+  /* .rgba-gradient {
+    background: -webkit-linear-gradient(98deg, rgba(22, 91, 231, 0.5), rgba(255, 32, 32, 0.5) 100%);
+    background: -webkit-gradient(linear, 98deg, from(rgba(22, 91, 231, 0.5)), to(rgba(255, 32, 32, 0.5)));
+    background: linear-gradient(to 98deg, rgba(22, 91, 231, 0.5), rgba(255, 32, 32, 0.5) 100%);
+  } */
+
+  .card {
+    background-color: rgba(255, 255, 255, 0.85);
+  }
+
+  h6 {
+    line-height: 1.7;
   }

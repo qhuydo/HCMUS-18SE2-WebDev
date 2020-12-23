@@ -60,12 +60,12 @@
                 <ul class="dropdown-menu">
 
                   {{#each subCategory}}
-                  <li><a class="dropdown-item" href="{{category_id}}/{{id}}">{{name}}</a></li>
+                  <li><a class="dropdown-item" href="{{this.category_id}}/{{this.id}}">{{name}}</a></li>
                   {{/each}}
                 </ul>
               </li>
               {{else}}
-              <li><a class="dropdown-item" href="/{{id}}">{{name}}</a></li>
+              <li><a class="dropdown-item" href="/{{this.id}}">{{name}}</a></li>
               {{/if}}
               {{/each}}
             </ul>
