@@ -16,7 +16,21 @@ app.post('/login', async (req, res) => {
         });
     }
     else {
-        req.session.username = "hello";
+        var login = require('../models/login.model')
+        var rows = await login.login(req.body.username,req.body.password)
+        console.log(rows)
+        if (rows != null)
+        {
+            req.session.username = rows.username
+            req.session.type = rows.type
+        }
+        else
+        {
+            return res.render('login', {
+                style: 'login.css',
+                fail: 'login fail'
+            });
+        }
         // call database check save session
         res.render('home', {
             style: 'home.css'
