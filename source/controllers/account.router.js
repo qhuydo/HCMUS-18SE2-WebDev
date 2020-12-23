@@ -17,15 +17,13 @@ app.post('/login', async (req, res) => {
     }
     else {
         var login = require('../models/login.model')
-        var rows = await login.login(req.body.username,req.body.password)
+        var rows = await login.login(req.body.username, req.body.password)
         console.log(rows)
-        if (rows != null)
-        {
+        if (rows != null) {
             req.session.username = rows.username
             req.session.type = rows.type
         }
-        else
-        {
+        else {
             return res.render('login', {
                 style: 'login.css',
                 fail: 'login fail'

@@ -1,0 +1,37 @@
+
+html,
+body,
+header,
+.jarallax {
+    height: 700px;
+}
+
+@media (max-width: 740px) {
+
+    html,
+    body,
+    header,
+    .jarallax {
+        height: 100vh;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 850px) {
+
+    html,
+    body,
+    header,
+    .jarallax {
+        height: 100vh;
+    }
+}
+
+@media (min-width: 560px) and (max-width: 650px) {
+    header .jarallax h1 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    header .jarallax h5 {
+        margin-bottom: 1.5rem !important;
+    }
+}

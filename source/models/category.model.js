@@ -22,17 +22,39 @@ module.exports = {
         return rows;
     },
 
+    /**
+     * Lấy một danh sách các category trong bảng category
+     * Lấy kèm theo các sub category
+     * 
+     * Giá trị trả về mẫu
+     * ```
+     * [
+     *  TextRow {
+     *      id: 4,
+     *      name: 'Design',
+     *      subCategory: [],
+     *      hasSubCategory: false
+     * },
+     *  TextRow {   
+     *      id: 1,
+     *      name: 'IT',
+     *      subCategory: [ [TextRow], [TextRow], [TextRow] ],
+     *      hasSubCategory: true
+     * }
+     * ]
+     * ```
+     */
     async allWithSub(){
         const sql = 'select * from category';
         const [rows, fields] = await db.select(sql);
-        console.log(rows[0].id);
+        // console.log(rows[0].id);
 
         for (ele of rows) {
             
             // Thêm subcategory
             const subSql = `select * from sub_category where category_id = ${ele.id}`;            
             [ele.subCategory, _] = await db.select(subSql);
-            console.log(ele.subCategory);
+            // console.log(ele.subCategory);
             ele.hasSubCategory = ele.subCategory.length !== 0;
         }
         return rows;

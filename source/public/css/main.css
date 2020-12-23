@@ -10,7 +10,7 @@
 .icon-width { width: 2rem;}
 
 /* Padding lại body để navigation bar không bị đè */
-body { padding-top: 90px; }
+/* body { padding-top: 90px; } */
 
 /*
  Drop down format, để cho subcategory hiện phía bên phải category
@@ -31,4 +31,29 @@ body { padding-top: 90px; }
   left: 100%;
   margin-left: .1rem;
   margin-right: .1rem;
+}
+
+.top-nav-collapse {
+  background-color: #eceff1 !important;
+}
+
+.navbar:not(.top-nav-collapse) {
+  background: transparent !important;
+}
+
+
+@media (max-width: 768px) {
+    .navbar:not(.top-nav-collapse) {
+        background: #eceff1 !important;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 850px) {
+    .navbar:not(.top-nav-collapse) {
+        background: #eceff1 !important;
+    }
+}
+
+h5 {
+    letter-spacing: 3px;
 }
