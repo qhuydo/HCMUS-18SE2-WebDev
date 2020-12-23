@@ -3,12 +3,10 @@ const app = express()
 var db
 
 app.get('/', async(req, res) => {
-    res.status(501).send('Not implemented')
-})
-
-app.post('/', async(req, res) => {
-    res.status(501).send('Not implemented')
-})
+    res.render('home',{
+        style:'home.css'
+    });
+});
 
 module.exports = {
     setDBObject: (dbObject) => { db = dbObject },

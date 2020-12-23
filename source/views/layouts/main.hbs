@@ -16,6 +16,7 @@
   <!-- MDB -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.0.0/mdb.min.css" rel="stylesheet" />
   <link rel="stylesheet" type="text/css" href="/css/main.css">
+  <!--link rel="stylesheet" type="text/css" href="/css/mdb.css"-->
   <link rel="stylesheet" type="text/css" href="/css/{{style}}">
   <link rel="shortcut icon" href="/image/logo-temp.svg">
 
@@ -50,16 +51,22 @@
               Category
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <li><a class="dropdown-item" href="/">Science</a></li>
-              <li><a class="dropdown-item" href="/">Commerce</a></li>
-              <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="/">Arts</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/">History</a></li>
-                  <li><a class="dropdown-item" href="/">Geography</a></li>
-                  <li><a class="dropdown-item" href="/">Sociology</a></li>
 
+              {{#each lcAllCategories}}
+              {{#if hasSubCategory}}
+              <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="/{{id}}">{{name}}</a>
+                <ul class="dropdown-menu">
+
+                  {{#each subCategory}}
+                  <li><a class="dropdown-item" href="{{category_id}}/{{id}}">{{name}}</a></li>
+                  {{/each}}
                 </ul>
               </li>
+              {{else}}
+              <li><a class="dropdown-item" href="/{{id}}">{{name}}</a></li>
+              {{/if}}
+              {{/each}}
+              <li><a class="dropdown-item" href="/">Commerce</a></li>
             </ul>
           </div>
         </ul>
@@ -67,8 +74,10 @@
         <!-- right -->
         <ul class="navbar-nav nav-flex-icons">
           <li class="nav-item">
-            <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <!-- Search form -->
+            <form class="form-inline ">
+              <input class="form-control mr-3 w-75" type="text" placeholder="Search" aria-label="Search">
+              <i class="fas fa-search" aria-hidden="true"></i>
             </form>
           </li>
           {{#if session.username}}

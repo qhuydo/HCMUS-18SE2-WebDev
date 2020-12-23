@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const routers = require('./routers/router');
+const routers = require('./controllers/router');
 const db = require('./utils/db');
 
 require('express-async-errors');
@@ -9,11 +9,13 @@ const app = express();
 app.use(express.urlencoded({
     extended: true
 }));
+
 app.use(express.static('public'));
+
 require('./utils/session')(app);
 require('./views/view.js')(app);
-app.use(morgan('dev'));
 
+app.use(morgan('dev'));
 
 routers.setDBObject(db);
 
@@ -21,6 +23,8 @@ app.use(function (req, res, next) { // get session and set to handlebar
     res.locals.session = req.session;
     next();
 });
+
+require('./middlewares/locals.mdw')(app);
 
 app.use(routers.routes);
 
