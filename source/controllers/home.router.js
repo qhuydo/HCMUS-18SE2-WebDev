@@ -3,8 +3,9 @@ const app = express()
 var db
 
 app.get('/', async(req, res) => {
-    res.render('home',{
-        style:'home.css'
+    res.render('home', {
+        style:'home.css',
+        showIntro: true,
     });
 });
 

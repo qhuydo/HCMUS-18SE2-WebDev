@@ -10,12 +10,14 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+
 app.use(express.static('public'));
 
-require('./utils/session')(app);
-require('./views/view.js')(app);
-
 app.use(morgan('dev'));
+
+require('./utils/session')(app);
+require('./middlewares/views.mdw')(app);
+require('./middlewares/locals.mdw')(app);
 
 routers.setDBObject(db);
 
@@ -24,7 +26,6 @@ app.use(function (req, res, next) { // get session and set to handlebar
     next();
 });
 
-require('./middlewares/locals.mdw')(app);
 
 app.use(routers.routes);
 

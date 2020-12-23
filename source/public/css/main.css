@@ -10,7 +10,7 @@
 .icon-width { width: 2rem;}
 
 /* Padding lại body để navigation bar không bị đè */
-/* body { padding-top: 90px; } */
+body { padding-top: 90px; }
 
 /*
  Drop down format, để cho subcategory hiện phía bên phải category

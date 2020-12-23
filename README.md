@@ -1,5 +1,5 @@
 # HCMUS-18SE2-WebDev
-![](https://i.imgur.com/lKVLxZd.png)
+![](https://i.imgur.com/ca7xzWx.png)
 # Project info
 ## Group 05
 | # | ID       | Name            |
