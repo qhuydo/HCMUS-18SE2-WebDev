@@ -1,5 +1,8 @@
 const express = require('express')
+const bcrypt = require('bcrypt');
 const app = express()
+const signup = require('../models/signup.model')
+const missingKeys = require("../models/otherFunction.model").missingKeys
 var db
 
 app.get('/login', async (req, res) => {
@@ -9,6 +12,13 @@ app.get('/login', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
+    if (!req.hasOwnProperty("username") || !req.hasOwnProperty("password"))
+    {
+        return res.render('login', {
+            style: 'login.css',
+            fail: "One or more keys are missing or null",
+        });
+    }
     if (req.session.username) {
         res.status(500);
         res.render('error', {
@@ -18,7 +28,6 @@ app.post('/login', async (req, res) => {
     else {
         var login = require('../models/login.model')
         var rows = await login.login(req.body.username, req.body.password)
-        console.log(rows)
         if (rows != null) {
             req.session.username = rows.username
             req.session.type = rows.type
@@ -31,7 +40,8 @@ app.post('/login', async (req, res) => {
         }
         // call database check save session
         res.render('home', {
-            style: 'home.css'
+            style: 'home.css',
+            showIntro: true,
         });
     }
 });
@@ -47,6 +57,58 @@ app.get('/register', async (req, res) => {
     res.render('register', {
         style: 'register.css'
     });
+});
+
+app.post('/register', async(req,res) =>{
+    res.render('home', {
+        style:'home.css',
+        showIntro: true,
+        alert: "signup success"
+    });
+    return;
+    let missing = await missingKeys(req.body, [
+        "username",
+        "password",
+        "email",
+    ])
+    if (missing) {
+        return res.render('register', {
+            style: 'register.css',
+            fail: "One or more keys are missing or null",
+        });
+    }
+    else{
+        const hash = bcrypt.hashSync(req.body.password, 10);
+        const accountStudent = {
+            username: req.body.username,
+            password: hash,
+            email: req.body.email,
+            fullname:"",
+            birth_date:null,
+            photo:null,
+            bio:null, 
+            about_me:null, 
+            website:null,
+            twitter:null,
+            facebook:null,
+            linkedin:null,
+            youtube:null,
+        }
+        var rows = await signup.signup(accountStudent)
+        if (rows.error) {
+            return res.render('register', {
+                style: 'register.css',
+                fail: rows.error,
+            });
+        }
+        else {
+            res.render('home', {
+                style:'home.css',
+                showIntro: true,
+                alert: "signup success"
+            });
+        }
+    }
 });
 
 app.post('/', async (req, res) => {

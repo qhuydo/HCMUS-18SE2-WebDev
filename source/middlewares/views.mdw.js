@@ -9,10 +9,9 @@ const hbs = exphbs.create({
             return numeral(val).format('0,0');
         }
     },
-
 });
 
-module.exports = function (app) {
+module.exports = async function (app) {
     app.engine('hbs', hbs.engine);
     app.set('view engine', 'hbs');
 }

@@ -102,22 +102,26 @@
 
                                     </div>
                                     <!--/Grid row-->
-
+                                    {{#if fail}}
+                                    <div class="alert alert-danger js-error-alert">
+                                        <div> {{fail}}</div>
+                                    </div>
+                                    {{/if}}
                                     <!--Body-->
                                     <div class="md-form">
                                         <i class="fas fa-user prefix"></i>
-                                        <input type="text" id="orangeForm-name" class="form-control">
+                                        <input type="text" id="orangeForm-name" class="form-control" name="username">
                                         <label for="orangeForm-name">Your username</label>
                                     </div>
                                     <div class="md-form">
                                         <i class="fas fa-envelope prefix"></i>
-                                        <input type="text" id="orangeForm-email" class="form-control">
+                                        <input type="text" id="orangeForm-email" class="form-control" name="email">
                                         <label for="orangeForm-email">Your email</label>
                                     </div>
 
                                     <div class="md-form">
                                         <i class="fas fa-lock prefix"></i>
-                                        <input type="password" id="orangeForm-pass" class="form-control">
+                                        <input type="password" id="orangeForm-pass" class="form-control" name="password">
                                         <label for="orangeForm-pass">Your password</label>
                                     </div>
 
