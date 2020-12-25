@@ -12,8 +12,11 @@ app.get('/login', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    if (!req.hasOwnProperty("username") || !req.hasOwnProperty("password"))
-    {
+    let missing = await missingKeys(req.body, [
+        "username",
+        "password",
+    ])
+    if (missing) {
         return res.render('login', {
             style: 'login.css',
             fail: "One or more keys are missing or null",
@@ -35,7 +38,7 @@ app.post('/login', async (req, res) => {
         else {
             return res.render('login', {
                 style: 'login.css',
-                fail: 'login fail'
+                fail: 'There was a problem logging in. Check your email and password or create account.'
             });
         }
         // call database check save session
@@ -60,12 +63,6 @@ app.get('/register', async (req, res) => {
 });
 
 app.post('/register', async(req,res) =>{
-    res.render('home', {
-        style:'home.css',
-        showIntro: true,
-        alert: "signup success"
-    });
-    return;
     let missing = await missingKeys(req.body, [
         "username",
         "password",
