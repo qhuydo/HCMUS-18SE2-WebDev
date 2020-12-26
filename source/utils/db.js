@@ -8,21 +8,29 @@ const promisePool = pool.promise();
 
 module.exports = {
     select(sql) {
-        return promisePool.query(sql); // [rows, fields]
+        return promisePool.query(sql).catch(function(err){
+            return {"error":err.message};
+        }); // [rows, fields]
     },
 
     insert(entity, table_name) {
         const sql = `insert into ${table_name} set ?`;
-        return promisePool.query(sql, entity);
+        return promisePool.query(sql, entity).catch(function(err){
+            return {"error":err.message};
+        });
     },
 
     delete(condition, table_name) {
         const sql = `delete from ${table_name} where ?`;
-        return promisePool.query(sql, condition);
+        return promisePool.query(sql, condition).catch(function(err){
+            return {"error":err.message};
+        });;
     },
 
     update(new_data, condition, table_name) {
         const sql = `update ${table_name} set ? where ?`;
-        return promisePool.query(sql, [new_data, condition]);
+        return promisePool.query(sql, [new_data, condition]).catch(function(err){
+            return {"error":err.message};
+        });;
     }
 };

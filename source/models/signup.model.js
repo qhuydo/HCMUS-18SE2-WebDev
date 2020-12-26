@@ -23,10 +23,9 @@ module.exports = {
         }
         let res = null
         res = await db.insert(account,'student')
-        console.log(res)
-        if (res)
-            return {"success":'Sign up success'};
+        if (res.error)
+            return {"error":res.error}
         else
-            return {"error":"create row fail"}
+            return {"success":'Sign up success'};
     },
 }

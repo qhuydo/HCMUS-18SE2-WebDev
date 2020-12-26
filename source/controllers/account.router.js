@@ -91,7 +91,7 @@ app.post('/register', async(req,res) =>{
             linkedin:null,
             youtube:null,
         }
-        var rows = await signup.signup(accountStudent)
+        var rows = await signup.signup(accountStudent);
         if (rows.error) {
             return res.render('register', {
                 style: 'register.css',
@@ -99,6 +99,8 @@ app.post('/register', async(req,res) =>{
             });
         }
         else {
+            req.session.username = req.body.username;
+            req.session.type = "student";
             res.render('home', {
                 style:'home.css',
                 showIntro: true,
