@@ -18,6 +18,14 @@
   <!-- MDB -->
   <link rel="stylesheet" type="text/css" href="/css/mdb.min.css">
   <link rel="stylesheet" type="text/css" href="/css/main.css">
+  {{#if (isArray style)}}
+    {{#each style}}
+      <link rel="stylesheet" type="text/css" href="/css/{{this}}">
+    {{/each}}
+  {{else}}
+      <link rel="stylesheet" type="text/css" href="/css/{{style}}">
+  {{/if}}
+  
   <link rel="stylesheet" type="text/css" href="/css/{{style}}">
   <link rel="shortcut icon" href="/image/logo-temp.svg">
 
@@ -232,6 +240,15 @@
   <script type="text/javascript" src="/js/mdb.min.js"></script>
   <!-- main javascript -->
   <script type="text/javascript" src="/js/main.js"></script>
+  {{#if hasExtraScript}}
+    {{#if (isArray script)}}
+      {{#each script}}
+      <script type="text/javascript" src="/js/{{this}}"></script>
+      {{/each}}
+    {{else}}
+    <script type="text/javascript" src="/js/{{script}}"></script>
+    {{/if}}
+  {{/if}}
   <script>
     new WOW().init();
 

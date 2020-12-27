@@ -1,15 +1,18 @@
 const exphbs = require('express-handlebars');
 const numeral = require('numeral');
 
+// expose the object of handlebars-helpers
+// 
+var hbs_helpers = require('handlebars-helpers')();
+
 const hbs = exphbs.create({
     extname: '.hbs',
     defaultLayout: 'main.hbs',
     helpers: {
-        format_number(val) {
-            return numeral(val).format('0,0');
-        }
+        hbs_helpers,  
     },
 });
+
 
 module.exports = async function (app) {
     app.engine('hbs', hbs.engine);

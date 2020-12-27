@@ -1,53 +1,61 @@
 <!--Intro Section-->
 <section class="view intro-2">
-    <form class="mask h-100 d-flex justify-content-center align-items-center" method="post">
-            <div class="container md-form">
-                <div class="row">
-                    <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
+  <form class="mask h-100 d-flex justify-content-center align-items-center needs-validation" method="post" novalidate>
+    <div class="container md-form">
+      <div class="row">
+        <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
 
-                        <!--Form with header-->
-                        <div class="card wow fadeIn" data-wow-delay="0.2s">
-                            <div class="card-body">
+          <!--Form with header-->
+          <div class="card wow fadeIn" data-wow-delay="0.2s">
+            <div class="card-body">
 
-                                <!--Header-->
-                                <div class="form-header blue">
-                                    <h3><i class="fas fa-user mt-2 mb-2"></i> Log in</h3>
-                                </div>
+              <!--Header-->
+              <div class="form-header blue">
+                <h3><i class="fas fa-user mt-2 mb-2"></i> Log in</h3>
+              </div>
 
-                                {{#if fail}}
-                                <div class="alert alert-danger js-error-alert">
-                                    <div> {{fail}}</div>
-                                </div>
-                                {{/if}}
+              {{#if fail}}
+              <div class="alert alert-danger js-error-alert">
+                <div> {{fail}}</div>
+              </div>
+              {{/if}}
 
-                                <!--Body-->
-                                <div class="md-form form-group">
-                                    <i class="fas fa-envelope prefix"></i>
-                                    <input type="text" id="orangeForm-email" class="form-control" type="text" name="username">
-                                    <label for="orangeForm-email" class="black-text">Your email or username</label>
-                                </div>
-
-                                <div class="md-form form-group">
-                                    <i class="fas fa-lock prefix"></i>
-                                    <input type="password" id="orangeForm-pass" class="form-control" type="password" name="password">
-                                    <label for="orangeForm-pass" class="black-text">Your password</label>
-                                </div>
-
-                                <div class="text-center">
-                                    <button class="btn blue btn-lg" type="submit">Sign in</button>
-                                    <hr>
-                                    <div class="inline-ul text-center d-flex justify-content-center">
-                                        <a class="p-2 m-2 fa-lg"><i class="fab fa-google"></i></a>
-                                        <a class="p-2 m-2 fa-lg"><i class="fab fa-facebook"> </i></a>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <!--/Form with header-->
-
-                    </div>
+              <!--Body-->
+              <div class="md-form form-group">
+                <i class="fas fa-envelope prefix"></i>
+                <input type="text" id="signInForm-email" class="form-control" type="text"
+                  name="username" required>
+                <div class="invalid-feedback">
+                  Please provide a username or email
                 </div>
+                <label for="signInForm-email" class="black-text">Your email or username</label>
+              </div>
+
+              <div class="md-form form-group">
+                <i class="fas fa-lock prefix"></i>
+                <input type="password" id="signInForm-pass" class="form-control" type="password"
+                  name="password" required>
+                <div class="invalid-feedback">
+                  Please provide your password.
+                </div>
+                <label for="signInForm-pass" class="black-text">Your password</label>
+              </div>
+
+              <div class="text-center">
+                <button class="btn btn-blue btn-lg" type="submit">Sign in</button>
+                <hr>
+                <div class="inline-ul text-center d-flex justify-content-center">
+                  <a class="p-2 m-2 fa-lg"><i class="fab fa-google"></i></a>
+                  <a class="p-2 m-2 fa-lg"><i class="fab fa-facebook"> </i></a>
+                </div>
+              </div>
+
             </div>
-    </form>
+          </div>
+          <!--/Form with header-->
+
+        </div>
+      </div>
+    </div>
+  </form>
 </section>

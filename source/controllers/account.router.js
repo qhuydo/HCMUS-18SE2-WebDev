@@ -1,14 +1,14 @@
 const express = require('express')
 const bcrypt = require('bcrypt');
-const app = express()
-const signup = require('../models/signup.model')
-const missingKeys = require("../models/otherFunction.model").missingKeys
-var db
+const app = express();
+const signup = require('../models/signup.model');
+const missingKeys = require("../models/otherFunction.model").missingKeys;
+var db;
 
 /**
  * TODO REMOVE THIS FUNCTION WHEN DONE THE TESTING
  */
-app.get('/secret-account', async(req, res) => {
+app.get('/secret-account', async (req, res) => {
     res.render('vwUser/edit-profile', {
         style: 'vwUser/edit-profile.css',
     });
@@ -16,15 +16,17 @@ app.get('/secret-account', async(req, res) => {
 
 app.get('/login', async (req, res) => {
     res.render('login', {
-        style: 'login.css'
-    })
+        style: 'login.css',
+        hasExtraScript: true,
+        script: 'login.js'
+    });
 });
 
 app.post('/login', async (req, res) => {
     let missing = await missingKeys(req.body, [
         "username",
         "password",
-    ])
+    ]);
     if (missing) {
         return res.render('login', {
             style: 'login.css',
@@ -38,11 +40,11 @@ app.post('/login', async (req, res) => {
         });
     }
     else {
-        var login = require('../models/login.model')
-        var rows = await login.login(req.body.username, req.body.password)
+        var login = require('../models/login.model');
+        var rows = await login.login(req.body.username, req.body.password);
         if (rows != null) {
-            req.session.username = rows.username
-            req.session.type = rows.type
+            req.session.username = rows.username;
+            req.session.type = rows.type;
         }
         else {
             return res.render('login', {
@@ -54,6 +56,7 @@ app.post('/login', async (req, res) => {
         res.render('home', {
             style: 'home.css',
             showIntro: true,
+            lcIntroPage: () => { return 'homeIntro'; }
         });
     }
 });
@@ -61,13 +64,17 @@ app.post('/login', async (req, res) => {
 app.get('/logout', async (req, res) => {
     delete req.session.username;
     res.render('home', {
-        style: 'home.css'
+        style: 'home.css',
+        showIntro: true,
+        lcIntroPage: () => { return 'homeIntro'; }
     });
 });
 
 app.get('/register', async (req, res) => {
     res.render('register', {
-        style: 'register.css'
+        style: 'register.css',
+        hasExtraScript: true,
+        script: ["login.js"],
     });
 });
 
@@ -77,10 +84,12 @@ app.post('/register', async (req, res) => {
         "username",
         "password",
         "email",
-    ])
+    ]);
     if (missing) {
         return res.render('register', {
             style: 'register.css',
+            hasExtraScript: true,
+            script: ["login.js"],
             fail: "One or more keys are missing or null",
         });
     }
@@ -105,6 +114,8 @@ app.post('/register', async (req, res) => {
         if (rows.error) {
             return res.render('register', {
                 style: 'register.css',
+                hasExtraScript: true,
+                script: ["login.js"],
                 fail: rows.error,
             });
         }
