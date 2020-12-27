@@ -37,7 +37,9 @@
       <!--collapse -->
       <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
         data-target="#navbarNav" aria-controls="navbarNav">
-        <span class="navbar-toggler-icon"><!--i class="fas fa-bars" style="color:black;"></i--></span>
+        <span class="navbar-toggler-icon">
+          <!--i class="fas fa-bars" style="color:black;"></i-->
+        </span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -47,36 +49,35 @@
 
           <!-- category -->
           <div class="dropdown btn-group shadow-0">
-            <a class="btn btn-outline-dark btn-md dropdown-toggle" href="/" role="button" id="dropdownMenuLink"
+            <a class="btn btn-outline-dark btn-md dropdown-toggle " href="/" role="button" id="dropdownMenuLink"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class = "fa fa-tag left"></i>
+              <i class="fa fa-tag left"></i>
               Category
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
               {{#each lcAllCategories}}
               {{#if hasSubCategory}}
-              <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="/{{id}}">{{name}}</a>
+              <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="/courses/{{id}}">{{name}}</a>
                 <ul class="dropdown-menu">
 
                   {{#each subCategory}}
-                  <li><a class="dropdown-item" href="{{this.category_id}}/{{this.id}}">{{name}}</a></li>
+                  <li><a class="dropdown-item" href="/courses/{{this.category_id}}/{{this.id}}">{{name}}</a></li>
                   {{/each}}
                 </ul>
               </li>
               {{else}}
-              <li><a class="dropdown-item" href="/{{this.id}}">{{name}}</a></li>
+              <li><a class="dropdown-item" href="/courses/{{this.id}}">{{name}}</a></li>
               {{/if}}
               {{/each}}
             </ul>
           </div>
         </ul>
 
-        <!-- right -->
-        <ul class="navbar-nav nav-flex-icons">
+        <ul class="navbar-nav mr-auto" style="text-align:center">
           <li class="nav-item">
             <!-- Search form -->
-            <form class="form-inline active-blue-1">
+            <form class="form-inline active-blue-1 my-auto d-inline w-100">
               <div class="md-form my-0">
                 <input class="form-control" type="text" placeholder="Search" aria-label="Search">
                 <i class="fas fa-search text-black m-3" aria-hidden="true"></i>
@@ -84,6 +85,11 @@
             </form>
 
           </li>
+
+        </ul>
+
+        <!-- right -->
+        <ul class="navbar-nav nav-flex-icons">
           {{#if session.username}}
           <li class="nav-item mr-2">
             <a href="/account/logout" class="btn btn-outline-black" type="button">Logout</a>
@@ -102,8 +108,10 @@
   </nav>
   <!-- navbar-->
 
+  <!-- Nếu trang này cần hiện intro (hình nền cỡ lớn)-->
   {{#if showIntro}}
-    {{> homeIntro}}
+  <!-- lấy phần hiện intro theo đường dẫn lcIntroPage-->
+  {{> (lcIntroPage) }}
   {{/if}}
 
 </header>
@@ -182,8 +190,10 @@
           <ul class="list-unstyled d-flex justify-content-center mb-0 py-4 list-inline">
             <li class="list-inline-item"><a class="p-2 m-2 fa-lg fb-ic"><i class="fab fa-facebook-f white-text fa-lg">
                 </i></a></li>
-            <li class="list-inline-item"><a class="p-2 m-2 fa-lg tw-ic"><i class="fab fa-twitter white-text fa-lg"> </i></a></li>
-            <li class="list-inline-item"><a class="p-2 m-2 fa-lg gplus-ic"><i class="fab fa-google-plus-g white-text fa-lg">
+            <li class="list-inline-item"><a class="p-2 m-2 fa-lg tw-ic"><i class="fab fa-twitter white-text fa-lg">
+                </i></a></li>
+            <li class="list-inline-item"><a class="p-2 m-2 fa-lg gplus-ic"><i
+                  class="fab fa-google-plus-g white-text fa-lg">
                 </i></a></li>
             <li class="list-inline-item"><a class="p-2 m-2 fa-lg li-ic"><i class="fab fa-linkedin-in white-text fa-lg">
                 </i></a></li>

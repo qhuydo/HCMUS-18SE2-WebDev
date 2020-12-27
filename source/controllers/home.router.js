@@ -6,6 +6,7 @@ app.get('/', async(req, res) => {
     res.render('home', {
         style:'home.css',
         showIntro: true,
+        lcIntroPage: ()=>{return 'homeIntro';}
     });
 });
 

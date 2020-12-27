@@ -5,6 +5,15 @@ const signup = require('../models/signup.model')
 const missingKeys = require("../models/otherFunction.model").missingKeys
 var db
 
+/**
+ * TODO REMOVE THIS FUNCTION WHEN DONE THE TESTING
+ */
+app.get('/secret-account', async(req, res) => {
+    res.render('vwUser/edit-profile', {
+        style: 'vwUser/edit-profile.css',
+    });
+});
+
 app.get('/login', async (req, res) => {
     res.render('login', {
         style: 'login.css'
@@ -62,7 +71,8 @@ app.get('/register', async (req, res) => {
     });
 });
 
-app.post('/register', async(req,res) =>{
+app.post('/register', async (req, res) => {
+
     let missing = await missingKeys(req.body, [
         "username",
         "password",
@@ -74,22 +84,22 @@ app.post('/register', async(req,res) =>{
             fail: "One or more keys are missing or null",
         });
     }
-    else{
+    else {
         const hash = bcrypt.hashSync(req.body.password, 10);
         const accountStudent = {
             username: req.body.username,
             password: hash,
             email: req.body.email,
-            fullname:"",
-            birth_date:null,
-            photo:null,
-            bio:null, 
-            about_me:null, 
-            website:null,
-            twitter:null,
-            facebook:null,
-            linkedin:null,
-            youtube:null,
+            fullname: "",
+            birth_date: null,
+            photo: null,
+            bio: null,
+            about_me: null,
+            website: null,
+            twitter: null,
+            facebook: null,
+            linkedin: null,
+            youtube: null,
         }
         var rows = await signup.signup(accountStudent);
         if (rows.error) {
@@ -102,7 +112,7 @@ app.post('/register', async(req,res) =>{
             req.session.username = req.body.username;
             req.session.type = "student";
             res.render('home', {
-                style:'home.css',
+                style: 'home.css',
                 showIntro: true,
                 alert: "signup success"
             });
