@@ -4,7 +4,7 @@
     "description": "Project of `Web application development (CSC13008)` course, 18CLC-18SE2, VNU-HCMUS",
     "main": "index",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "node app",
         "start": "node app"
     },
     "keywords": [
@@ -19,6 +19,7 @@
         "express": "^4.17.1",
         "express-async-errors": "^3.1.1",
         "express-handlebars": "^5.2.0",
+        "express-mysql-session": "^2.1.5",
         "express-session": "^1.17.1",
         "handlebars-helpers": "^0.10.0",
         "jquery": "^3.5.1",

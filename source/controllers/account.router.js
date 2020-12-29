@@ -1,58 +1,75 @@
-const express = require('express')
-const bcrypt = require('bcrypt');
-const app = express();
-const signup = require('../models/signup.model');
-const missingKeys = require("../models/otherFunction.model").missingKeys;
-var db;
+const express = require('express');
+const router = express.Router();
 
-/**
- * TODO REMOVE THIS FUNCTION WHEN DONE THE TESTING
- */
-app.get('/secret-account', async (req, res) => {
+const bcrypt = require('bcrypt');
+const login = require('../models/login.model');
+const signup = require('../models/signup.model');
+const auth = require('../middlewares/auth.mdw');
+const missingKeys = require("../models/otherFunction.model").missingKeys;
+const session = require('../middlewares/session.mdw');
+const locals = require('../middlewares/locals.mdw');
+
+// var db;
+
+router.get('/profile', auth, (req, res, next) => {
     res.render('vwUser/edit-profile', {
         style: 'vwUser/edit-profile.css',
     });
 });
 
-app.get('/login', async (req, res) => {
-    res.render('login', {
+router.get('/login', async (req, res) => {
+    console.log('-- INTO LOGIN SCREEN');
+    res.render('vwUser/login', {
         style: 'login.css',
         hasExtraScript: true,
         script: 'login.js'
     });
 });
 
-app.post('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
+    console.log('-- INTO LOGIN POST');
+
     let missing = await missingKeys(req.body, [
         "username",
         "password",
     ]);
+
     if (missing) {
-        return res.render('login', {
+        return res.render('vwUser/login', {
             style: 'login.css',
             fail: "One or more keys are missing or null",
         });
     }
+
     if (req.session.username) {
+        console.log("-- EXISTS A SESSION");
+        console.log(req.session);
+
         res.status(500);
         res.render('error', {
             style: 'error.css',
+            error_code: 500
         });
     }
     else {
-        var login = require('../models/login.model');
         var rows = await login.login(req.body.username, req.body.password);
-        if (rows != null) {
+        if (rows !== null) {
+            req.session.auth = true;
             req.session.username = rows.username;
             req.session.type = rows.type;
         }
         else {
-            return res.render('login', {
+            return res.render('vwUser/login', {
                 style: 'login.css',
                 fail: 'There was a problem logging in. Check your email and password or create account.'
             });
         }
-        // call database check save session
+
+        const url = req.session.retUrl || '/';
+        console.log(req.session);
+
+        //console.log(res.redirect(url));
+
         res.render('home', {
             style: 'home.css',
             showIntro: true,
@@ -61,8 +78,17 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/logout', async (req, res) => {
+router.get('/logout', async (req, res) => {
+    console.log("-- LOGOUT GET");
     delete req.session.username;
+    req.session.auth = false;
+    req.session.username = null;
+    req.session.retUrl = null;
+
+    const url = req.headers.referer || '/';
+    //res.locals.session = req.session;
+    //res.locals.username = req.session.username;
+    // console.log(res.redirect(url));
     res.render('home', {
         style: 'home.css',
         showIntro: true,
@@ -70,15 +96,15 @@ app.get('/logout', async (req, res) => {
     });
 });
 
-app.get('/register', async (req, res) => {
-    res.render('register', {
+router.get('/register', async (req, res) => {
+    res.render('vwUser/register', {
         style: 'register.css',
         hasExtraScript: true,
         script: ["login.js"],
     });
 });
 
-app.post('/register', async (req, res) => {
+router.post('/register', async (req, res) => {
 
     let missing = await missingKeys(req.body, [
         "username",
@@ -86,7 +112,7 @@ app.post('/register', async (req, res) => {
         "email",
     ]);
     if (missing) {
-        return res.render('register', {
+        return res.render('vwUser/register', {
             style: 'register.css',
             hasExtraScript: true,
             script: ["login.js"],
@@ -112,7 +138,7 @@ app.post('/register', async (req, res) => {
         }
         var rows = await signup.signup(accountStudent);
         if (rows.error) {
-            return res.render('register', {
+            return res.render('vw/User/register', {
                 style: 'register.css',
                 hasExtraScript: true,
                 script: ["login.js"],
@@ -131,11 +157,8 @@ app.post('/register', async (req, res) => {
     }
 });
 
-app.post('/', async (req, res) => {
-    res.status(501).send('Not implemented');
-});
+// app.post('/', (req, res) => {
+//     res.status(501).send('Not implemented');
+// });
 
-module.exports = {
-    setDBObject: (dbObject) => { db = dbObject },
-    routes: app
-}
+module.exports = router;

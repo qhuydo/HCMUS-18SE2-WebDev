@@ -1,34 +1,21 @@
 const express = require('express');
 const morgan = require('morgan');
-const routers = require('./controllers/router');
-const db = require('./utils/db');
 
 require('express-async-errors');
 
 const app = express();
+app.use(morgan('dev'));
 app.use(express.urlencoded({
     extended: true
 }));
 
-
 app.use(express.static('public'));
-
-app.use(morgan('dev'));
-
-require('./utils/session')(app);
+require('./middlewares/session.mdw')(app);
 require('./middlewares/views.mdw')(app);
 require('./middlewares/locals.mdw')(app);
+require('./middlewares/routes.mdw')(app);
 
-routers.setDBObject(db);
-
-app.use(function (req, res, next) { // get session and set to handlebar
-    res.locals.session = req.session;
-    next();
-});
-
-
-app.use(routers.routes);
-
+console.log(app);
 app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.render('error', {

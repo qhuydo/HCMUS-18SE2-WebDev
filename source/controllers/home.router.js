@@ -1,16 +1,16 @@
-const express = require('express')
-const app = express()
-var db
+const express = require('express');
+const router = express.Router();
 
-app.get('/', async(req, res) => {
+router.get('/', (req, res) => {
+
     res.render('home', {
-        style:'home.css',
+        style: 'home.css',
         showIntro: true,
-        lcIntroPage: ()=>{return 'homeIntro';}
+        lcIntroPage: () => { return 'homeIntro'; }
     });
+    // console.log(req);
+    // console.log(req.session.auth);
+    // console.log(req.session.username);
 });
 
-module.exports = {
-    setDBObject: (dbObject) => { db = dbObject },
-    routes: app
-}
+module.exports = router;

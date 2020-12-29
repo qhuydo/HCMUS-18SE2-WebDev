@@ -1,20 +1,16 @@
-const express = require('express')
-const app = express()
-var db
+const express = require('express');
+const router = express.Router();
 
-app.get('/', async(req, res) => {
+router.get('/', (req, res) => {
     res.status(501).send('Not implemented')
 })
 
-app.get('/:id', async(req, res) => {
+router.get('/:id', (req, res) => {
     res.status(501).send('Not implemented')
 })
 
-app.post('/', async(req, res) => {
+router.post('/', (req, res) => {
     res.status(501).send('Not implemented')
 })
 
-module.exports = {
-    setDBObject: (dbObject) => { db = dbObject },
-    routes: app
-}
+module.exports = router;
