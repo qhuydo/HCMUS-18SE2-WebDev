@@ -2,15 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const bcrypt = require('bcrypt');
-const login = require('../models/login.model');
-const signup = require('../models/signup.model');
+const account = require('../models/account.model');
 const auth = require('../middlewares/auth.mdw');
-const missingKeys = require("../models/otherFunction.model").missingKeys;
-const session = require('../middlewares/session.mdw');
-const locals = require('../middlewares/locals.mdw');
+const missingKeys = require("../utils/otherFunction").missingKeys;
 
 // var db;
-
 router.get('/profile', auth, (req, res, next) => {
     res.render('vwUser/edit-profile', {
         style: 'vwUser/edit-profile.css',
@@ -52,7 +48,7 @@ router.post('/login', async (req, res) => {
         });
     }
     else {
-        var rows = await login.login(req.body.username, req.body.password);
+        var rows = await account.login(req.body.username, req.body.password);
         if (rows !== null) {
             req.session.auth = true;
             req.session.username = rows.username;
@@ -136,7 +132,7 @@ router.post('/register', async (req, res) => {
             linkedin: null,
             youtube: null,
         }
-        var rows = await signup.signup(accountStudent);
+        var rows = await account.signup(accountStudent);
         if (rows.error) {
             return res.render('vw/User/register', {
                 style: 'register.css',
