@@ -1,7 +1,7 @@
 <!--Intro Section-->
 <section class="view intro-2">
   <div class="mask rgba-gradient wow fadeIn" data-wow-delay="0.2s">
-    <form class=" container h-100 d-flex justify-content-center align-items-center needs-validation" method="post"
+    <form onsubmit="checkKeyPress(event)" class=" container h-100 d-flex justify-content-center align-items-center needs-validation" method="post"
       novalidate>
 
       <!--Grid row-->
@@ -173,6 +173,27 @@
       <!--Grid row-->
 
     </form>
+    <script>
+      function checkKeyPress(event){
+        var iChars = "!#$%^&*()+=-[]\\\';,/{}|\":<>?";
+        var name = document.getElementById('register-name').value;
+        for (var i = 0; i < name.value.length; i++) {
+          if (iChars.indexOf(name.value.charAt(i)) != -1) {
+              event.preventDefault();
+              alert ("Your username has special characters [!#$%^&*()+=-[]\\\';,/{}|\":<>?]\nThese are not allowed.\nPlease remove them and try again.");
+              return false;
+          }
+        }
+        var email = document.getElementById('register-email').value;
+        for (var i = 0; i < email.value.length; i++) {
+          if (iChars.indexOf(email.value.charAt(i)) != -1) {
+              event.preventDefault();
+              alert ("Your email has special characters [!#$%^&*()+=-[]\\\';,/{}|\":<>?]\nThese are not allowed.\nPlease remove them and try again.");
+              return false;
+          }
+        }
+      }
+    </script>
   </div>
 
 </section>

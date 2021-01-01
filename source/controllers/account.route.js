@@ -63,14 +63,16 @@ router.post('/login', async (req, res) => {
 
         const url = req.session.retUrl || '/';
         console.log(req.session);
-
+        res.locals.session = req.session;
+        await req.session.save(function(err) {
+            res.redirect('/');
+        })
         //console.log(res.redirect(url));
-
-        res.render('home', {
+        /*res.render('home', {
             style: 'home.css',
             showIntro: true,
             lcIntroPage: () => { return 'homeIntro'; }
-        });
+        });*/
     }
 });
 
@@ -80,16 +82,14 @@ router.get('/logout', async (req, res) => {
     req.session.auth = false;
     req.session.username = null;
     req.session.retUrl = null;
-
+    req.session.type = null;
     const url = req.headers.referer || '/';
     //res.locals.session = req.session;
     //res.locals.username = req.session.username;
     // console.log(res.redirect(url));
-    res.render('home', {
-        style: 'home.css',
-        showIntro: true,
-        lcIntroPage: () => { return 'homeIntro'; }
-    });
+    await req.session.save(function(err) {
+        res.redirect('/');
+    })
 });
 
 router.get('/register', async (req, res) => {
@@ -144,11 +144,9 @@ router.post('/register', async (req, res) => {
         else {
             req.session.username = req.body.username;
             req.session.type = "student";
-            res.render('home', {
-                style: 'home.css',
-                showIntro: true,
-                alert: "signup success"
-            });
+            await req.session.save(function(err) {
+                res.redirect('/');
+            })
         }
     }
 });

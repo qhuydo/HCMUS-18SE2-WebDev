@@ -8,7 +8,6 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({
     extended: true
 }));
-
 app.use(express.static('public'));
 require('./middlewares/session.mdw')(app);
 require('./middlewares/views.mdw')(app);

@@ -1,6 +1,6 @@
 <!--Intro Section-->
 <section class="view intro-2">
-  <form class="mask h-100 d-flex justify-content-center align-items-center" method="post">
+  <form onsubmit="checkKeyPress(event)" class="mask h-100 d-flex justify-content-center align-items-center" method="post">
     <div class="container md-form">
       <div class="row">
         <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
@@ -23,12 +23,12 @@
               <!--Body-->
               <div class="md-form form-group">
                 <i class="fas fa-envelope prefix"></i>
-                <input type="text" id="signInForm-email" class="form-control" type="text"
+                <input type="text" id="signInForm-email-username" class="form-control" type="text"
                   name="username" required>
                 <div class="invalid-feedback">
                   Please provide a username or email
                 </div>
-                <label for="signInForm-email" class="black-text">Your email or username</label>
+                <label for="signInForm-email-username" class="black-text">Your email or username</label>
               </div>
 
               <div class="md-form form-group">
@@ -58,4 +58,17 @@
       </div>
     </div>
   </form>
+  <script>
+    function checkKeyPress(event){
+      var iChars = "!#$%^&*()+=-[]\\\';,/{}|\":<>?";
+      var name = document.getElementById('signInForm-email-username').value;
+      for (var i = 0; i < name.length; i++) {
+        if (iChars.indexOf(name.charAt(i)) != -1) {
+            event.preventDefault();
+            alert ("Your username has special characters [!#$%^&*()+=-[]\\\';,/{}|\":<>?]\nThese are not allowed.\n Please remove them and try again.");
+            return false;
+        }
+      }
+    }
+  </script>
 </section>

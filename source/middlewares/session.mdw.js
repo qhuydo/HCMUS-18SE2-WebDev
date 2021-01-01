@@ -10,7 +10,7 @@ module.exports = function (app) {
         session(
             {
                 secret: 'SECRET_KEY',
-                resave: false,
+                resave: true,
                 saveUninitialized: true,
                 store: sessionStore,
                 cookie: { 

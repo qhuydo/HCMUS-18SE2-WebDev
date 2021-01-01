@@ -3,7 +3,7 @@
         "host": "localhost",
         "port": 3306,
         "user": "root",
-        "password": "root",
+        "password": "hathehien",
         "database": "hcmus-18se2-webdev-group05-e-education",
         "waitForConnections": true,
         "connectionLimit": 50,
