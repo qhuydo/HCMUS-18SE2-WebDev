@@ -8,7 +8,7 @@ async function selectAccountTable(table, username, email) {
 
     try {
         return await db.query(sql, [username, email]);
-  
+
     } catch (error) {
         return [null, null];
     }
@@ -33,7 +33,7 @@ async function selectAccountWithEmail(table, email) {
 
     try {
         return await db.query(sql, [email]);
-  
+
     } catch (error) {
         return [null, null];
     }
@@ -45,7 +45,7 @@ module.exports = {
      * Đăng nhập theo username, password 
      * @param {string} username 
      * @param {string} password password đã được hash bằng bcrypt
-     * @return `{ "username", "type" }` với `type` có giá trị là `student`, `admin` hoặc `instructor`.
+     * @return `{ "username", "type" }` với `type` có giá trị là `student`, `administrator` hoặc `instructor`.
      *     Hoặc trả về `null` nếu không có username
      */
     async login(username, password) {
@@ -72,7 +72,7 @@ module.exports = {
 
         if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
-                return { "username": rows[0].username, "type": 'admin' };
+                return { "username": rows[0].username, "type": 'administrator' };
             }
         }
 
@@ -80,7 +80,7 @@ module.exports = {
 
         if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
-                return { "username": rows[0].username, "type": 'admin' };
+                return { "username": rows[0].username, "type": 'administrator' };
             }
         }
 
@@ -142,12 +142,23 @@ module.exports = {
      * @param {string} username the username, and must exist in the database.
      * @returns {*} an object contains data from the database.
      * the return object consists of these keys
-     * {
+     * [{
      *  username, password, email, fullname, birth_date, photo, bio, about_me, 
      *  website, twitter, facebook, linkedin, youtube 
-     * }
-     * 
+     * }, type], type is either "student" or "instructor"
+     * Returns [null, null] if the query failed.
      */
-    async getUserInfo(username) {   
+    async getUserInfo(username) {
+        var [rows, fields] = await selectAccountWithUsername('student', username);
+        if (rows !== null && rows.length !== 0){
+            return [rows[0], "student"];
+        }
+        
+        var [rows, fields] = await selectAccountWithUsername('instructor', username);
+        if (rows !== null && rows.length !== 0){
+            return [rows[0], "instructor"];
+        }
+
+        return [null, null];
     }
 }

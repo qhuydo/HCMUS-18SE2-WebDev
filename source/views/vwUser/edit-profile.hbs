@@ -2,6 +2,18 @@
 <link rel="stylesheet" type="text/css" href="/css/vwUser/edit-profile.css">
 {{/section}}
 
+{{#section 'js'}}
+<script>
+  var d = new Date("{{user.birth_date}}");
+  var date_value = `[${d.getFullYear()}, ${d.getMonth()}, ${d.getDate()}]`;
+  console.log(date_value);
+  // -> Wed Jun 09 2010 14:12:01 GMT+0100 (BST)
+  $('#birth_date').attr("data-value", date_value).pickadate({
+    max: Date.now()
+  });
+
+</script>
+{{/section}}
 <main>
   <div class="container">
 
@@ -23,8 +35,7 @@
 
             <!-- Card content -->
             <div class="card-body card-body-cascade text-center">
-              <img src="https://picsum.photos/200" alt="User Photo"
-                class="z-depth-1 mb-3 mx-auto">
+              <img src="https://picsum.photos/200" alt="User Photo" class="z-depth-1 mb-3 mx-auto">
 
               <p class="text-muted"><small>Profile photo will be changed automatically</small></p>
               <div class="row flex-center">
@@ -39,7 +50,6 @@
 
           <!-- Card -->
           <div class="card card-cascade narrower mt-5">
-
             <!-- Card image -->
             <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
               <h5 class="mb-0 font-weight-bold"><strong>Account</strong></h5>
@@ -48,11 +58,12 @@
 
             <!-- Card content -->
             <div class="card-body card-body-cascade text-center">
-              <form>
+              <form method="POST">
                 <div class="form-row">
                   <div class="col-md-12">
                     <div class="md-form form-group">
-                      <input type="text" id="change-email" class="form-control validate" type="text" name="email" readonly>
+                      <input type="text" id="change-email" class="form-control validate" type="text" name="user[email]"
+                        value="{{user.email}}" readonly>
                       <label for="change-email">Email</label>
                     </div>
 
@@ -73,10 +84,10 @@
 
                   </div>
               </form>
-                  <div class="flex-center">
-                    <button class="btn btn-danger btn-sm waves-effect waves-light">Change email</button><br>
-                    <button class="btn btn-danger btn-sm waves-effect waves-light">Change password</button>
-                </div>
+              <div class="flex-center">
+                <button class="btn btn-danger btn-sm waves-effect waves-light">Change email</button><br>
+                <button class="btn btn-danger btn-sm waves-effect waves-light">Change password</button>
+              </div>
 
             </div>
 
@@ -94,7 +105,6 @@
 
         <!-- Card -->
         <div class="card card-cascade narrower">
-
           <!-- Card image -->
           <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
             <h5 class="mb-0 font-weight-bold"><strong>Public Profile</strong></h5>
@@ -103,25 +113,38 @@
 
           <!-- Card content -->
           <div class="card-body card-body-cascade text-center">
+            {{#if successfull_edit}}
+            <div class="alert alert-success ">
+              <div>All changes were saved</div>
+            </div>
+            {{/if}}
+
+            {{#if unsuccessfull_edit}}
+            <div class="alert alert-danger js-alert-error">
+              <div>Error occured</div>
+            </div>
+            {{/if}}
 
             <!-- Edit Form -->
-            <form>
+            <form method="POST">
 
               <!-- First row -->
               <div class="form-row m-auto">
                 <!-- First column -->
                 <div class="col-md-6">
                   <div class="md-form">
-                    <input type="text" id="form81" class="form-control">
-                    <label for="form81" class="">First name</label>
+                    <input type="text" id="fullname" class="form-control" value="{{user.fullname}}"
+                      name="user[fullname]">
+                    <label for="fullname" class="">Full name</label>
                   </div>
                 </div>
 
-                <!-- Second column -->
+                <!-- Second column-->
                 <div class="col-md-6">
                   <div class="md-form">
-                    <input type="text" id="form82" class="form-control">
-                    <label for="form82" class="">Last name</label>
+                    <input placeholder="Selected date" type="text" id="birth_date" class="form-control datepicker"
+                      name="user[birth_date]">
+                    <label for="birth_date">Date of birth</label>
                   </div>
                 </div>
               </div>
@@ -133,9 +156,9 @@
                 <!-- First column -->
                 <div class="col col-md-12">
                   <div class="md-form">
-                    <input id="input-char-counter1" type="text" length="60" class="form-control" mdbCharCounter
-                      mdbInput>
-                    <label for="input-char-counter1">Headline</label>
+                    <input id="bio" type="text" length="120" class="form-control" value="{{user.bio}}" name="user[bio]"
+                      mdbCharCounter mdbInput>
+                    <label for="bio">Headline</label>
                   </div>
                 </div>
               </div>
@@ -146,8 +169,9 @@
                 <!-- First column -->
                 <div class="col form-outline col-md-12 ml-lg-2">
                   <div class="md-form">
-                    <textarea type="text" id="form75" class="form-control md-textarea" mdbInput></textarea>
-                    <label for="form75">About me</label>
+                    <textarea type="text" id="about_me" class="form-control md-textarea" name="user[about_me]"
+                      mdbInput>{{user.about_me}}</textarea>
+                    <label for="about_me">About me</label>
                   </div>
 
                 </div>
@@ -158,16 +182,16 @@
               <div class="form-row">
                 <div class="col form-outline col-md-12">
                   <div class="row">
-                      <label class="ml-4 text-left font-weight-light" for="material-url">Your URL</label>
-
+                    <label class="ml-4 text-left font-weight-light" for="material-url">Your URL</label>
                   </div>
                   <div class="row md-form input-group mt-0 mb-3 ml-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text md-addon font-weight-light" id="material-addon3">https://</span>
                     </div>
-                    <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3">
+                    <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3"
+                      text="{{user.website}}" name="user[website]">
                   </div>
-              
+
                 </div>
               </div>
 
@@ -175,16 +199,18 @@
               <div class="form-row">
                 <div class="col form-outline col-md-12">
                   <div class="row">
-                      <label class="ml-4 text-left font-weight-light" for="material-url">Facebook</label>
+                    <label class="ml-4 text-left font-weight-light" for="material-url-facebook">Facebook</label>
 
                   </div>
                   <div class="row md-form input-group mt-0 mb-3 ml-4">
                     <div class="input-group-prepend">
-                      <span class="input-group-text md-addon font-weight-light" id="material-addon3">https://facebook.com/</span>
+                      <span class="input-group-text md-addon font-weight-light"
+                        id="material-addon3">https://facebook.com/</span>
                     </div>
-                    <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3">
+                    <input type="text" class="form-control" id="material-url-facebook"
+                      aria-describedby="material-addon3" value="{{user.facebook}}" name="user[facebook]">
                   </div>
-              
+
                 </div>
               </div>
 
@@ -192,33 +218,37 @@
               <div class="form-row">
                 <div class="col form-outline col-md-12">
                   <div class="row">
-                      <label class="ml-4 text-left font-weight-light" for="material-url">Twitter</label>
+                    <label class="ml-4 text-left font-weight-light" for="material-url-twitter">Twitter</label>
 
                   </div>
                   <div class="row md-form input-group mt-0 mb-3 ml-4">
                     <div class="input-group-prepend">
-                      <span class="input-group-text md-addon font-weight-light" id="material-addon3">https://twitter.com/</span>
+                      <span class="input-group-text md-addon font-weight-light"
+                        id="material-addon3">https://twitter.com/</span>
                     </div>
-                    <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3">
+                    <input type="text" class="form-control" id="material-url-twitter" aria-describedby="material-addon3"
+                      value="{{user.twitter}}" name="user[twitter]">
                   </div>
-              
+
                 </div>
               </div>
-              
+
               <!-- Seventh row -->
               <div class="form-row">
                 <div class="col form-outline col-md-12">
                   <div class="row">
-                      <label class="ml-4 text-left font-weight-light" for="material-url">LinkedIn</label>
+                    <label class="ml-4 text-left font-weight-light" for="material-url-linkedin">LinkedIn</label>
 
                   </div>
                   <div class="row md-form input-group mt-0 mb-3 ml-4">
                     <div class="input-group-prepend">
-                      <span class="input-group-text md-addon font-weight-light" id="material-addon3">https://linkedin.com/</span>
+                      <span class="input-group-text md-addon font-weight-light"
+                        id="material-addon3">https://linkedin.com/</span>
                     </div>
-                    <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3">
+                    <input type="text" class="form-control" id="material-url-linkedin"
+                      aria-describedby="material-addon3" value="{{user.linkedin}}" name="user[linkedin]">
                   </div>
-              
+
                 </div>
               </div>
 

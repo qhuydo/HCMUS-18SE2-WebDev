@@ -6,14 +6,60 @@ const account = require('../models/account.model');
 const auth = require('../middlewares/auth.mdw');
 const missingKeys = require("../utils/otherFunction").missingKeys;
 const validator = require('validator');
+const db = require('../utils/db');
+const dateformat = require('dateformat');
 
 function isUsername(username){
     return validator.matches(username, "^[a-zA-Z0-9_\.\-]*$");
 }
 
 // var db;
-router.get('/profile', auth, (req, res, next) => {
-    res.render('vwUser/edit-profile');
+router.get('/profile', auth, async (req, res, next) => {
+    const [user, usertype] = await account.getUserInfo(req.session.username);
+    // console.log(user);
+    res.render('vwUser/edit-profile', {
+        user: user,
+    });
+});
+
+router.post('/profile', auth, async (req, res, next) => {
+    console.log(req.body.user);
+    const reqUser = req.body.user;
+    const sql = `UPDATE ${req.session.type} `
+     + `SET fullname = ?, `
+     + ` birth_date = ?,`
+     + ` bio = ?,`
+     + ` about_me = ?,` 
+     + ` website= ?, `
+     + ` facebook = ?,`
+     + ` twitter = ?,`
+     + ` linkedin = ? WHERE username = ?`;
+    
+    const data = [reqUser.fullname,
+        dateformat(reqUser.birth_date, "yyyy/mm/dd"),
+        reqUser.bio,
+        reqUser.about_me,
+        reqUser.website,
+        reqUser.facebook,
+        reqUser.twitter,
+        reqUser.linkedin,
+        req.session.username
+    ];
+    const [rows, fields] = await db.query(sql, data).catch(async (error) => {
+        console.log(error);
+        const [user, usertype] = await account.getUserInfo(req.session.username);
+        return res.render('vwUser/edit-profile', {
+            user: user,
+            unsuccessfull_edit: true
+        });
+    });
+
+    const [user, usertype] = await account.getUserInfo(req.session.username);
+    res.render('vwUser/edit-profile', {
+        user: user,
+        successfull_edit: true
+    });
+
 });
 
 router.get('/login', async (req, res) => {
