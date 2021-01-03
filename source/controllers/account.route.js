@@ -5,21 +5,20 @@ const bcrypt = require('bcrypt');
 const account = require('../models/account.model');
 const auth = require('../middlewares/auth.mdw');
 const missingKeys = require("../utils/otherFunction").missingKeys;
+const validator = require('validator');
+
+function isUsername(username){
+    return validator.matches(username, "^[a-zA-Z0-9_\.\-]*$");
+}
 
 // var db;
 router.get('/profile', auth, (req, res, next) => {
-    res.render('vwUser/edit-profile', {
-        style: 'vwUser/edit-profile.css',
-    });
+    res.render('vwUser/edit-profile');
 });
 
 router.get('/login', async (req, res) => {
     console.log('-- INTO LOGIN SCREEN');
-    res.render('vwUser/login', {
-        style: 'login.css',
-        hasExtraScript: true,
-        script: 'login.js'
-    });
+    res.render('vwUser/login');
 });
 
 router.post('/login', async (req, res) => {
@@ -32,7 +31,6 @@ router.post('/login', async (req, res) => {
 
     if (missing) {
         return res.render('vwUser/login', {
-            style: 'login.css',
             fail: "One or more keys are missing or null",
         });
     }
@@ -43,11 +41,18 @@ router.post('/login', async (req, res) => {
 
         res.status(500);
         res.render('error', {
-            style: 'error.css',
             error_code: 500
         });
     }
     else {
+        // input validation
+        var logginable = isUsername(req.body.username) || validator.isEmail(req.body.username);
+        if (!logginable) {
+            return res.render('vwUser/login', {
+                fail: "Invalid username or email format",
+            });
+        }
+
         var rows = await account.login(req.body.username, req.body.password);
         if (rows !== null) {
             req.session.auth = true;
@@ -56,7 +61,6 @@ router.post('/login', async (req, res) => {
         }
         else {
             return res.render('vwUser/login', {
-                style: 'login.css',
                 fail: 'There was a problem logging in. Check your email and password or create account.'
             });
         }
@@ -93,11 +97,7 @@ router.get('/logout', async (req, res) => {
 });
 
 router.get('/register', async (req, res) => {
-    res.render('vwUser/register', {
-        style: 'register.css',
-        hasExtraScript: true,
-        script: ["login.js"],
-    });
+    res.render('vwUser/register');
 });
 
 router.post('/register', async (req, res) => {
@@ -109,13 +109,19 @@ router.post('/register', async (req, res) => {
     ]);
     if (missing) {
         return res.render('vwUser/register', {
-            style: 'register.css',
-            hasExtraScript: true,
-            script: ["login.js"],
             fail: "One or more keys are missing or null",
         });
     }
     else {
+        var validUsername = isUsername(req.body.username);
+        var validEmail = validator.isEmail(req.body.email);
+
+        if (!validUsername || !validEmail) {
+            return res.render('vwUser/register', {
+                fail: "Please input a valid username and email",
+            });
+        }
+        
         const hash = bcrypt.hashSync(req.body.password, 10);
         const accountStudent = {
             username: req.body.username,
@@ -132,20 +138,19 @@ router.post('/register', async (req, res) => {
             linkedin: null,
             youtube: null,
         }
+        console.log(accountStudent);
         var rows = await account.signup(accountStudent);
         if (rows.error) {
-            return res.render('vw/User/register', {
-                style: 'register.css',
-                hasExtraScript: true,
-                script: ["login.js"],
+            return res.render('vwUser/register', {
                 fail: rows.error,
             });
         }
         else {
+            req.session.auth = true;
             req.session.username = req.body.username;
             req.session.type = "student";
             await req.session.save(function(err) {
-                res.redirect('/');
+                res.redirect('/account/profile');
             })
         }
     }

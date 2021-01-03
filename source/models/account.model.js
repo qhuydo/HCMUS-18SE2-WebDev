@@ -1,6 +1,45 @@
 const db = require('../utils/db');
 const bcrypt = require('bcrypt');
 
+
+async function selectAccountTable(table, username, email) {
+    const sql = `SELECT * FROM ${table} WHERE username = ? OR email = ?`;
+    console.log(sql);
+
+    try {
+        return await db.query(sql, [username, email]);
+  
+    } catch (error) {
+        return [null, null];
+    }
+
+}
+
+async function selectAccountWithUsername(table, username) {
+    const sql = `SELECT * FROM ${table} WHERE username = ?`;
+    console.log(sql);
+
+    try {
+        return await db.query(sql, [username]);
+    } catch (error) {
+        return [null, null];
+    }
+
+}
+
+async function selectAccountWithEmail(table, email) {
+    const sql = `SELECT * FROM ${table} WHERE email = ?`;
+    console.log(sql);
+
+    try {
+        return await db.query(sql, [email]);
+  
+    } catch (error) {
+        return [null, null];
+    }
+
+}
+
 module.exports = {
     /**
      * Đăng nhập theo username, password 
@@ -10,83 +49,81 @@ module.exports = {
      *     Hoặc trả về `null` nếu không có username
      */
     async login(username, password) {
-        var sql = `select * from student where username = "${username}"`;
-        var [rows, fields] = await db.select(sql);
-        if (rows.length !== 0) {
+        console.log(username);
+        var [rows, fields] = await selectAccountWithUsername("student", username);
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
                 return { "username": rows[0].username, "type": 'student' };
 
             }
         }
-        var sql = `select * from student where email = "${username}"`;
-        var [rows, fields] = await db.select(sql);
-        if (rows.length !== 0) {
+
+        var [rows, fields] = await selectAccountWithEmail("student", username);
+
+        if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
                 return { "username": rows[0].username, "type": 'student' };
 
             }
         }
-        sql = `select * from administrator where username = "${username}"`;
-        [rows, fields] = await db.select(sql);
 
-        if (rows.length !== 0) {
-            if (await bcrypt.compare(password, rows[0].password)) {
-                return { "username": rows[0].username, "type": 'admin' };
-            }
-        }
-        sql = `select * from administrator where email = "${username}"`;
-        [rows, fields] = await db.select(sql);
+        [rows, fields] = await selectAccountWithUsername("administrator", username);
 
-        if (rows.length !== 0) {
+        if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
                 return { "username": rows[0].username, "type": 'admin' };
             }
         }
 
-        sql = `select * from instructor where username = "${username}"`;
-        [rows, fields] = await db.select(sql);
+        [rows, fields] = await selectAccountWithEmail("administrator", username);
 
-        if (rows.length !== 0) {
+        if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
-                return { "username": rows[0].username, "type": 'intructor' };
+                return { "username": rows[0].username, "type": 'admin' };
+            }
+        }
+
+        [rows, fields] = await selectAccountWithUsername("instructor", username);
+
+        if (rows !== null && rows.length !== 0) {
+            if (await bcrypt.compare(password, rows[0].password)) {
+                return { "username": rows[0].username, "type": 'instructor' };
 
             }
         }
-        sql = `select * from instructor where email = "${username}"`;
-        [rows, fields] = await db.select(sql);
 
-        if (rows.length !== 0) {
+        [rows, fields] = await selectAccountWithEmail("instructor", username);
+
+        if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
-                return { "username": rows[0].username, "type": 'intructor' };
+                return { "username": rows[0].username, "type": 'instructor' };
 
             }
         }
         return null;
     },
+
     /**
     * Đăng ký một tài khoản
     * @param {*} account object account nhận được từ view register
     *
     */
     async signup(account) {
-        var sql = `select * from student where username = "${account.username}" or email = "${account.email}"`;
-        var [rows, fields] = await db.select(sql);
 
+        var [rows, fields] = await selectAccountTable("student", account.username, account.email);
         if (rows.length !== 0) {
-            return { "error": 'username is exist' };
-        }
-        sql = `select * from administrator where username = "${account.username}" or email = "${account.email}"`;
-        [rows, fields] = await db.select(sql);
-
-        if (rows.length !== 0) {
-            return { "error": 'username or email is exist' };
+            return { "error": 'Username or email is exist' };
         }
 
-        sql = `select * from instructor where username = "${account.username}" or email = "${account.email}"`;
-        [rows, fields] = await db.select(sql);
-
+        var [rows, fields] = await selectAccountTable("administrator", account.username, account.email);
         if (rows.length !== 0) {
-            return { "error": 'username or email is exist' };
+            return { "error": 'Username or email is exist' };
+        }
+
+        var [rows, fields] = await selectAccountTable("instructor", account.username, account.email);
+        if (rows.length !== 0) {
+            return { "error": 'Username or email is exist' };
         }
 
         let res = null;
@@ -98,4 +135,19 @@ module.exports = {
             return { "success": 'Sign up success' };
         }
     },
+
+    /**
+     * Retreive a existed data of a user.
+     * This function must be called only when the session is authenticated.
+     * @param {string} username the username, and must exist in the database.
+     * @returns {*} an object contains data from the database.
+     * the return object consists of these keys
+     * {
+     *  username, password, email, fullname, birth_date, photo, bio, about_me, 
+     *  website, twitter, facebook, linkedin, youtube 
+     * }
+     * 
+     */
+    async getUserInfo(username) {   
+    }
 }

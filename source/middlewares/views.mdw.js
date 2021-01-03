@@ -1,5 +1,6 @@
 const exphbs = require('express-handlebars');
 const numeral = require('numeral');
+const hbs_sections = require('express-handlebars-sections');
 
 // expose the object of handlebars-helpers
 // 
@@ -9,6 +10,7 @@ const hbs = exphbs.create({
     extname: '.hbs',
     defaultLayout: 'main.hbs',
     helpers: {
+        section: hbs_sections(),
         hbs_helpers,  
     },
 });

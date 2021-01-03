@@ -1,3 +1,14 @@
+{{#section 'js'}}
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/js/login.js"></script>
+
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/login.css">
+{{/section}}
+
 <!--Intro Section-->
 <section class="view intro-2">
   <form onsubmit="checkKeyPress(event)" class="mask h-100 d-flex justify-content-center align-items-center" method="post">
@@ -58,17 +69,4 @@
       </div>
     </div>
   </form>
-  <script>
-    function checkKeyPress(event){
-      var iChars = "!#$%^&*()+=-[]\\\';,/{}|\":<>?";
-      var name = document.getElementById('signInForm-email-username').value;
-      for (var i = 0; i < name.length; i++) {
-        if (iChars.indexOf(name.charAt(i)) != -1) {
-            event.preventDefault();
-            alert ("Your username has special characters [!#$%^&*()+=-[]\\\';,/{}|\":<>?]\nThese are not allowed.\n Please remove them and try again.");
-            return false;
-        }
-      }
-    }
-  </script>
 </section>

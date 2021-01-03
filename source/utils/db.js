@@ -13,6 +13,10 @@ module.exports = {
         }); // [rows, fields]
     },
 
+    query(sql, values) {
+        return promisePool.query(sql, values);
+    },
+
     insert(entity, table_name) {
         const sql = `insert into ${table_name} set ?`;
         return promisePool.query(sql, entity).catch(function(err){
@@ -24,7 +28,7 @@ module.exports = {
         const sql = `delete from ${table_name} where ?`;
         return promisePool.query(sql, condition).catch(function(err){
             return {"error":err.message};
-        });;
+        });
     },
 
     update(new_data, condition, table_name) {

@@ -18,15 +18,7 @@
   <!-- MDB -->
   <link rel="stylesheet" type="text/css" href="/css/mdb.min.css">
   <link rel="stylesheet" type="text/css" href="/css/main.css">
-  {{#if (isArray style)}}
-    {{#each style}}
-      <link rel="stylesheet" type="text/css" href="/css/{{this}}">
-    {{/each}}
-  {{else}}
-      <link rel="stylesheet" type="text/css" href="/css/{{style}}">
-  {{/if}}
-  
-  <link rel="stylesheet" type="text/css" href="/css/{{style}}">
+  {{{_sections.css}}}  
   <link rel="shortcut icon" href="/image/logo-temp.svg">
 
 </head>
@@ -40,11 +32,7 @@
 
   <!-- navbar-->
 
-  <!-- Nếu trang này cần hiện intro (hình nền cỡ lớn)-->
-  {{#if showIntro}}
-  <!-- lấy phần hiện intro theo đường dẫn lcIntroPage-->
-  {{> (lcIntroPage) }}
-  {{/if}}
+  {{{_sections.intro}}}
 
 </header>
 
@@ -164,15 +152,7 @@
   <script type="text/javascript" src="/js/mdb.min.js"></script>
   <!-- main javascript -->
   <script type="text/javascript" src="/js/main.js"></script>
-  {{#if hasExtraScript}}
-    {{#if (isArray script)}}
-      {{#each script}}
-      <script type="text/javascript" src="/js/{{this}}"></script>
-      {{/each}}
-    {{else}}
-    <script type="text/javascript" src="/js/{{script}}"></script>
-    {{/if}}
-  {{/if}}
+  {{{_sections.js}}}
   <script>
     new WOW().init();
 
