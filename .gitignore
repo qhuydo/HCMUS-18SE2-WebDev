@@ -143,3 +143,4 @@ FrontEnd/src/assets/styles
 **/node_modules/*
 **/sample_data.sql
 source/config/default.json
+source/public/image/user/*

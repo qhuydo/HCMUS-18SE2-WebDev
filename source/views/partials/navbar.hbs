@@ -1,86 +1,98 @@
-  <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top scrolling-navbar">
-    <!--nav class="navbar navbar-expand-lg navbar-light shadow-sm bg-light fixed-top"-->
-    <div class="container">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top scrolling-navbar">
+  <!--nav class="navbar navbar-expand-lg navbar-light shadow-sm bg-light fixed-top"-->
+  <div class="container">
 
-      <!--Logo -->
-      <a class="navbar-brand d-flex align-items-center" href="../">
-        <img src="/image/logo-temp.svg" alt="logo" height="50">
-        <span class="ml-3 font-weight-bold">E-EDU</span>
-      </a>
+    <!--Logo -->
+    <a class="navbar-brand" href="../">
+      <img src="/image/logo-temp.svg" alt="logo" height="50">
+      <span class="ml-3 font-weight-bold">E-EDU</span>
+    </a>
 
-      <!--collapse -->
-      <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
-        data-target="#navbarNav" aria-controls="navbarNav">
-        <span class="navbar-toggler-icon">
-          <!--i class="fas fa-bars" style="color:black;"></i-->
-        </span>
-      </button>
+    <!--collapse -->
+    <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
+      data-target="#navbarNav" aria-controls="navbarNav">
+      <span class="navbar-toggler-icon">
+        <!--i class="fas fa-bars" style="color:black;"></i-->
+      </span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
 
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- left -->
+      <ul class="navbar-nav mr-auto">
 
-        <!-- left -->
-        <ul class="navbar-nav mr-auto">
+        <!-- category -->
+        <div class="dropdown btn-group shadow-0">
+          <a class="nav-link dropdown-toggle waves-effect waves-light dark-grey-text font-weight-bold ml-3" href="/"
+            role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-tag left"></i>
+            Category
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
-          <!-- category -->
-          <div class="dropdown btn-group shadow-0">
-            <a class="btn btn-outline-dark btn-md dropdown-toggle " href="/" role="button" id="dropdownMenuLink"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fa fa-tag left"></i>
-              Category
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {{#each lcAllCategories}}
+            {{#if hasSubCategory}}
+            <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="/courses/{{id}}">{{name}}</a>
+              <ul class="dropdown-menu">
 
-              {{#each lcAllCategories}}
-              {{#if hasSubCategory}}
-              <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="/courses/{{id}}">{{name}}</a>
-                <ul class="dropdown-menu">
+                {{#each subCategory}}
+                <li><a class="dropdown-item" href="/courses/{{this.category_id}}/{{this.id}}">{{name}}</a></li>
+                {{/each}}
+              </ul>
+            </li>
+            {{else}}
+            <li><a class="dropdown-item" href="/courses/{{this.id}}">{{name}}</a></li>
+            {{/if}}
+            {{/each}}
+          </ul>
+        </div>
+      </ul>
 
-                  {{#each subCategory}}
-                  <li><a class="dropdown-item" href="/courses/{{this.category_id}}/{{this.id}}">{{name}}</a></li>
-                  {{/each}}
-                </ul>
-              </li>
-              {{else}}
-              <li><a class="dropdown-item" href="/courses/{{this.id}}">{{name}}</a></li>
-              {{/if}}
-              {{/each}}
-            </ul>
+      <ul class="navbar-nav mr-auto" style="text-align:center">
+        <li class="nav-item">
+          <!-- Search form -->
+          <form class="form-inline active-blue-1 my-auto d-inline w-100">
+            <div class="md-form my-0">
+              <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+              <i class="fas fa-search text-black m-3" aria-hidden="true"></i>
+            </div>
+          </form>
+
+        </li>
+
+      </ul>
+
+      <!-- right -->
+      <ul class="navbar-nav nav-ml-auto">
+        {{#if session.username}}
+        <li class="nav-item">
+          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="#"><i
+              class="fas fa-shopping-cart"></i> Cart <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="#"><i
+              class="fas fa-heart"></i> Watch list</a>
+        </li>
+        <li class="nav-item dropdown">
+
+          <a class="nav-link dropdown-toggle waves-effect waves-light dark-grey-text font-weight-bold"
+            id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i
+              class="fas fa-user "></i> Profile </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-cyan" aria-labelledby="navbarDropdownMenuLink-4">
+            <a class="dropdown-item waves-effect waves-light" href="/account/profile">Profile</a>
+            <hr class="dropdown-divider" />
+            <a class="dropdown-item waves-effect waves-light" href="/account/logout">Log out</a>
           </div>
-        </ul>
-
-        <ul class="navbar-nav mr-auto" style="text-align:center">
-          <li class="nav-item">
-            <!-- Search form -->
-            <form class="form-inline active-blue-1 my-auto d-inline w-100">
-              <div class="md-form my-0">
-                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
-                <i class="fas fa-search text-black m-3" aria-hidden="true"></i>
-              </div>
-            </form>
-
-          </li>
-
-        </ul>
-
-        <!-- right -->
-        <ul class="navbar-nav nav-flex-icons">
-          {{#if session.username}}
-          <div class="dropdown btn-group shadow-0">
-            <button class="btn" href="/" role="button" id="dropdownAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-1x" ></i></button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownAccount">
-              <a class="dropdown-item" href="/account/profile">Profile</a>
-              <a class="dropdown-item" href="/account/logout">Logout</a>
-            </ul>
-          </div>
-          {{else}}
-          <li class="nav-item mr-2">
-            <a href="/account/login" class="btn btn-md btn-outline-black" type="button">Login</a>
-          </li>
-          <li class="nav-item mr-2">
-            <a href="/account/register" class="btn shadow-0 btn-md btn-blue mr-2" type="button">SignUp</a>
-          </li>
-          {{/if}}
-        </ul>
-      </div>
+        </li>
     </div>
-  </nav>
+    {{else}}
+    <li class="nav-item mr-2">
+      <a href="/account/login" class="btn btn-md btn-outline-black" type="button">Login</a>
+    </li>
+    <li class="nav-item mr-2">
+      <a href="/account/register" class="btn shadow-0 btn-md btn-blue mr-2" type="button">SignUp</a>
+    </li>
+    {{/if}}
+    </ul>
+  </div>
+  </div>
+</nav>

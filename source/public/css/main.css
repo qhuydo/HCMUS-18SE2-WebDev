@@ -7,7 +7,7 @@
 } */
 
 /* Font Awesome Icons have variable width. Added fixed width to fix that.*/
-.icon-width { width: 2rem;}
+/* .icon-width { width: 2rem;} */
 
 /* Padding lại body để navigation bar không bị đè */
 /* body { padding-top: 90px; } */
@@ -54,6 +54,14 @@
     }
 }
 
-h5 {
-    letter-spacing: 3px;
+.divider {
+  height: 3px;
+  display: block;
+  background-color: rgba(0,0,0,.1);
+  margin: 1em 0;
+  width: 30px;
 }
+  
+/* h5 {
+    letter-spacing: 3px;
+} */
