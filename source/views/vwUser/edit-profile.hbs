@@ -58,22 +58,33 @@
 
             <!-- Card content -->
             <div class="card-body card-body-cascade text-center">
-              <form method="POST">
+              {{#if successfull_edit_pass}}
+              <div class="alert alert-success ">
+                <div>All changes were saved</div>
+              </div>
+              {{/if}}
+
+              {{#if fail_edit_pass}}
+              <div class="alert alert-danger js-alert-error">
+                <div>{{fail_edit_pass}}</div>
+              </div>
+              {{/if}}
+              <form method="POST" action="/account/profile/password">
                 <div class="form-row">
                   <div class="col-md-12">
                     <div class="md-form form-group">
-                      <input type="text" id="change-email" class="form-control validate" type="text" name="user[email]"
+                      <input type="text" id="change-email" class="form-control validate" name="user[email]"
                         value="{{user.email}}" readonly>
                       <label for="change-email">Email</label>
                     </div>
 
                     <div class="md-form form-group">
-                      <input type="password" id="cur-pass" class="form-control" type="password">
+                      <input type="password" id="cur-pass" class="form-control" type="password" name="user[curPass]">
                       <label for="cur-pass">Current password</label>
                     </div>
 
                     <div class="md-form form-group">
-                      <input type="password" id="new-pass-1" class="form-control" type="password">
+                      <input type="password" id="new-pass-1" class="form-control" type="password" name="user[newPass]">
                       <label for="new-pass-1">New password</label>
                     </div>
 
@@ -83,201 +94,200 @@
                     </div>
 
                   </div>
+                </div>
+                <div class="flex-center">
+                  <button class="btn btn-danger btn-sm waves-effect waves-light">Change email</button><br>
+                  <button class="btn btn-danger btn-sm waves-effect waves-light">Change password</button>
+                </div>
               </form>
-              <div class="flex-center">
-                <button class="btn btn-danger btn-sm waves-effect waves-light">Change email</button><br>
-                <button class="btn btn-danger btn-sm waves-effect waves-light">Change password</button>
-              </div>
 
             </div>
+            <!-- Card content -->
 
           </div>
-          <!-- Card content -->
+          <!-- Card -->
 
         </div>
-        <!-- Card -->
+        <!-- First column -->
 
-      </div>
-      <!-- First column -->
+        <!-- Second column -->
+        <div class="col-lg-8 mb-4">
 
-      <!-- Second column -->
-      <div class="col-lg-8 mb-4">
-
-        <!-- Card -->
-        <div class="card card-cascade narrower">
-          <!-- Card image -->
-          <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
-            <h5 class="mb-0 font-weight-bold"><strong>Public Profile</strong></h5>
-          </div>
-          <!-- Card image -->
-
-          <!-- Card content -->
-          <div class="card-body card-body-cascade text-center">
-            {{#if successfull_edit}}
-            <div class="alert alert-success ">
-              <div>All changes were saved</div>
+          <!-- Card -->
+          <div class="card card-cascade narrower">
+            <!-- Card image -->
+            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+              <h5 class="mb-0 font-weight-bold"><strong>Public Profile</strong></h5>
             </div>
-            {{/if}}
+            <!-- Card image -->
 
-            {{#if unsuccessfull_edit}}
-            <div class="alert alert-danger js-alert-error">
-              <div>Error occured</div>
+            <!-- Card content -->
+            <div class="card-body card-body-cascade text-center">
+              {{#if successfull_edit}}
+              <div class="alert alert-success ">
+                <div>All changes were saved</div>
+              </div>
+              {{/if}}
+
+              {{#if unsuccessfull_edit}}
+              <div class="alert alert-danger js-alert-error">
+                <div>Error occured</div>
+              </div>
+              {{/if}}
+
+              <!-- Edit Form -->
+              <form method="POST">
+
+                <!-- First row -->
+                <div class="form-row m-auto">
+                  <!-- First column -->
+                  <div class="col-md-6">
+                    <div class="md-form">
+                      <input type="text" id="fullname" class="form-control" value="{{user.fullname}}"
+                        name="user[fullname]">
+                      <label for="fullname" class="">Full name</label>
+                    </div>
+                  </div>
+
+                  <!-- Second column-->
+                  <div class="col-md-6">
+                    <div class="md-form">
+                      <input placeholder="Selected date" type="text" id="birth_date" class="form-control datepicker"
+                        name="user[birth_date]">
+                      <label for="birth_date">Date of birth</label>
+                    </div>
+                  </div>
+                </div>
+                <!-- First row -->
+
+                <!-- Second row -->
+                <div class="form-row m-auto">
+
+                  <!-- First column -->
+                  <div class="col col-md-12">
+                    <div class="md-form">
+                      <input id="bio" type="text" length="120" class="form-control" value="{{user.bio}}"
+                        name="user[bio]" mdbCharCounter mdbInput>
+                      <label for="bio">Headline</label>
+                    </div>
+                  </div>
+                </div>
+                <!-- Second row -->
+
+                <!-- Third row -->
+                <div class="form-row">
+                  <!-- First column -->
+                  <div class="col form-outline col-md-12 ml-lg-2">
+                    <div class="md-form">
+                      <textarea type="text" id="about_me" class="form-control md-textarea" name="user[about_me]"
+                        mdbInput>{{user.about_me}}</textarea>
+                      <label for="about_me">About me</label>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- Third row -->
+
+                <!-- Fourth row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url">Your URL</label>
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light" id="material-addon3">https://</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3"
+                        text="{{user.website}}" name="user[website]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Fifth row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url-facebook">Facebook</label>
+
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light"
+                          id="material-addon3">https://facebook.com/</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url-facebook"
+                        aria-describedby="material-addon3" value="{{user.facebook}}" name="user[facebook]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Sixth row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url-twitter">Twitter</label>
+
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light"
+                          id="material-addon3">https://twitter.com/</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url-twitter"
+                        aria-describedby="material-addon3" value="{{user.twitter}}" name="user[twitter]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Seventh row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url-linkedin">LinkedIn</label>
+
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light"
+                          id="material-addon3">https://linkedin.com/</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url-linkedin"
+                        aria-describedby="material-addon3" value="{{user.linkedin}}" name="user[linkedin]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="col form-outline col-md-12 text-center my-4">
+                    <input type="submit" value="Update Account"
+                      class="btn shadow-0 mdb-color btn-blue waves-effect waves-light">
+                  </div>
+
+                </div>
+                <!-- Fourth row -->
+
+              </form>
+              <!-- Edit Form -->
+
             </div>
-            {{/if}}
-
-            <!-- Edit Form -->
-            <form method="POST">
-
-              <!-- First row -->
-              <div class="form-row m-auto">
-                <!-- First column -->
-                <div class="col-md-6">
-                  <div class="md-form">
-                    <input type="text" id="fullname" class="form-control" value="{{user.fullname}}"
-                      name="user[fullname]">
-                    <label for="fullname" class="">Full name</label>
-                  </div>
-                </div>
-
-                <!-- Second column-->
-                <div class="col-md-6">
-                  <div class="md-form">
-                    <input placeholder="Selected date" type="text" id="birth_date" class="form-control datepicker"
-                      name="user[birth_date]">
-                    <label for="birth_date">Date of birth</label>
-                  </div>
-                </div>
-              </div>
-              <!-- First row -->
-
-              <!-- Second row -->
-              <div class="form-row m-auto">
-
-                <!-- First column -->
-                <div class="col col-md-12">
-                  <div class="md-form">
-                    <input id="bio" type="text" length="120" class="form-control" value="{{user.bio}}" name="user[bio]"
-                      mdbCharCounter mdbInput>
-                    <label for="bio">Headline</label>
-                  </div>
-                </div>
-              </div>
-              <!-- Second row -->
-
-              <!-- Third row -->
-              <div class="form-row">
-                <!-- First column -->
-                <div class="col form-outline col-md-12 ml-lg-2">
-                  <div class="md-form">
-                    <textarea type="text" id="about_me" class="form-control md-textarea" name="user[about_me]"
-                      mdbInput>{{user.about_me}}</textarea>
-                    <label for="about_me">About me</label>
-                  </div>
-
-                </div>
-              </div>
-              <!-- Third row -->
-
-              <!-- Fourth row -->
-              <div class="form-row">
-                <div class="col form-outline col-md-12">
-                  <div class="row">
-                    <label class="ml-4 text-left font-weight-light" for="material-url">Your URL</label>
-                  </div>
-                  <div class="row md-form input-group mt-0 mb-3 ml-4">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text md-addon font-weight-light" id="material-addon3">https://</span>
-                    </div>
-                    <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3"
-                      text="{{user.website}}" name="user[website]">
-                  </div>
-
-                </div>
-              </div>
-
-              <!-- Fifth row -->
-              <div class="form-row">
-                <div class="col form-outline col-md-12">
-                  <div class="row">
-                    <label class="ml-4 text-left font-weight-light" for="material-url-facebook">Facebook</label>
-
-                  </div>
-                  <div class="row md-form input-group mt-0 mb-3 ml-4">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text md-addon font-weight-light"
-                        id="material-addon3">https://facebook.com/</span>
-                    </div>
-                    <input type="text" class="form-control" id="material-url-facebook"
-                      aria-describedby="material-addon3" value="{{user.facebook}}" name="user[facebook]">
-                  </div>
-
-                </div>
-              </div>
-
-              <!-- Sixth row -->
-              <div class="form-row">
-                <div class="col form-outline col-md-12">
-                  <div class="row">
-                    <label class="ml-4 text-left font-weight-light" for="material-url-twitter">Twitter</label>
-
-                  </div>
-                  <div class="row md-form input-group mt-0 mb-3 ml-4">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text md-addon font-weight-light"
-                        id="material-addon3">https://twitter.com/</span>
-                    </div>
-                    <input type="text" class="form-control" id="material-url-twitter" aria-describedby="material-addon3"
-                      value="{{user.twitter}}" name="user[twitter]">
-                  </div>
-
-                </div>
-              </div>
-
-              <!-- Seventh row -->
-              <div class="form-row">
-                <div class="col form-outline col-md-12">
-                  <div class="row">
-                    <label class="ml-4 text-left font-weight-light" for="material-url-linkedin">LinkedIn</label>
-
-                  </div>
-                  <div class="row md-form input-group mt-0 mb-3 ml-4">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text md-addon font-weight-light"
-                        id="material-addon3">https://linkedin.com/</span>
-                    </div>
-                    <input type="text" class="form-control" id="material-url-linkedin"
-                      aria-describedby="material-addon3" value="{{user.linkedin}}" name="user[linkedin]">
-                  </div>
-
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="col form-outline col-md-12 text-center my-4">
-                  <input type="submit" value="Update Account"
-                    class="btn shadow-0 mdb-color btn-blue waves-effect waves-light">
-                </div>
-
-              </div>
-              <!-- Fourth row -->
-
-            </form>
-            <!-- Edit Form -->
+            <!-- Card content -->
 
           </div>
-          <!-- Card content -->
+          <!-- Card -->
 
         </div>
-        <!-- Card -->
+        <!-- Second column -->
 
       </div>
-      <!-- Second column -->
+      <!-- First row -->
 
-  </div>
-  <!-- First row -->
-
-  </section>
-  <!-- Section: Public Profile -->
+    </section>
+    <!-- Section: Public Profile -->
 
   </div>
 

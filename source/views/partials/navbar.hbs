@@ -65,9 +65,13 @@
         <!-- right -->
         <ul class="navbar-nav nav-flex-icons">
           {{#if session.username}}
-          <li class="nav-item mr-2">
-            <a href="/account/logout" class="btn btn-md btn-outline-black" type="button">Logout</a>
-          </li>
+          <div class="dropdown btn-group shadow-0">
+            <button class="btn" href="/" role="button" id="dropdownAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-1x" ></i></button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownAccount">
+              <a class="dropdown-item" href="/account/profile">Profile</a>
+              <a class="dropdown-item" href="/account/logout">Logout</a>
+            </ul>
+          </div>
           {{else}}
           <li class="nav-item mr-2">
             <a href="/account/login" class="btn btn-md btn-outline-black" type="button">Login</a>

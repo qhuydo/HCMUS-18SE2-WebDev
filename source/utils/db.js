@@ -9,7 +9,7 @@ const promisePool = pool.promise();
 module.exports = {
     select(sql) {
         return promisePool.query(sql).catch(function(err){
-            return {"error":err.message};
+            return [null,null];
         }); // [rows, fields]
     },
 

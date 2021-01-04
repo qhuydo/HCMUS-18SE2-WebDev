@@ -8,6 +8,7 @@ const missingKeys = require("../utils/otherFunction").missingKeys;
 const validator = require('validator');
 const db = require('../utils/db');
 const dateformat = require('dateformat');
+const { login } = require('../models/account.model');
 
 function isUsername(username){
     return validator.matches(username, "^[a-zA-Z0-9_\.\-]*$");
@@ -60,6 +61,41 @@ router.post('/profile', auth, async (req, res, next) => {
         successfull_edit: true
     });
 
+});
+
+router.post('/profile/password', auth, async (req, res, next) => {
+    console.log(req.body.user);
+    const reqUser = req.body.user;
+    var result = await login(req.session.username,reqUser.curPass)
+    if (result === null)
+    {
+        const [user, usertype] = await account.getUserInfo(req.session.username);
+        return res.render('vwUser/edit-profile', {
+            user: user,
+            fail_edit_pass: "Check your password"
+        });
+    }
+    const sql = `UPDATE ${req.session.type} `
+     + `SET password = ? WHERE username = ?`;
+    
+    const data = [
+        bcrypt.hashSync(reqUser.newPass, 10),
+        req.session.username,
+    ];
+    await db.query(sql, data).catch(async (error) => {
+        console.log(error);
+        const [user, usertype] = await account.getUserInfo(req.session.username);
+        return res.render('vwUser/edit-profile', {
+            user: user,
+            fail_edit_pass: "Error"
+        });
+    });
+
+    const [user, usertype] = await account.getUserInfo(req.session.username);
+    res.render('vwUser/edit-profile', {
+        user: user,
+        successfull_edit_pass: true
+    });
 });
 
 router.get('/login', async (req, res) => {
