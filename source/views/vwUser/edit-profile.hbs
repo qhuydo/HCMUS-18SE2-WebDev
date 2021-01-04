@@ -13,6 +13,7 @@
   });
 
 </script>
+<script type="text/javascript" src="/js/vwUser/edit-profile.js"></script>
 {{/section}}
 <main>
   <div class="container">
@@ -34,15 +35,27 @@
             <!-- Card image -->
 
             <!-- Card content -->
-            <div class="card-body card-body-cascade text-center">
-              <img src="https://picsum.photos/200" alt="User Photo" class="z-depth-1 mb-3 mx-auto">
-
-              <p class="text-muted"><small>Profile photo will be changed automatically</small></p>
-              <div class="row flex-center">
-                <button class="btn btn-info btn-sm waves-effect waves-light">Upload New Photo</button><br>
-                <button class="btn btn-danger btn-sm waves-effect waves-light">Delete</button>
+            <form action="/account/uploadImage" enctype="multipart/form-data" method="POST">
+              <div class="form-row text-center">
+                {{#if upload}}
+                  {{#is upload "fail"}}
+                  <div class="alert alert-danger js-alert-error">
+                    <div>Fail upload</div>
+                  </div>
+                  {{else}}
+                  <div class="alert alert-success js-alert-error">
+                    <div>Upload success</div>
+                  </div>
+                  {{/is}}
+                {{/if}}
+                <div class="md-form form-group">
+                  <img id="userPhoto" src="{{user.photo}}" alt="your image" />
+                  <input type="file" name="file" class="btn btn-info btn-sm waves-effect waves-light form-control-file border" onchange="readURL(this)">
+                  <button class="btn btn-info btn-sm waves-effect waves-light" type="submit">Upload to
+                    server</button><br>
+                </div>
               </div>
-            </div>
+            </form>
             <!-- Card content -->
 
           </div>
