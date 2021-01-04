@@ -35,22 +35,12 @@
             <!-- Card image -->
 
             <!-- Card content -->
-            <form action="/account/uploadImage" enctype="multipart/form-data" method="POST">
+            <form onsubmit="checkImage(event)" action="/account/uploadImage" enctype="multipart/form-data" method="POST">
               <div class="form-row text-center">
-                {{#if upload}}
-                  {{#is upload "fail"}}
-                  <div class="alert alert-danger js-alert-error">
-                    <div>Fail upload</div>
-                  </div>
-                  {{else}}
-                  <div class="alert alert-success js-alert-error">
-                    <div>Upload success</div>
-                  </div>
-                  {{/is}}
-                {{/if}}
                 <div class="md-form form-group">
                   <img id="userPhoto" src="{{user.photo}}" alt="your image" />
-                  <input type="file" name="file" class="btn btn-info btn-sm waves-effect waves-light form-control-file border" onchange="readURL(this)">
+                  <div class="w-100"></div>
+                  <input type="file" name="file" class="btn btn-info btn-sm waves-effect waves-light form-control-file border" id="ImageFile" onchange="readURL(this)">
                   <button class="btn btn-info btn-sm waves-effect waves-light" type="submit">Upload to
                     server</button><br>
                 </div>

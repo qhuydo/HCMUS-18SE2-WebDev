@@ -105,7 +105,7 @@ var storage = multer.diskStorage({
       cb(null, 'public/image/user')
     },
     filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now())
+      cb(null, req.session.username)
     }
   })   
 var upload = multer({ storage: storage })

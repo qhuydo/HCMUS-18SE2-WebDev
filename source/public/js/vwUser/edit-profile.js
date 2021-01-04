@@ -9,9 +9,19 @@ function checkKeyPress(name) {
 }
 
 function readURL(input) {
-    var reader = new FileReader();
-    reader.onload = function (e) {
-        document.getElementById("userPhoto").src =  e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById("userPhoto").src =  e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function checkImage(event){
+    if (document.getElementById("ImageFile").files && document.getElementById("ImageFile").files[0]) {
+        return true;
+    }
+    event.preventDefault();
+    return false;
 }
