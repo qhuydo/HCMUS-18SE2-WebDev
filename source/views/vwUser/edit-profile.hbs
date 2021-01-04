@@ -72,7 +72,7 @@
                 <div>{{fail_edit_pass}}</div>
               </div>
               {{/if}}
-              <form method="POST" action="/account/profile/password">
+              <form onsubmit="checkChangePassword(event)" method="POST" action="/account/profile/password">
                 <div class="form-row">
                   <div class="col-md-12">
                     <div class="md-form form-group">
@@ -92,7 +92,7 @@
                     </div>
 
                     <div class="md-form form-group">
-                      <input type="password" id="cur-pass-2" class="form-control" type="password">
+                      <input type="password" id="new-pass-2" class="form-control" type="password">
                       <label for="new-pass-2">Confirm password</label>
                     </div>
 

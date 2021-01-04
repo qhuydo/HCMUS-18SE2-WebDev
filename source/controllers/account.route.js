@@ -118,8 +118,9 @@ router.post('/uploadImage', upload.single('file'), async(req, res, next) => {
     const sql = `UPDATE ${req.session.type} `
      + `SET photo = ? WHERE username = ?`;
     
+    var index = file.path.indexOf('\\') !== -1? file.path.indexOf('\\'): file.path.indexOf('/');
     const data = [
-        file.path.substring(file.path.indexOf('\\')),
+        file.path.substring(index),
         req.session.username,
     ];
     await db.query(sql, data).catch(async (error) => {

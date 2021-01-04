@@ -25,3 +25,10 @@ function checkImage(event){
     event.preventDefault();
     return false;
 }
+
+function checkChangePassword(event){
+    if (document.getElementById("new-pass-1").value !== document.getElementById("new-pass-2").value) {
+        event.preventDefault();
+        alert("New password and confirm password not same!");
+    }
+}
