@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const account = require('../models/account.model');
 const auth = require('../middlewares/auth.mdw');
 const missingKeys = require("../utils/otherFunction").missingKeys;

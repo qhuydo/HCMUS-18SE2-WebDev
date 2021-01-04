@@ -14,7 +14,7 @@
     "author": "Hà Thế Hiển, Đỗ Quốc Huy, Đinh Thành Việt",
     "license": "MIT",
     "dependencies": {
-        "bcrypt": "^5.0.0",
+        "bcryptjs": "^2.4.3",
         "bootstrap": "^4.5.3",
         "dateformat": "^4.4.1",
         "express": "^4.17.1",
