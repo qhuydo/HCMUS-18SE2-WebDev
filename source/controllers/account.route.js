@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 const bcrypt = require('bcryptjs');
+const multer  =   require('multer');
 const account = require('../models/account.model');
 const auth = require('../middlewares/auth.mdw');
 const missingKeys = require("../utils/otherFunction").missingKeys;
 const validator = require('validator');
+let path = require("path");
 const db = require('../utils/db');
 const dateformat = require('dateformat');
 const { login } = require('../models/account.model');
@@ -92,11 +94,39 @@ router.post('/profile/password', auth, async (req, res, next) => {
     });
 
     const [user, usertype] = await account.getUserInfo(req.session.username);
-    res.render('vwUser/edit-profile', {
+    res.render('uploads/', {
         user: user,
         successfull_edit_pass: true
     });
 });
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/image/user')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now())
+    }
+  })   
+var upload = multer({ storage: storage })
+
+router.post('/uploadImage', upload.single('file'), async(req, res, next) => {
+    const file = req.file
+    if (!file) {
+      return res.redirect(req.headers.referer);
+    }
+    const sql = `UPDATE ${req.session.type} `
+     + `SET photo = ? WHERE username = ?`;
+    
+    const data = [
+        file.path.substring(file.path.indexOf('\\')),
+        req.session.username,
+    ];
+    await db.query(sql, data).catch(async (error) => {
+        return res.redirect(req.headers.referer);
+    });
+    res.redirect(req.headers.referer);
+})
 
 router.get('/login', async (req, res) => {
     console.log('-- INTO LOGIN SCREEN');
