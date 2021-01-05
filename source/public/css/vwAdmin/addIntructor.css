@@ -1,0 +1,134 @@
+/* .login-dark {
+    height:1000px;
+    background:#475d62 url(../image/star-sky.jpg);
+    background-size:cover;
+    position:relative;
+}
+  
+  .login-dark form {
+    max-width:320px;
+    width:90%;
+    background-color:#1e2833;
+    padding:40px;
+    border-radius:4px;
+    transform:translate(-50%, -50%);
+    position:absolute;
+    top:50%;
+    left:50%;
+    color:#fff;
+    box-shadow:3px 3px 4px rgba(0,0,0,0.2);
+  }
+  
+  .login-dark .illustration {
+    text-align:center;
+    padding:15px 0 20px;
+    font-size:100px;
+    color:#2980ef;
+  }
+  
+  .login-dark form .form-control {
+    background:none;
+    border:none;
+    border-bottom:1px solid #434a52;
+    border-radius:0;
+    box-shadow:none;
+    outline:none;
+    color:inherit;
+  }
+  
+  .login-dark form .btn-primary {
+    background:#214a80;
+    border:none;
+    border-radius:4px;
+    padding:11px;
+    box-shadow:none;
+    margin-top:26px;
+    text-shadow:none;
+    outline:none;
+  }
+  
+  .login-dark form .btn-primary:hover, .login-dark form .btn-primary:active {
+    background:#214a80;
+    outline:none;
+  }
+  
+  .login-dark form .forgot {
+    display:block;
+    text-align:center;
+    font-size:12px;
+    color:#2980ef;
+    opacity:0.9;
+    text-decoration:none;
+  }
+  
+  .login-dark form .forgot:hover, .login-dark form .forgot:active {
+    opacity:1;
+    text-decoration:none;
+  }
+  
+  .login-dark form .btn-primary:active {
+    transform:translateY(1px);
+  } */
+
+  html,
+  body,
+  .view {
+    height: 100vh;
+  }
+  
+  @media (max-width: 740px) {
+  
+    html,
+    body,
+    .view {
+      height: 815px;
+    }
+  }
+  
+  @media (min-width: 800px) and (max-width: 850px) {
+  
+    html,
+    body,
+    .view {
+      height: 650px;
+    }
+  }
+  
+  /* .intro-2 {
+    background: url("https://images.unsplash.com/photo-1491002052546-bf38f186af56")no-repeat center center;
+    background-size: cover;
+  } */
+  
+  .card {
+    background-color: rgba(229, 228, 255, 0.2);
+  }
+  
+  .md-form label {
+    color: #ffffff;
+  }
+  
+  h6 {
+    line-height: 1.7;
+  }
+  
+  
+  .card {
+    margin-top: 30px;
+    /*margin-bottom: -45px;*/
+  
+  }
+  
+  .md-form input[type=text]:focus:not([readonly]),
+  .md-form input[type=password]:focus:not([readonly]) {
+    border-bottom: 1px solid #8EDEF8;
+    box-shadow: 0 1px 0 0 #8EDEF8;
+  }
+  
+  .md-form input[type=text]:focus:not([readonly])+label,
+  .md-form input[type=password]:focus:not([readonly])+label {
+    color: #8EDEF8;
+  }
+  /* 
+  .md-form .form-control {
+    color: #fff;
+  } */
