@@ -1,25 +1,34 @@
 const express = require('express');
 const moment = require('moment');
-
+const course_model = require('../models/course_model');
 
 const router = express.Router();
 
-router.get('/', async function (req, res) {
-//   const items = [];
-//   for (const ci of req.session.cart) {
-//     const product = await productModel.single(ci.id);
-//     items.push({
-//       product,
-//       quantity: ci.quantity,
-//       amount: product.Price * ci.quantity
-//     })
-//   }
+function bill(items) {
+    
+}
 
-//   res.render('vwCart/index', {
-//     items,
-//     empty: items.length === 0
-//   });
-    res.render('vwCart/index.hbs');
+router.get('/', async function (req, res) {
+    const items = [];
+    full_price = 0.0;
+    total_price = 0.0;
+
+    for(const ci of req.session.cart) {
+        const course = await course_model.getCourseDataForCart(ci.course_id);
+        items.push(course);
+        full_price += Number.parseFloat(course.full_price);
+        total_price += Number.parseFloat(course.price);
+    }
+
+    discount = full_price - total_price;
+    console.log(items);
+
+    res.render('vwCart/index.hbs', {
+        items,
+        full_price,
+        total_price,
+        discount
+    });
 });
 
 // router.post('/add', async function (req, res) {

@@ -1,3 +1,4 @@
+const cartModel = require('../models/cart.model');
 const categoryModel = require('../models/category.model');
 
 module.exports = function (app) {
@@ -6,8 +7,10 @@ module.exports = function (app) {
         if (typeof (req.session.auth) === 'undefined') {
             req.session.auth = false;
         }
-        // res.locals.auth = req.session.auth;
-        // res.locals.username = req.session.username;
+        if (req.session.auth === false) {
+            req.session.cart = [];
+        }
+
         res.locals.session = req.session;
         console.log('-------');
         console.log(req.session);
@@ -17,7 +20,10 @@ module.exports = function (app) {
 
     app.use(async function (req, res, next) {
         res.locals.lcAllCategories = await categoryModel.allWithSub();
-        // console.log(res.locals.lcAllCategories);
+
+        if (typeof (res.locals.session) !== 'undefine' && res.locals.session.type === 'student') {
+            req.session.cart = await cartModel.allItemsFromCart(req.session.username);
+        }
         next();
     });
 }
