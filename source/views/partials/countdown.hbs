@@ -1,0 +1,65 @@
+<div class="modal fade bottom modal-content-clickable" id="frameModalBottomCountdown" tabindex="-1" role="dialog"
+  aria-labelledby="countdownLabel" data-backdrop="false" aria-modal="true" style="padding-right: 14px; display: block;"
+  aria-hidden="false">
+  <div class="modal-dialog modal-frame modal-bottom modal-notify modal-success" role="document">
+    <!-- Content -->
+    <div class="modal-content">
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center align-items-center">
+
+          <p class="pt-3 pr-2 dark-grey-text">Feeling so free? Submission Deadline countdown:
+          <div id="countdown" class="font-weight-bold text-danger"> </div>
+          </p>
+
+          <a type="button" class="btn btn-danger waves-effect waves-light" target="_blank"
+            href="https://github.com/qhuydo/HCMUS-18SE2-WebDev">Browse Github <i class="fab fa-github-square fa-lg"></i></a>
+          <a type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">No, I want to sleep<i class="far fa-angry"></i></a>
+        </div>
+      </div>
+    </div>
+    <!-- Content -->
+  </div>
+</div>
+
+{{#section 'js'}}
+<script>
+  $('#frameModalBottomCountdown').modal('show');
+
+  CountDownTimer('01/12/2021 00:0 AM', 'countdown');
+  function CountDownTimer(dt, id) {
+    var end = new Date(dt);
+
+    var _second = 1000;
+    var _minute = _second * 60;
+    var _hour = _minute * 60;
+    var _day = _hour * 24;
+    var timer;
+
+    function showRemaining() {
+      var now = new Date();
+      var distance = end - now;
+      if (distance < 0) {
+
+        clearInterval(timer);
+        document.getElementById(id).innerHTML = 'NOW';
+
+        return;
+      }
+      var days = Math.floor(distance / _day);
+      var hours = Math.floor((distance % _day) / _hour);
+      var minutes = Math.floor((distance % _hour) / _minute);
+      var seconds = Math.floor((distance % _minute) / _second);
+
+      document.getElementById(id).innerHTML = days + ' days ';
+      document.getElementById(id).innerHTML += hours + ' hours ';
+      document.getElementById(id).innerHTML += minutes + ' minutes ';
+      document.getElementById(id).innerHTML += seconds + ' seconds  ';
+    }
+
+    timer = setInterval(showRemaining, 1000);
+  }
+
+
+</script>
+{{/section}}

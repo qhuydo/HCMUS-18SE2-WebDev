@@ -20,7 +20,7 @@ router.get('/account', async(req, res) => { // Tạo một danh sách xem tất 
     })
 })
 
-router.post('/account/intructor', async(req, res) => { // Tạo tài khoản cho intructor
+router.post('/account/instructor', async(req, res) => { // Tạo tài khoản cho instructor
     res.status(501).send('Not implemented')
 })
 
