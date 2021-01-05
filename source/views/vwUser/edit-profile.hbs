@@ -3,7 +3,10 @@
 {{/section}}
 
 {{#section 'js'}}
+<script type="text/javascript" src="/js/vwUser/edit-profile.js"></script>
+<!--script type="text/javascript" src="/js/addons-pro/mdb-file-upload.min.js"></script-->
 <script>
+  // $('.file-upload').file_upload();
   var d = new Date("{{user.birth_date}}");
   var date_value = `[${d.getFullYear()}, ${d.getMonth()}, ${d.getDate()}]`;
   console.log(date_value);
@@ -13,7 +16,6 @@
   });
 
 </script>
-<script type="text/javascript" src="/js/vwUser/edit-profile.js"></script>
 {{/section}}
 <main>
   <div class="container">
@@ -35,15 +37,22 @@
             <!-- Card image -->
 
             <!-- Card content -->
-            <form onsubmit="checkImage(event)" action="/account/uploadImage" enctype="multipart/form-data" method="POST">
+            <form onsubmit="checkImage(event)" action="/account/uploadImage" enctype="multipart/form-data"
+              method="POST">
               <div class="form-row text-center">
                 <div class="md-form form-group">
                   <img id="userPhoto" src="{{user.photo}}" alt="your image" />
                   <div class="w-100"></div>
-                  <input type="file" name="file" class="btn btn-info btn-sm waves-effect waves-light form-control-file border" id="ImageFile" onchange="readURL(this)">
+                  <input type="file" name="file"
+                    class="btn btn-info btn-sm waves-effect waves-light form-control-file border" id="ImageFile"
+                    onchange="readURL(this)">
                   <button class="btn btn-info btn-sm waves-effect waves-light" type="submit">Upload to
                     server</button><br>
                 </div>
+                <!--div class="file-upload-wrapper">
+                  <input type="file" id="input-file-now-custom-1" class="file-upload"
+                    data-default-file="{{user.photo}}" />
+                </div-->
               </div>
             </form>
             <!-- Card content -->
