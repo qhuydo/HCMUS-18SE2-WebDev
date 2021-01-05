@@ -1,0 +1,64 @@
+{{#section 'js'}}
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/js/vwAdmin/allAccount.js"></script>
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/vwAdmin/allAccount.css">
+{{/section}}
+<div class="card">
+  <div class="card-header d-flex justify-content-between">
+    <h4>Products</h4>
+    <a class="btn btn-outline-success" href="/admin/products/add" role="button">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Add Product
+    </a>
+  </div>
+  <div class="card-body">
+<section class="view intro-2">
+    <script type="text/javascript">
+        var typeAccount = "{{{typeAccount}}}";
+        var page = "{{{page}}}";
+    </script>
+    {{#if this.empty}}
+    <h5 class="card-title">Không có dữ liệu!</h5>
+    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    {{else}}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Username</th>
+          <th scope="col">Email</th>
+          <th scope="col">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each this.rows}}
+        <tr>
+          <th scope="row">{{username}}</th>
+          <td>{{email}}</td>
+          <td class="text-right">
+            <a name="" id="" class="btn btn-sm btn-primary" title="Edit Category" onclick="/admin/account/{{username}}" role="button">
+              <i class="fas fa-pencil-alt"></i>
+            </a>
+            <a name="" id="" class="btn btn-sm btn-primary" title="Edit Category" onclick="deleteAccount('/admin/account/{{username}}','{{username}}',this)" role="button">
+              <i class="fa fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{/if}}
+    <button class="btn btn-info btn-sm waves-effect waves-light"> Previous page</button>
+    <button class="btn btn-info btn-sm waves-effect waves-light"> Next page</button>
+    {{#is this.typeAccount "student"}}
+        <a class="page-link btn btn-info btn-sm waves-effect waves-light" href="?typeAccount=intructor&page=0"> See intructor account</a>
+    {{/is}}
+    {{#is this.typeAccount "intructor"}}
+        <a class="page-link btn btn-info btn-sm waves-effect waves-light" href="?typeAccount=student&page=0"> See student account</a>
+    {{/is}}
+</section>
+  </div>
+</div>

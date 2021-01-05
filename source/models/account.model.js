@@ -12,7 +12,6 @@ async function selectAccountTable(table, username, email) {
     } catch (error) {
         return [null, null];
     }
-
 }
 
 async function selectAccountWithUsername(table, username) {
@@ -55,7 +54,6 @@ module.exports = {
         if (rows !== null && rows.length !== 0) {
             if (await bcrypt.compare(password, rows[0].password)) {
                 return { "username": rows[0].username, "type": 'student' };
-
             }
         }
 
