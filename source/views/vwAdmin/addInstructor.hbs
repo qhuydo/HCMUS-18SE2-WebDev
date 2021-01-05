@@ -1,0 +1,110 @@
+{{#section 'js'}}
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/js/vwAdmin/addInstructor.js"></script>
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/vwAdmin/addInstructor.css">
+{{/section}}
+
+<!--Intro Section-->
+<section class="view intro-2">
+  <div class="mask rgba-gradient wow fadeIn" data-wow-delay="0.2s">
+    <form onsubmit="checkKeyPress(event)"
+      class=" container h-100 d-flex justify-content-center align-items-center needs-validation" method="post"
+      novalidate>
+
+      <!--Grid row-->
+      <div class="row pt-5 mt-3">
+
+        <!--Grid column-->
+        <div class="col-md-12">
+
+          <div class="card">
+            <div class="card-body">
+
+              <h2 class="font-weight-bold my-4 text-center mb-5 mt-4 font-weight-bold">
+                <strong>Create instructor account</strong>
+              </h2>
+              <hr>
+
+              <!--Grid row-->
+              <div class="row mt-5 justify-content-sm-center">
+
+                <!--Grid column-->
+                <div class="col-md-8">
+
+                  <!--Grid row-->
+                  <div class="row pb-4 d-flex justify-content-center mb-4">
+
+                    <h4 class="mt-3 mr-4">
+                      <strong>Login with</strong>
+                    </h4>
+
+                  </div>
+                  <!--/Grid row-->
+                  {{#if fail}}
+                  <div class="alert alert-danger js-error-alert">
+                    <div> {{fail}}</div>
+                  </div>
+                  {{/if}}
+                  <!--Body-->
+                  <div class="md-form">
+                    <i class="fas fa-user prefix"></i>
+                    <input type="text" id="register-name" class="form-control" name="username" required>
+                    <div class="invalid-feedback">
+                      Please choose a username.
+                    </div>
+                    <label for="register-name">Your username</label>
+                  </div>
+                  <div class="md-form">
+                    <i class="fas fa-envelope prefix"></i>
+                    <input type="text" id="register-email" class="form-control" name="email" required>
+                    <div class="invalid-feedback">
+                      Please provide an email.
+                    </div>
+                    <label for="register-email">Your email</label>
+                  </div>
+
+                  <div class="md-form">
+                    <i class="fas fa-lock prefix"></i>
+                    <div class="invalid-feedback">
+                      Please provide a password.
+                    </div>
+                    <input type="password" id="register-pass" class="form-control" name="password" required>
+
+                    <label for="register-pass">Your password</label>
+                    <small id="passwordHelpBlockMD" class="form-text text-muted">
+                      Your password must be 8-20 characters long, contain letters and numbers, and must not contain
+                      spaces,
+                      special characters, or emoji.
+                    </small>
+
+                  </div>
+
+                  <div class="text-center">
+                    <button class="btn btn-indigo btn-rounded mt-5" type="submit">Sign up</button>
+                  </div>
+
+                </div>
+                <!--Grid column-->
+
+              </div>
+              <!--Grid row-->
+
+            </div>
+          </div>
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+    </form>
+  </div>
+
+</section>
+
+<!--Intro Section-->
