@@ -9,6 +9,11 @@ router.get('/:id', (req, res) => {
     res.status(501).send('Not implemented')
 });
 
+router.get('/:id/lecture', (req, res) => {
+    res.render('vwLecture/index');
+});
+
+
 router.post('/', (req, res) => {
     res.status(501).send('Not implemented')
 });
