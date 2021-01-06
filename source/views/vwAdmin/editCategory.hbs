@@ -1,0 +1,103 @@
+{{#section 'js'}}
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/js/vwAdmin/editCategory.js"></script>
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/vwAdmin/editCategory.css">
+{{/section}}
+
+<main>
+  <div class="container">
+
+    <!-- Section: Public Profile -->
+    <section class="section">
+      {{#if fail}}
+      <div class="alert alert-danger js-error-alert">
+        <div> {{fail}}</div>
+      </div>
+      {{/if}}
+      <!-- First row -->
+      <div class="row">
+        <!-- First column -->
+        <div class="col-lg-4 mb-4">
+
+          <!-- Card -->
+          <div class="card card-cascade narrower">
+            <!-- Card image -->
+            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+              <h5 class="mb-0 font-weight-bold"><strong>Account</strong></h5>
+            </div>
+            <!-- Card image -->
+
+            <!-- Card content -->
+            <div class="card-body card-body-cascade text-center">
+              <form method="POST" action="#">
+                <div class="form-row">
+                  <div class="col-md-12">
+                    <div class="md-form form-group">
+                      <input type="text" id="change-email" class="form-control validate" name="category[name]"
+                        value="{{category.name}}">
+                      <label for="change-email">Name</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-center">
+                  <button class="btn btn-danger btn-sm waves-effect waves-light">Change name</button><br>
+                </div>
+              </form>
+
+            </div>
+            <!-- Card content -->
+
+          </div>
+          <!-- Card -->
+
+        </div>
+        <!-- First column -->
+
+        <!-- Second column -->
+        <div class="col-lg-8 mb-4">
+
+            <!-- Card -->
+          <div class="card card-cascade narrower">
+            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+              <h5 class="mb-0 font-weight-bold"><strong>Edit Photo</strong></h5>
+            </div>
+            <form method="POST" action="#">
+                <div class="form-row flex-center">
+                    <div class="md-form form-group">
+                    <img id="categoryPhoto" src="{{category.image}}" alt="your image">
+                    </div>
+                
+                    <div class="w-100"></div>
+                    <h3>Link:</h3>
+                    <div class="w-100"></div>
+                    <input style="width: 80%;" type="text" name="category[image]" id="URLImage" onfocusout="ReadURL()" value="{{category.image}}">
+                    <div class="w-100">&nbsp;</div>
+                    <div class="w-100">&nbsp;</div>
+                    <div class="w-100">&nbsp;</div>
+                    <div id="categoryIcon">{{{category.icon}}}</div>
+                    <div class="w-100"></div>
+                    <h3>Font awesome icon:</h3>
+                    <div class="w-100"></div>
+                    <input style="width: 80%;" type="text" name="category[icon]" id="URLIcon" onfocusout="ReadFontAwsomeIcon()" value="{{category.icon}}">
+                    <button class="btn btn-danger btn-sm waves-effect waves-light" type="submit">Save icon and image</button>
+                </div>
+            </form>
+          </div>
+          <!-- Card -->
+
+        </div>
+        <!-- Second column -->
+
+      </div>
+      <!-- First row -->
+    <a class="btn btn-info btn-sm waves-effect waves-light"  href='/admin/category'>Back to manage category</a>
+    </section>
+    <!-- Section: Public Profile -->
+
+  </div>
+
+</main>

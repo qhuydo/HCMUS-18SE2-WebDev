@@ -93,9 +93,17 @@
         {{/eq}}
 
         {{#eq session.type "administrator"}}
-        <li class="nav-item">
-          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="/admin/account/">
-            <i class="fas fa-users-cog"></i> Manage Users</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle waves-effect waves-light dark-grey-text font-weight-bold"
+            id="navbarDropdownMenuLink-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <i class="fab fa-docker"></i>
+            Manage </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-cyan" aria-labelledby="navbarDropdownMenuLink-5">
+            <a class="dropdown-item waves-effect waves-light dark-grey-text" href="/admin/account/">
+              <i class="fas fa-users-cog"></i> Manage Users</a>
+            <a class="dropdown-item waves-effect waves-light dark-grey-text" href="/admin/category"><i
+                class="fas fa-list-alt"></i> Manage Category</a>
+          </div>
         </li>
         {{/eq}}
         

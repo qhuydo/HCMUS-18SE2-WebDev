@@ -48,14 +48,16 @@ router.post('/profile', auth, async (req, res, next) => {
     reqUser.linkedin,
     req.session.username
     ];
-    const [rows, fields] = await db.query(sql, data).catch(async (error) => {
-        console.log(error);
+    const result = await db.query(sql, data);
+    if (result.error)
+    {
+        console.log(result.error);
         const [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
             user: user,
             unsuccessfull_edit: true
         });
-    });
+    }
 
     const [user, usertype] = await account.getUserInfo(req.session.username);
     res.render('vwUser/edit-profile', {
@@ -122,9 +124,7 @@ router.post('/uploadImage', upload.single('file'), async (req, res, next) => {
         file.path.substring(index),
         req.session.username,
     ];
-    await db.query(sql, data).catch(async (error) => {
-        return res.redirect(req.headers.referer);
-    });
+    await db.query(sql, data)
     res.redirect(req.headers.referer);
 })
 

@@ -14,7 +14,9 @@ module.exports = {
     },
 
     query(sql, values) {
-        return promisePool.query(sql, values);
+        return promisePool.query(sql, values).catch(function(err){
+            return {"error":err.message};
+        });
     },
 
     insert(entity, table_name) {

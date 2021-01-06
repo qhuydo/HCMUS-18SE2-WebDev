@@ -1,0 +1,50 @@
+html,
+  body,
+  .view {
+    height: 100vh;
+  }
+  
+  @media (max-width: 740px) {
+  
+    html,
+    body,
+    .view {
+      height: 815px;
+    }
+  }
+  
+  @media (min-width: 800px) and (max-width: 850px) {
+  
+    html,
+    body,
+    .view {
+      height: 650px;
+    }
+  }
+  
+  /* .intro-2 {
+    background: url("https://images.unsplash.com/photo-1491002052546-bf38f186af56")no-repeat center center;
+    background-size: cover;
+  } */
+  
+  .card {
+    background-color: rgba(229, 228, 255, 0.2);
+  }
+  
+  .md-form label {
+    color: #ffffff;
+  }
+  
+  h6 {
+    line-height: 1.7;
+  }
+  
+  
+  .card {
+    margin-top: 30px;
+    /*margin-bottom: -45px;*/
+  
+  }
+  
+  .md-form input[type=text]:focus:not([readonly]),
+  .md-form input[type=text]:focus:not([readonly])+label,

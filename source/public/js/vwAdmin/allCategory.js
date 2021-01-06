@@ -1,12 +1,9 @@
 var table = $('#accountTable').DataTable();
-function deleteAccount(URL,username,btn){
+function deleteCategory(URL,username,btn){
     $.ajax({
         url: URL,
         type: 'DELETE',
-        dataType: 'json',  
-        data:{
-            typeAccount:typeAccount,
-        }, 
+        dataType: 'json',   
         success: function(result) {  
             if (result)
             {
@@ -14,7 +11,7 @@ function deleteAccount(URL,username,btn){
             }
             else
             {
-                alert("Delete fail");
+                alert("Delete category fail");
             }
     }});
 }

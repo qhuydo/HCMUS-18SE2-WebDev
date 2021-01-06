@@ -1,0 +1,75 @@
+{{#section 'js'}}
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/js/vwAdmin/addCategory.js"></script>
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/vwAdmin/addCategory.css">
+{{/section}}
+
+<!--Intro Section-->
+<section class="view intro-2">
+  <div class="mask rgba-gradient wow fadeIn" data-wow-delay="0.2s">
+    <form onsubmit="checkKeyPress(event)"
+      class=" container h-100 d-flex justify-content-center align-items-center needs-validation" method="post"
+      novalidate>
+
+      <!--Grid row-->
+      <div class="row pt-5 mt-3">
+
+        <!--Grid column-->
+        <div class="col-md-12">
+
+          <div class="card">
+            <div class="card-body">
+
+              <h2 class="font-weight-bold my-4 text-center mb-5 mt-4 font-weight-bold">
+                <strong>Create category</strong>
+              </h2>
+              <hr>
+
+              <!--Grid row-->
+              <div class="row mt-5 justify-content-sm-center">
+
+                <!--Grid column-->
+                <div class="col-md-8">
+                  {{#if fail}}
+                  <div class="alert alert-danger js-error-alert">
+                    <div> {{fail}}</div>
+                  </div>
+                  {{/if}}
+                  <!--Body-->
+                  <div class="md-form">
+                    <i class="fas fa-pen-square"> Category name</i>
+                    <input type="text" id="category-name" class="form-control" name="name" required>
+                    <div class="invalid-feedback">
+                      Please choose category name
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <button class="btn btn-indigo btn-rounded mt-5" type="submit">Create</button>
+                  </div>
+
+                </div>
+                <!--Grid column-->
+
+              </div>
+              <!--Grid row-->
+
+            </div>
+          </div>
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+    </form>
+  </div>
+
+</section>
+
+<!--Intro Section-->

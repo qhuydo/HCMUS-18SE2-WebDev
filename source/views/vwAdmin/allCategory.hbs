@@ -2,7 +2,7 @@
 <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
 <script type="text/javascript"
   src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
-<script type="text/javascript" src="/js/vwAdmin/allAccount.js"></script>
+<script type="text/javascript" src="/js/vwAdmin/allCategory.js"></script>
 
 <script>
   // Material Design example
@@ -31,7 +31,7 @@
 {{#section 'css'}}
 <link href="/css/addons/datatables.min.css" rel="stylesheet">
 
-<link rel="stylesheet" type="text/css" href="/css/vwAdmin/allAccount.css">
+<link rel="stylesheet" type="text/css" href="/css/vwAdmin/allCategory.css">
 <style>
   body {
     padding-top: 95px;
@@ -41,22 +41,18 @@
 
 <main>
   <div class="container">
+    {{#if fail}}
+    <div class="alert alert-danger js-error-alert">
+      <div> {{fail}}</div>
+    </div>
+    {{/if}}
     <div class="card">
       <div class="card-header d-flex justify-content-between">
-        <h3 class="mt-2">User accounts</h3>
-        {{#is this.typeAccount "student"}}
-        <a class="page-link btn btn btn-outline-success" href="?typeAccount=instructor&page=0"> View
-          instructor account</a>
-        {{/is}}
-        {{#is this.typeAccount "instructor"}}
-        <a class="page-link btn btn-outline-success" href="?typeAccount=student&page=0"> See
-          student
-          account</a>
-        <a class="btn btn-outline-success" href="/admin/account/instructor" role="button">
+        <h3 class="mt-2">Category</h3>
+        <a class="btn btn-outline-success" href="/admin/category/add" role="button">
           <i class="fa fa-plus" aria-hidden="true"></i>
-          Create an account
+          Create category
         </a>
-        {{/is}}
       </div>
       <div class="card-body">
         <section class="view intro-2">
@@ -67,23 +63,23 @@
           <table class="table table-hover" cellspacing="0" width="100%" id="accountTable">
             <thead>
               <tr>
-                <th scope="col">Username</th>
-                <th scope="col">Email</th>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
                 <th scope="col" id="noSort">&nbsp;</th>
               </tr>
             </thead>
             <tbody>
               {{#each this.rows}}
               <tr>
-                <th scope="row">{{username}}</th>
-                <td>{{email}}</td>
+                <th scope="row">{{id}}</th>
+                <td >{{name}}</td>
                 <td class="text-right">
                   <a name="" id="" class="btn btn-sm btn-primary" title="Edit Category"
-                    onclick="/admin/account/{{username}}" role="button">
+                    href="/admin/category/{{id}}" role="button">
                     <i class="fas fa-pencil-alt"></i>
                   </a>
                   <a name="" id="" class="btn btn-sm btn-primary" title="Edit Category"
-                    onclick="deleteAccount('/admin/account/{{username}}','{{username}}',this)" role="button">
+                    onclick="deleteCategory('/admin/category/{{id}}','{{id}}',this)" role="button">
                     <i class="fa fa-trash"></i>
                   </a>
                 </td>
