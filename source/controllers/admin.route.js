@@ -150,16 +150,64 @@ router.post('/category/add', async(req,res)=>{
     }
 })
 
-router.get('/account/:id', async function (req, res) {
+router.get('/account/:username', async function (req, res) {
     if (req.session.type !== "administrator")
         throw Error("Only admin can use this API");
-    res.send('hello, user!')
+    var missing = await missingKeys(req.query, [
+        "type",
+    ]);
+    if (missing) {
+        return res.redirect('/admin/account')
+    }
+    if (req.query.type === "administrator")
+    {
+        return res.redirect('/admin/account')
+    }
+    var [user,type] = await admin.selectAccountWithUsername(req.query.type,req.params.username);
+    if (user)
+    {
+        return res.render('vwAdmin/editAccount',{
+            user:user,
+            type:req.query.type
+        });
+    }
+    res.redirect('/admin/account');
 })
 
-router.delete('/account/:id', async function (req, res) {
+router.post('/account/:username', async function (req, res) {
     if (req.session.type !== "administrator")
         throw Error("Only admin can use this API");
-    console.log(req.body);
+    var missing1 = await missingKeys(req.body, [
+        "user",
+    ]);
+    var missing2 = await missingKeys(req.query, [
+        "type",
+    ]);
+    if (missing1 || missing2) {
+        return res.render('vwAdmin/editAccount',{
+            user:user,
+            fail: "One or more keys are missing or null",
+        });
+    }
+    var [user,type] = await admin.selectAccountWithUsername(req.query.type,req.params.username);
+    if (req.body.user.hasOwnProperty('password') && req.body.user['password'] !== null && req.body.user['password'].length !== 0)  
+        req.body.user.password = bcrypt.hashSync(req.body.user.password, 10);
+    var result = await admin.updateAccount(req.query.type,req.params.username,req.body.user);
+    if (result !== false)
+    {
+        return res.render('vwAdmin/editAccount',{
+            user:result,
+        })
+    }   
+    res.render('vwAdmin/editAccount',{
+        user:user,
+        fail:"Error update"
+    })
+})
+
+router.delete('/account/:username', async function (req, res) {
+    if (req.session.type !== "administrator")
+        throw Error("Only admin can use this API");
     var result = await admin.deleteAccount(req.body.typeAccount, req.params.id)
     res.send(result);
 })

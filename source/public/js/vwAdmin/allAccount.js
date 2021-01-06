@@ -18,3 +18,7 @@ function deleteAccount(URL,username,btn){
             }
     }});
 }
+function addType(btn)
+{
+    $(btn).attr("href", btn.href + "?type=" + typeAccount);
+}

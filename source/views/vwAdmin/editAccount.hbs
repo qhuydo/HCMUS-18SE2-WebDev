@@ -1,0 +1,246 @@
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/vwAdmin/editAccount.css">
+{{/section}}
+
+{{#section 'js'}}
+<script type="text/javascript" src="/js/vwAdmin/editAccount.js"></script>
+<!--script type="text/javascript" src="/js/addons-pro/mdb-file-upload.min.js"></script-->
+<script>
+  // $('.file-upload').file_upload();
+  var d = new Date("{{user.birth_date}}");
+  var date_value = `[${d.getFullYear()}, ${d.getMonth()}, ${d.getDate()}]`;
+  console.log(date_value);
+  // -> Wed Jun 09 2010 14:12:01 GMT+0100 (BST)
+  $('#birth_date').attr("data-value", date_value).pickadate({
+    max: Date.now()
+  });
+
+</script>
+{{/section}}
+<main>
+  <div class="container">
+
+    <!-- Section: Public Profile -->
+    <section class="section">
+      <!-- First row -->
+      <div class="row">
+        <!-- First column -->
+        <div class="col-lg-4 mb-4">
+
+          <!-- Card -->
+          <div class="card card-cascade narrower">
+            <!-- Card image -->
+            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+              <h5 class="mb-0 font-weight-bold"><strong>Account</strong></h5>
+            </div>
+            <!-- Card image -->
+
+            <!-- Card content -->
+            <div class="card-body card-body-cascade text-center">
+              <form onsubmit="checkChangePassword(event)" method="POST" action="#">
+                <div class="form-row">
+                  <div class="col-md-12">
+                    <div class="md-form form-group">
+                      <input type="text" id="change-email" class="form-control validate" name="user[email]"
+                        value="{{user.email}}">
+                      <label for="change-email">Email</label>
+                    </div>
+                    <div class="alert alert-info js-alert-error">
+                        <div>If you don't want change password you can't fill it</div>
+                    </div>
+                    <div class="md-form form-group">
+                      <input type="password" id="new-pass-1" class="form-control" type="password" name="user[password]">
+                      <label for="new-pass-1">New password </label>
+                    </div>
+
+                    <div class="md-form form-group">
+                      <input type="password" id="new-pass-2" class="form-control" type="password">
+                      <label for="new-pass-2">Confirm password</label>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="flex-center">
+                  <button class="btn shadow-0 mdb-color btn-blue waves-effect waves-light">Update account</button><br>
+                </div>
+              </form>
+
+            </div>
+            <!-- Card content -->
+
+          </div>
+          <!-- Card -->
+        </div>
+        <!-- First column -->
+
+        <!-- Second column -->
+        <div class="col-lg-8 mb-4">
+
+          <!-- Card -->
+          <div class="card card-cascade narrower">
+            <!-- Card image -->
+            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+              <h5 class="mb-0 font-weight-bold"><strong>Public Profile</strong></h5>
+            </div>
+            <!-- Card image -->
+
+            <!-- Card content -->
+            <div class="card-body card-body-cascade text-center">
+
+              <!-- Edit Form -->
+              <form method="POST" action="#">
+
+                <!-- First row -->
+                <div class="form-row m-auto">
+                  <!-- First column -->
+                  <div class="col-md-6">
+                    <div class="md-form">
+                      <input type="text" id="fullname" class="form-control" value="{{user.fullname}}"
+                        name="user[fullname]">
+                      <label for="fullname" class="">Full name</label>
+                    </div>
+                  </div>
+
+                  <!-- Second column-->
+                  <div class="col-md-6">
+                    <div class="md-form">
+                      <input placeholder="Selected date" type="text" id="birth_date" class="form-control datepicker"
+                        name="user[birth_date]">
+                      <label for="birth_date">Date of birth</label>
+                    </div>
+                  </div>
+                </div>
+                <!-- First row -->
+
+                <!-- Second row -->
+                <div class="form-row m-auto">
+
+                  <!-- First column -->
+                  <div class="col col-md-12">
+                    <div class="md-form">
+                      <input id="bio" type="text" length="120" class="form-control" value="{{user.bio}}"
+                        name="user[bio]" mdbCharCounter mdbInput>
+                      <label for="bio">Headline</label>
+                    </div>
+                  </div>
+                </div>
+                <!-- Second row -->
+
+                <!-- Third row -->
+                <div class="form-row">
+                  <!-- First column -->
+                  <div class="col form-outline col-md-12 ml-lg-2">
+                    <div class="md-form">
+                      <textarea type="text" id="about_me" class="form-control md-textarea" name="user[about_me]"
+                        mdbInput>{{user.about_me}}</textarea>
+                      <label for="about_me">About me</label>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- Third row -->
+
+                <!-- Fourth row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url">Your URL</label>
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light" id="material-addon3">https://</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url" aria-describedby="material-addon3"
+                        text="{{user.website}}" name="user[website]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Fifth row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url-facebook">Facebook</label>
+
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light"
+                          id="material-addon3">https://facebook.com/</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url-facebook"
+                        aria-describedby="material-addon3" value="{{user.facebook}}" name="user[facebook]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Sixth row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url-twitter">Twitter</label>
+
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light"
+                          id="material-addon3">https://twitter.com/</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url-twitter"
+                        aria-describedby="material-addon3" value="{{user.twitter}}" name="user[twitter]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Seventh row -->
+                <div class="form-row">
+                  <div class="col form-outline col-md-12">
+                    <div class="row">
+                      <label class="ml-4 text-left font-weight-light" for="material-url-linkedin">LinkedIn</label>
+
+                    </div>
+                    <div class="row md-form input-group mt-0 mb-3 ml-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon font-weight-light"
+                          id="material-addon3">https://linkedin.com/</span>
+                      </div>
+                      <input type="text" class="form-control" id="material-url-linkedin"
+                        aria-describedby="material-addon3" value="{{user.linkedin}}" name="user[linkedin]">
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="col form-outline col-md-12 text-center my-4">
+                    <input type="submit" value="Update Account"
+                      class="btn shadow-0 mdb-color btn-blue waves-effect waves-light">
+                  </div>
+
+                </div>
+                <!-- Fourth row -->
+
+              </form>
+              <!-- Edit Form -->
+
+            </div>
+            <!-- Card content -->
+
+          </div>
+          <!-- Card -->
+
+        </div>
+        <!-- Second column -->
+
+      </div>
+      <!-- First row -->
+      <a class="btn btn-info btn-sm waves-effect waves-light justify-content-center" href="/admin/account">Return manage account page</a>
+    </section>
+    <!-- Section: Public Profile -->
+
+  </div>
+
+</main>
