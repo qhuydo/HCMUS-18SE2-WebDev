@@ -6,8 +6,12 @@ module.exports = function(app) {
     app.use('/', require('../controllers/home.route'));
     app.use('/account', require('../controllers/account.route'));
     app.use('/course', require('../controllers/course.route'));
+
+    // deepweb links
     app.use('/cart', authStudentMdw, require('../controllers/cart.route'));
+    app.use('/watchlist', authStudentMdw, require('../controllers/watchlist.route'));
     app.use('/admin', authAdminMdw, require('../controllers/admin.route'));
+
     app.use(function (req, res) {
         res.status(404);
         res.render('error', {

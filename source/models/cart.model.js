@@ -13,7 +13,7 @@ module.exports = {
             return null;
         });
 
-        console.log(rows);
+        // console.log(rows);
         if (rows !== null && rows.length !== 0) {
             return rows;
         }
@@ -26,7 +26,7 @@ module.exports = {
             console.log(`cart.model.js: hasItemInCart ${err.message}`);
             return null;
         });
-        console.log(rows);
+        // console.log(rows);
         return rows !== null && rows.length !== 0;
     },
 

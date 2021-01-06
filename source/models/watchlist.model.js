@@ -1,5 +1,7 @@
 const db = require("../utils/db");
 
+const { paginate } = require('./../config/default.json');
+
 module.exports = {
     /**
      * Get all items from watchlist
@@ -13,7 +15,36 @@ module.exports = {
             return null;
         });
 
-        console.log(rows);
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
+            return rows;
+        }
+        return null;
+    },
+
+    async itemsCount(username) {
+        const sql = "SELECT COUNT(*) as count FROM watchlist WHERE username = ?";
+        const [rows, fields] = await db.query(sql, [username]).catch((err) => {
+            console.log(`watchlist.model.js: itemsCount ${err.message}`);
+            return null;
+        });
+
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
+            return rows[0].count;
+        }
+        return null;
+    },
+
+    async itemsFromWatchList(username, offset) {
+        const sql = `SELECT * FROM watchlist WHERE username = ? `
+            + ` LIMIT ${paginate.watchlist_limit} OFFSET ${offset}`;
+        const [rows, fields] = await db.query(sql, [username]).catch((err) => {
+            console.log(`watchlist.model.js: itemsFromWatchList ${err.message}`);
+            return null;
+        });
+
+        // console.log(rows);
         if (rows !== null && rows.length !== 0) {
             return rows;
         }

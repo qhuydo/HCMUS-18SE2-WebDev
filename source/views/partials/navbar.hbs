@@ -83,8 +83,11 @@
           <i class="fas fa-shopping-cart"></i>Cart</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="#"><i
-              class="fas fa-heart"></i>Watch list</a>
+          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="/watchlist">
+            {{#if session.watchlist.length}}
+            <span class="badge badge-danger">{{session.watchlist.length}}</span>
+            {{/if}}
+            <i class="fas fa-heart"></i>Watch list</a>
         </li>
         {{/eq}}
       

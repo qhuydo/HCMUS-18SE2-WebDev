@@ -8,6 +8,7 @@ module.exports = {
         const instructorRows = await instructorModel.instructorFromACourse(course_id).catch((err) =>{
             console.log(err.message); // logs "Something"
         });
+
         // console.log(instructorRows);
         var instructors = [];
         for (const i of instructorRows) {

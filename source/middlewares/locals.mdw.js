@@ -1,5 +1,6 @@
 const cartModel = require('../models/cart.model');
 const categoryModel = require('../models/category.model');
+const watchlistModel = require('../models/watchlist.model');
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -23,6 +24,7 @@ module.exports = function (app) {
 
         if (typeof (res.locals.session) !== 'undefine' && res.locals.session.type === 'student') {
             req.session.cart = await cartModel.allItemsFromCart(req.session.username);
+            req.session.watchlist = await watchlistModel.allItemsFromWatchList(req.session.username);
         }
         next();
     });

@@ -1,0 +1,156 @@
+{{#section 'titleExtraText'}}| Watchlist {{/section}}
+
+{{#section 'css'}}
+<style>
+  body {
+    padding-top: 35px;
+  }
+</style>
+{{/section}}
+
+{{#section 'js'}}
+<script>
+  $('.watchlistRemoveAction').on('click', function () {
+    const course_id = $(this).data('course_id');
+
+    // console.log(course_id);
+    $('#txtRemoveCourseID').val(course_id);
+    $('#watchlistRemoveForm').submit();
+  })
+
+  $('.watchlistMoveAction').on('click', function () {
+    const course_id = $(this).data('course_id');
+
+    // console.log(course_id);
+    $('#txtMoveCourseID').val(course_id);
+    $('#watchlistMoveForm').submit();
+  })
+</script>
+
+{{/section}}
+
+<!--Main layout-->
+<main>
+  <div class="container">
+    <!--Section: Block Content-->
+    <section class="mt-5 mb-4">
+      {{#if session.watchlist}}
+      <div class="container text-center py-5">
+        <h3 class="mb-0 font-weight-bold"><i class="fas fa-heart"></i> My Watchlist</h3>
+      </div>
+      <!--Grid row-->
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <!--Grid column-->
+        <div class="col-lg-8">
+
+          <!-- Card -->
+          <form id="watchlistRemoveForm" method="POST" action="/watchlist/remove">
+            <input type="hidden" id="txtRemoveCourseID" name="course_id">
+          </form>
+
+          <form id="watchlistMoveForm" method="POST" action="/watchlist/move-to-watchlist">
+            <input type="hidden" id="txtMoveCourseID" name="course_id">
+          </form>
+
+          <div class="card watch-list mb-4">
+
+            <div class="card-body">
+
+              <h5 class="mb-4">Watchlist (<span>{{session.watchlist.length}}</span> items)</h5>
+              {{#each items}}
+              <div class="row mb-4">
+                <div class="col-md-5 col-lg-3 col-xl-3">
+                  <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
+                    <img class="img-fluid" width="240" height="135" src={{this.image_sm}} alt="Sample">
+                    <!-- TODO: add reference to course page-->
+                    <a href="#">
+                      <div class="mask waves-effect waves-light">
+                        <img class="img-fluid w-100" width="240" height="135" src="">
+                        <div class="mask rgba-black-slight waves-effect waves-light"></div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-md-7 col-lg-9 col-xl-9">
+                  <div>
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <p>{{this.title}}</p>
+                        <p class="mb-3 text-muted text-uppercase small">By {{this.instructors}}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <a href="javascript:;" type="button" data-course_id="{{this.id}}"
+                          class="card-link-secondary small text-uppercase mr-3 watchlistRemoveAction"><i
+                            class="fas fa-trash-alt mr-1"></i> Remove item </a>
+                        <a href="javascript:;" href="#!" type="button" data-course_id="{{this.id}}"
+                          class="card-link-secondary small text-uppercase watchlistMoveAction"><i
+                            class="fas fa-shopping-cart mr-1"></i> Move to cart </a>
+                      </div>
+                      <p class="mb-0"><span><strong>{{this.price}}</strong></span></p>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr class="mb-4">
+              {{/each}}
+              <nav class="d-flex flex-row-reverse">
+                <ul class="pagination">
+                  <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                  </li>
+                  {{#each this.page_numbers}}
+                  {{#if isCurrentPage}}
+                  <li class="page-item active">
+                    <a class="page-link" href="javascript:;">{{value}}</a>
+                  </li>
+                  {{else}}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{value}}">{{value}}</a>
+                  </li>
+                  {{/if}}
+                  {{/each}}
+                  <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <!-- Card -->
+
+        </div>
+        <!--Grid column-->
+      </div>
+      <!--Grid row-->
+
+      {{else}}
+      <div class="view zoom z-depth-1">
+        <img src="https://images.unsplash.com/photo-1581848069322-2af0bc2deab8?fit=crop&w=1200&h=500&q=80"
+          class="img-fluid" alt="Empty watchlist image">
+        <div class="mask">
+          <div class="dark-grey-text pt-4 ml-3 pl-3">
+            <div>
+              <h2 class="card-title font-weight-bold pt-2">
+                <strong>Your watchlist is empty</strong>
+              </h2>
+              <p class="">Your watchlist is empty. Keep browsing to find a course!</p>
+              <a class="btn btn-danger btn-sm btn-rounded clearfix d-none d-md-inline-block waves-effect waves-light"
+                href="/">
+                Keep browsing</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/if}}
+
+    </section>
+    <!--Section: Block Content-->
+
+  </div>
+</main>
+<!--Main layout-->

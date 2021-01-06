@@ -26,7 +26,7 @@ router.get('/', async function (req, res) {
       discount = full_price.minus(total_price);
 
     }
-    console.log(items);
+    // console.log(items);
 
     res.render('vwCart/index.hbs', {
         items,
@@ -64,7 +64,7 @@ router.post('/remove', async function (req, res) {
 router.post('/move-to-watchlist', async function (req, res) {
   const course_id = +req.body.course_id;
   const username = req.session.username;
-  console.log(`${course_id} | ${username}`);
+  // console.log(`${course_id} | ${username}`);
 
   await cartModel.removeItemFromCart(username, course_id);
   await watchlistModel.addItemToWatchlist(username, course_id);
