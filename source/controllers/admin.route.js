@@ -14,25 +14,15 @@ router.get('/account', async (req, res) => { // Tạo một danh sách xem tất
     var maxPage = 0;
     if (req.query.typeAccount && req.query.page) {
         var [rowsAll, colsAll] = await admin.getAllAccount(req.query.typeAccount);
-        if (rowsAll)
-            maxPage = parseInt(rowsAll.length / 10);
-        var [rows, cols] = await admin.getAccount(req.query.typeAccount, req.query.page);
         return res.render('vwAdmin/allAccount', {
             typeAccount: req.query.typeAccount,
-            page: Number(req.query.page),
-            rows: rows,
-            maxPage: maxPage
+            rows: rowsAll,
         })
     }
     var [rowsAll, colsAll] = await admin.getAllAccount("student");
-    if (rowsAll)
-        maxPage = parseInt(rowsAll.length / 10);
-    var [rows, cols] = await admin.getAccount("student", 0);
     res.render('vwAdmin/allAccount', {
         typeAccount: "student",
-        page: 0,
-        rows: rows,
-        maxPage: maxPage
+        rows: rowsAll,
     })
 })
 
@@ -51,7 +41,7 @@ router.post('/account/instructor', async (req, res) => { // Tạo tài khoản c
         "email",
     ]);
     if (missing) {
-        return res.render('vwUser/register', {
+        return res.render('vwAdmin/addInstructor', {
             fail: "One or more keys are missing or null",
         });
     }
