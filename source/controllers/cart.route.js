@@ -1,26 +1,31 @@
 const express = require('express');
 const moment = require('moment');
-const course_model = require('../models/course_model');
+
+const courseModel = require('../models/course.model');
+const cartModel = require('../models/cart.model');
+const watchlistModel = require('../models/watchlist.model');
 
 const router = express.Router();
-
-function bill(items) {
-    
-}
+const Decimal = require('decimal.js');
 
 router.get('/', async function (req, res) {
     const items = [];
-    full_price = 0.0;
-    total_price = 0.0;
 
-    for(const ci of req.session.cart) {
-        const course = await course_model.getCourseDataForCart(ci.course_id);
-        items.push(course);
-        full_price += Number.parseFloat(course.full_price);
-        total_price += Number.parseFloat(course.price);
+    full_price = new Decimal(0);
+    total_price = new Decimal(0);
+    discount = new Decimal(0);
+
+    if (req.session.cart !== null && req.session.cart.length !== 0) {
+      for(const ci of req.session.cart) {
+          const course = await courseModel.getCourseDataForCart(ci.course_id);
+          items.push(course);
+          full_price = full_price.plus(Number.parseFloat(course.full_price));
+          total_price = total_price.plus(Number.parseFloat(course.price));
+      }
+  
+      discount = full_price.minus(total_price);
+
     }
-
-    discount = full_price - total_price;
     console.log(items);
 
     res.render('vwCart/index.hbs', {
@@ -31,20 +36,44 @@ router.get('/', async function (req, res) {
     });
 });
 
-// router.post('/add', async function (req, res) {
-//   const item = {
-//     id: +req.body.id,
-//     quantity: +req.body.quantity
-//   }
+router.post('/add', async function (req, res) {
+  const course_id = +req.body.course_id;
+  const username = req.session.username;
+  
+  await cartModel.addItemToCart(username, course_id);
+  
+  await req.session.save(function (err) {
+    console.log(err);
+    res.redirect(req.headers.referer);
+  });
 
-//   cartModel.add(req.session.cart, item);
-//   res.redirect(req.headers.referer);
-// })
+})
 
-// router.post('/remove', async function (req, res) {
-//   cartModel.remove(req.session.cart, +req.body.id);
-//   res.redirect(req.headers.referer);
-// })
+router.post('/remove', async function (req, res) {
+  const course_id = +req.body.course_id;
+  const username = req.session.username;
+
+  await cartModel.removeItemFromCart(username, course_id);
+  await req.session.save(function (err) {
+    console.log(err);
+    res.redirect(req.headers.referer);
+  });
+  
+});
+
+router.post('/move-to-watchlist', async function (req, res) {
+  const course_id = +req.body.course_id;
+  const username = req.session.username;
+  console.log(`${course_id} | ${username}`);
+
+  await cartModel.removeItemFromCart(username, course_id);
+  await watchlistModel.addItemToWatchlist(username, course_id);
+  
+  await req.session.save(function (err) {
+    res.redirect(req.headers.referer);
+  });
+
+});
 
 // router.post('/checkout', async function (req, res) {
 //   let total = 0;

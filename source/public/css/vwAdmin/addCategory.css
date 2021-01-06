@@ -46,5 +46,5 @@ html,
   
   }
   
-  .md-form input[type=text]:focus:not([readonly]),
-  .md-form input[type=text]:focus:not([readonly])+label,
+  /* .md-form { input[type=text]:focus:not([readonly]),
+  .md-form input[type=text]:focus:not([readonly])+label, */

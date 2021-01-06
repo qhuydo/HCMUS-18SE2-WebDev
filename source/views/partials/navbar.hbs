@@ -3,7 +3,7 @@
   <div class="container">
 
     <!--Logo -->
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand mr-3" href="/">
       <img src="/image/logo-temp.svg" alt="logo" height="50">
       <span class="ml-3 font-weight-bold">E-EDU</span>
     </a>
@@ -55,8 +55,8 @@
           <!-- Search form -->
           <form class="form-inline active-blue-1 my-auto d-inline">
             <div class="md-form my-0">
-              <input class="form-control" type="text" placeholder="Search" aria-label="Search">
-              <i class="fas fa-search text-black m-3" aria-hidden="true"></i>
+              <input class="form-control mb-2" type="text" placeholder="Search" aria-label="Search">
+              <i class="fas fa-search text-black" aria-hidden="true"></i>
             </div>
           </form>
 
@@ -72,15 +72,19 @@
         <!-- button for student-->
         {{#eq session.type "student"}}
         <li class="nav-item">
+          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold mr-4" href="#"><i class="fas fa-chalkboard"></i>
+          My learning</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="/cart">
           {{#if session.cart.length}}
           <span class="badge badge-danger">{{session.cart.length}}</span>
           {{/if}}
-          <i class="fas fa-shopping-cart"></i> Cart <span class="sr-only">(current)</span></a>
+          <i class="fas fa-shopping-cart"></i>Cart</a>
         </li>
         <li class="nav-item">
           <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="#"><i
-              class="fas fa-heart"></i> Watch list</a>
+              class="fas fa-heart"></i>Watch list</a>
         </li>
         {{/eq}}
       

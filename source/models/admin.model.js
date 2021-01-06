@@ -6,50 +6,50 @@ async function selectAccountTable(table, username, email) {
     const sql = `SELECT * FROM ${table} WHERE username = ? OR email = ?`;
     console.log(sql);
 
-    try {
-        var [rows, fields] = await db.query(sql, [username, email]);
-        if (rows !== null && rows.length !== 0){
-            return [rows[0], table];
-        }
-        return [null,null]
-    } catch (error) {
+    var [rows, fields] = await db.query(sql, [username, email]).catch(error => {
+        console.log(error.message);
         return [null, null];
+    });
+
+    if (rows !== null && rows.length !== 0) {
+        return [rows[0], table];
     }
+    return [null, null];
+
 }
 
 module.exports = {
     async selectAccountWithUsername(table, username) {
         const sql = `SELECT * FROM ${table} WHERE username = ?`;
         console.log(sql);
-    
-        try {
-            var [rows, fields] = await db.query(sql, [username]);
-            if (rows !== null && rows.length !== 0){
-                return [rows[0], table];
-            }
-            return [null,null]
-        } catch (error) {
+
+        var [rows, fields] = await db.query(sql, [username]).catch(error => {
+            console.log(error.message);
             return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows[0], table];
         }
+        return [null, null];
+
     },
     async getCategory(id) {
         const sql = `SELECT * FROM category Where id = ?`;
-        try {
-            var [rows, fields] = await db.query(sql,[id]);
-            if (rows !== null && rows.length !== 0){
-                return [rows[0], "category"];
-            }
-            return [null,null]
-        } catch (error) {
+
+        var [rows, fields] = await db.query(sql, [id]).catch(error => {
             console.log(error.message);
-            return [null, null];
+            return [null, null];    
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows[0], "category"];
         }
+        return [null, null];
+      
     },
-    async updateAccount(table,username,update_account){
-        var [oldAccount,field] = await this.selectAccountWithUsername(table,username);
-        if (oldAccount)
-        {
-            if (update_account.hasOwnProperty('password') && update_account['password'] !== null && update_account['password'].length !== 0)  
+    async updateAccount(table, username, update_account) {
+        var [oldAccount, field] = await this.selectAccountWithUsername(table, username);
+        if (oldAccount) {
+            if (update_account.hasOwnProperty('password') && update_account['password'] !== null && update_account['password'].length !== 0)
                 oldAccount.password = update_account.password;
             if (update_account.hasOwnProperty('fullname') && update_account['fullname'] !== null)
                 oldAccount.fullname = update_account.fullname;
@@ -86,59 +86,56 @@ module.exports = {
                 oldAccount.bio,
                 username
             ];
-            var result = await db.query(sql,data)
-            if (result.error)
-            {
-                console.log(result.error);
+            var result = await db.query(sql, data).catch(error => {
+                console.log(error);
                 return false;
-            }
+            });
+
             return oldAccount;
         }
         return false;
     },
-    async updateCategory(id,category){
-        var [oldCategory,field] = await this.getCategory(id);
-        if (oldCategory)
-        {
+    async updateCategory(id, category) {
+        var [oldCategory, field] = await this.getCategory(id);
+
+        if (oldCategory) {
             if (category.hasOwnProperty('name') && category['name'] !== null)
                 oldCategory.name = category.name;
             if (category.hasOwnProperty('image') && category['image'] !== null)
                 oldCategory.image = category.image;
             if (category.hasOwnProperty('icon') && category['icon'] !== null)
                 oldCategory.icon = category.icon;
+
             const sql = `UPDATE category SET name = ?, image = ?, icon = ? WHERE id = ?`;
-            var result = await db.query(sql,[oldCategory.name,oldCategory.image,oldCategory.icon,Number(oldCategory.id)])
-            if (result.error)
-            {
-                console.log(result.error);
+            var result = await db.query(sql, [oldCategory.name, oldCategory.image, oldCategory.icon, Number(oldCategory.id)]).catch(error => {
+                console.log(error);
                 return false;
-            }
+            });
+
             return oldCategory;
         }
         return false;
     },
+
     async getAll(table) {
         const sql = `SELECT * FROM ${table}`;
-        try {
-            return await db.query(sql);
-        } catch (error) {
+        return await db.query(sql).catch(error => {
             console.log(error.message);
             return [null, null];
-        }
+        });
     },
+
     async deleteAccount(table, username) {
-        var value =  await db.delete({username:username},table);
-        if (value.error)
-        {
+        var value = await db.delete({ username: username }, table);
+        if (value.error) {
             console.log(value.error);
             return false;
         }
         return true;
     },
     async deleteCategory(id) {
-        var value =  await db.delete({id:id},"category");
-        if (value.error)
-        {
+        var value = await db.delete({ id: id }, "category");
+        if (value.error) {
             console.log(value.error);
             return false;
         }

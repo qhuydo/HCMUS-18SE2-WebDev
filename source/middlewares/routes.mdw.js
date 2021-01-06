@@ -1,12 +1,13 @@
 const auth = require('./auth.mdw');
+const authAdminMdw = require('./authAdmin.mdw');
+const authStudentMdw = require('./authStudent.mdw');
 
 module.exports = function(app) {
     app.use('/', require('../controllers/home.route'));
     app.use('/account', require('../controllers/account.route'));
-    //app.use('/lecture', require('../controllers/lecturer.route'));
     app.use('/course', require('../controllers/course.route'));
-    app.use('/cart', require('../controllers/cart.route'));
-    app.use('/admin', require('../controllers/admin.route'));
+    app.use('/cart', authStudentMdw, require('../controllers/cart.route'));
+    app.use('/admin', authAdminMdw, require('../controllers/admin.route'));
     app.use(function (req, res) {
         res.status(404);
         res.render('error', {

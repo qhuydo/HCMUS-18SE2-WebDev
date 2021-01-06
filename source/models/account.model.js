@@ -6,23 +6,19 @@ async function selectAccountTable(table, username, email) {
     const sql = `SELECT * FROM ${table} WHERE username = ? OR email = ?`;
     console.log(sql);
 
-    try {
-        return await db.query(sql, [username, email]);
-
-    } catch (error) {
+    return await db.query(sql, [username, email]).catch(err => {
         return [null, null];
-    }
+    });
+
 }
 
 async function selectAccountWithUsername(table, username) {
     const sql = `SELECT * FROM ${table} WHERE username = ?`;
     console.log(sql);
 
-    try {
-        return await db.query(sql, [username]);
-    } catch (error) {
+    return await db.query(sql, [username]).catch(err => {
         return [null, null];
-    }
+    });
 
 }
 
@@ -30,12 +26,9 @@ async function selectAccountWithEmail(table, email) {
     const sql = `SELECT * FROM ${table} WHERE email = ?`;
     console.log(sql);
 
-    try {
-        return await db.query(sql, [email]);
-
-    } catch (error) {
+    return await db.query(sql, [email]).catch(err => {
         return [null, null];
-    }
+    });
 
 }
 

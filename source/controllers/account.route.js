@@ -7,7 +7,6 @@ const account = require('../models/account.model');
 const auth = require('../middlewares/auth.mdw');
 const missingKeys = require("../utils/otherFunction").missingKeys;
 const validator = require('validator');
-let path = require("path");
 const db = require('../utils/db');
 const dateformat = require('dateformat');
 const { login } = require('../models/account.model');
@@ -49,8 +48,7 @@ router.post('/profile', auth, async (req, res, next) => {
     req.session.username
     ];
     const result = await db.query(sql, data);
-    if (result.error)
-    {
+    if (result.error) {
         console.log(result.error);
         const [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
@@ -182,7 +180,7 @@ router.post('/login', async (req, res) => {
         res.locals.session = req.session;
         await req.session.save(function (err) {
             res.redirect('/');
-        })
+        });
         //console.log(res.redirect(url));
         /*res.render('home', {
             style: 'home.css',
