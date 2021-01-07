@@ -26,7 +26,7 @@ router.get('/:id', async(req, res) => {
             var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
             var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
             var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
-            return res.render('vwCoursesDetail/coursesDetail',{
+            return res.render('vwCoursesDetail/CoursesDetail',{
                 review:review,
                 course:course,
                 numStudent:countStudent,
