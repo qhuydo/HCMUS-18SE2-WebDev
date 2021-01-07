@@ -42,13 +42,57 @@ module.exports = {
         return [null, null];
     },
     async getCourseRating(id){
-        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id}`;
+        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id} ORDER BY RAND() LIMIT 3;`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];    
         });
         if (rows.length !== 0) {
             return [rows, "courses"];
+        }
+        return [null, null];
+    },
+    async getNumberStudent(id){
+        const sql = `SELECT Count(*) as numberStudent FROM course_student WHERE course_id = ${id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return null;    
+        });
+        if (rows.length !== 0) {
+            return rows[0].numberStudent;
+        }
+        return null;
+    },
+    async getNumberRating(id){
+        const sql = `SELECT Count(*) as numberRating FROM course_rating WHERE course_id = ${id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return null;    
+        });
+        if (rows.length !== 0) {
+            return rows[0].numberRating;
+        }
+        return null;
+    },
+    async getAverageStar(id){
+        const sql = `SELECT AVG(point) as averagePoint FROM course_rating WHERE course_id = ${id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return null;    
+        });
+        if (rows.length !== 0) {
+            return Math.round(rows[0].averagePoint * 10) / 10;
+        }
+        return null;
+    },
+    async getIntructor(id){
+        const sql = `SELECT * FROM course_instructor LEFT JOIN instructor ON course_instructor.username = instructor.username WHERE course_id = ${id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows[0], "instructor"];
         }
         return [null, null];
     }
