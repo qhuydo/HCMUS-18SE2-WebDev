@@ -1,0 +1,195 @@
+{{#section 'titleExtraText'}}| My profile {{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/vwCourses/addCourse.css">
+{{/section}}
+
+{{#section 'js'}}
+<script type="text/javascript" src="/js/vwCourses/addCourse.js"></script>
+<script src='https://cdn.tiny.cloud/1/g5sw03j79upxd126hoysgh3t4ja3dkkc5jxz4h5st5etjiox/tinymce/5/tinymce.min.js'
+    referrerpolicy="origin"></script>
+<script>tinymce.init({ selector: '#mytextarea' });</script>
+<!--script type="text/javascript" src="/js/addons-pro/mdb-file-upload.min.js"></script-->
+<script>
+    // $('.file-upload').file_upload();
+    var d = new Date();
+    var date_value = `[${d.getFullYear()}, ${d.getMonth()}, ${d.getDate()}]`;
+    console.log(date_value);
+    // -> Wed Jun 09 2010 14:12:01 GMT+0100 (BST)
+    $('#birth_date').attr("data-value", date_value).pickadate({
+        max: Date.now()
+    });
+</script>
+{{/section}}
+<main>
+    <div class="container">
+
+        <!-- Section: Public Profile -->
+        <section class="section">
+            <form method="POST" action="#">
+                <!-- First row -->
+                <div class="row">
+                    <!-- First column -->
+                    <div class="col-lg-4 mb-4">
+                        <!-- Card -->
+                        <div class="card card-cascade narrower">
+                            <!-- Card image -->
+                            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+                                <h5 class="mb-0 font-weight-bold"><strong>Category</strong></h5>
+                            </div>
+                            <!-- Card image -->
+
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
+                                <div class="input-group mb-3">
+                                    <div class="form-group">
+                                    <label for="sel1">Select category:</label>
+                                    <select class="form-control" id="sel1" name="course[category]">
+                                        {{#each categorys}}
+                                            <script>
+                                                document.write('<option>{{name}}</option>')
+                                            </script>
+                                        {{/each}}
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="form-group">
+                                    <label for="sel2">Select sub-category:</label>
+                                    <select class="form-control" id="sel2" name="course[sub_category]">
+                                        {{#each sub_categorys}}
+                                            <script>
+                                                document.write('<option>{{name}}</option>')
+                                            </script>
+                                        {{/each}}
+                                    </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Card content -->
+
+                        </div>
+                        <!-- Card -->
+
+                        <!-- Card -->
+                        <div class="card card-cascade narrower mt-5">
+                            <!-- Card image -->
+                            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+                                <h5 class="mb-0 font-weight-bold"><strong>Title</strong></h5>
+                            </div>
+                            <!-- Card image -->
+
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
+                                <div class="form-row flex-center">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Title</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="course[title]" id="title"
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Card content -->
+
+                        </div>
+                        <!-- Card -->
+
+                        <!-- Card -->
+                        <div class="card card-cascade narrower mt-5">
+                            <!-- Card image -->
+                            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+                                <h5 class="mb-0 font-weight-bold"><strong>Price</strong></h5>
+                            </div>
+                            <!-- Card image -->
+
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
+                                <div class="form-row flex-center">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Price ($)</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="course[full_price]" id="price"
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                                <div class="form-row flex-center">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Discount (%)</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="course[discount]" id="discount"
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Card content -->
+
+                        </div>
+                        <!-- Card -->
+                    </div>
+                    <!-- First column -->
+
+                    <!-- Second column -->
+                    <div class="col-lg-8 mb-3">
+                        <!-- Card -->
+                        <div class="card card-cascade narrower">
+                            <!-- Card image -->
+                            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+                                <h5 class="mb-0 font-weight-bold"><strong>Image</strong></h5>
+                            </div>
+                            <!-- Card image -->
+
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
+                                <div class="form-row flex-center">
+                                    <img class="img-fluid mb-1" height="270px" width="480px" id="coursePhoto" src="https://via.placeholder.com/480x270.png" alt="your image">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Link internet</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="course[image]" id="URLImage" onfocusout="ReadURL()"
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Card content -->
+
+                        </div>
+                        <!-- Card -->
+
+                        <!-- Card -->
+                        <div class="card card-cascade narrower" style="margin-top: 30px;">
+                            <!-- Card image -->
+                            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+                                <h5 class="mb-0 font-weight-bold"><strong>Description</strong></h5>
+                            </div>
+                            <!-- Card image -->
+
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
+                                <textarea id="mytextarea" name="course[full_description">
+                                    Hello, World!
+                                </textarea>
+                            </div>
+                            <!-- Card content -->
+
+                        </div>
+                        <!-- Card -->
+                        <div class="text-center">
+                            <input class="btn btn-success text-center" type="submit"></button>
+                        </div>
+                    </div>
+                    <!-- Second column -->
+
+                </div>
+                <!-- First row -->
+            </form>
+        </section>
+        <!-- Section: Public Profile -->
+
+    </div>
+
+</main>

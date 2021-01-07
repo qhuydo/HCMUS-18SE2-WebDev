@@ -7,12 +7,21 @@ router.get('/byCat', async(req, res) => {
     res.render('vwCourses/byCat');
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/create', async(req, res) => {
+    var [categorys,type] = await courseModel.getAllCategory();
+    var [sub_categorys,type] = await courseModel.getAllSubCategory();
+    res.render('vwCourses/addCourse',{
+        categorys:categorys,
+        sub_categorys:sub_categorys
+    });
+});
+
+router.get('/:id', async(req, res,next) => {
     if (req.session.type === "instructor")
     {
-
+        res.status(501).send('Not implemented');
     }
-    if (req.session.type === "student")
+    if (req.session.type === "student" || req.session.type === "adminstrator")
     {
         var [course,type] = await courseModel.getCourseDetail(req.params.id)
         if (course)
@@ -41,12 +50,12 @@ router.get('/:id', async(req, res) => {
         }
         res.render('home')
     }
+    next();
 });
 
 router.get('/:id/lecture', async(req, res) => {
     res.render('vwLecture/index');
 });
-
 
 router.post('/', async(req, res) => {
     res.status(501).send('Not implemented')

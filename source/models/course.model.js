@@ -95,5 +95,27 @@ module.exports = {
             return [rows[0], "instructor"];
         }
         return [null, null];
+    },
+    async getAllCategory(){
+        const sql = `SELECT * FROM category`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows, "category"];
+        }
+        return [null, null];
+    },
+    async getAllSubCategory(){
+        const sql = `SELECT * FROM sub_category`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows, "sub_category"];
+        }
+        return [null, null];
     }
 }
