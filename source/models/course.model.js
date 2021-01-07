@@ -1,3 +1,4 @@
+const { update } = require("../utils/db");
 const db = require("../utils/db");
 const instructorModel = require("./instructor.model");
 
@@ -130,4 +131,15 @@ module.exports = {
             return { "success": 'Create success' };
         }
     },
+    async update(course_update,condition){
+        let res = null;
+        res = await db.update(course_update,condition,"course")
+        if (res.error) {
+            console.log(res.error);
+            return { "error": res.error };
+        }
+        else {
+            return { "success": 'Create success' };
+        }
+    }
 }

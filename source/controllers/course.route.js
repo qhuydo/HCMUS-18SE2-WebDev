@@ -12,8 +12,12 @@ router.get('/byCat', async(req, res) => {
 
 router.get('/add', async(req, res) => {
     var [sub_categorys,type] = await categoryModel.getAllSubCategory();
+    var fail = null
+    if (req.body.fail)
+        fail = req.body.fail
     res.render('vwCourses/addCourse',{
-        sub_categorys:sub_categorys
+        sub_categorys:sub_categorys,
+        fail:fail
     });
 });
 
@@ -33,7 +37,7 @@ router.post('/add', async(req, res) => {
         sub_category: sub_category.id,
         full_price: req.body.course.full_price,
         discount: req.body.course.discount,
-        price: Number(req.body.course.full_price) * Number(req.body.course.discount) / 100,
+        price: parseInt(Number(req.body.course.full_price) * (1 - Number(req.body.course.discount) / 100)),
         image_sm: req.body.course.image,
         image: req.body.course.image,
         short_description: req.body.course.full_description,
@@ -61,7 +65,8 @@ router.get('/:id', async(req, res,next) => {
     }
     if (req.session.type === "student" || req.session.type === "adminstrator")
     {
-        var [course,type] = await courseModel.getCourseDetail(req.params.id)
+        var [course,type] = await courseModel.getCourseDetail(req.params.id);
+        //var [course_content,type] = await courseModel
         if (course)
         {
             var [review,type] = await courseModel.getCourseRating(req.params.id);
@@ -90,6 +95,51 @@ router.get('/:id', async(req, res,next) => {
     }
     next();
 });
+
+router.get('/:id/edit', async(req,res)=>{
+    var [course,type] = await courseModel.getCourseDetail(req.params.id)
+    var [sub_categorys,type] = await categoryModel.getAllSubCategory();
+    res.render('vwCourses/editCourse',{
+        sub_categorys:sub_categorys,
+        course:course
+    });
+})
+
+router.post('/:id/edit', async(req,res)=>{
+    var missing = await missingKeys(req.body, [
+        "course",
+    ]);
+    if (missing) {
+        return res.redirect('/home')
+    }
+    console.log(req.body.course);
+    var [sub_category,type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category)
+    const course_update = {
+        title: req.body.course.title,
+        category: sub_category.category_id,
+        sub_category: sub_category.id,
+        full_price: req.body.course.full_price,
+        discount: req.body.course.discount,
+        price: parseInt(Number(req.body.course.full_price) * (1 - Number(req.body.course.discount) / 100)),
+        image_sm: req.body.course.image,
+        image: req.body.course.image,
+        short_description: req.body.course.full_description,
+        full_description: req.body.course.full_description,
+        last_update: dateformat(Date.now(), "yyyy/mm/dd"),
+        completion:0
+    }
+    const condition = {
+        id: req.params.id
+    }
+    var result = await courseModel.update(course_update,condition);
+    if (result.error)
+    {
+        console.log(result.error)
+        req.body.fail = "Create with this query not success";
+        return res.redirect('/course/'+req.params.id+'/edit');
+    }
+    res.redirect('/course/'+req.params.id+'/edit');
+})
 
 router.get('/:id/lecture', async(req, res) => {
     res.render('vwLecture/index');
