@@ -1,7 +1,17 @@
 const db = require("../utils/db");
-const { getIntructor } = require("./course.model");
 
 module.exports = {
+    async getInstructor(id){
+        const sql = `SELECT * FROM course_instructor LEFT JOIN instructor ON course_instructor.username = instructor.username WHERE course_id = ${id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows[0], "instructor"];
+        }
+        return [null, null];
+    },
     async instructorFromACourse(course_id) {
         const sql = "SELECT instructor.username, fullname FROM course_instructor"
             + " INNER JOIN instructor ON instructor.username = course_instructor.username"

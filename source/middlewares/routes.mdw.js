@@ -1,6 +1,4 @@
 const auth = require('./auth.mdw');
-const authAdminMdw = require('./authAdmin.mdw');
-const authStudentMdw = require('./authStudent.mdw');
 
 module.exports = function(app) {
     app.use('/', require('../controllers/home.route'));
@@ -8,9 +6,9 @@ module.exports = function(app) {
     app.use('/course', require('../controllers/course.route'));
 
     // deepweb links
-    app.use('/cart', authStudentMdw, require('../controllers/cart.route'));
-    app.use('/watchlist', authStudentMdw, require('../controllers/watchlist.route'));
-    app.use('/admin', authAdminMdw, require('../controllers/admin.route'));
+    app.use('/cart', auth.authStudent, require('../controllers/cart.route'));
+    app.use('/watchlist', auth.authStudent, require('../controllers/watchlist.route'));
+    app.use('/admin', auth.authAdmin, require('../controllers/admin.route'));
 
     app.use(function (req, res) {
         res.status(404);

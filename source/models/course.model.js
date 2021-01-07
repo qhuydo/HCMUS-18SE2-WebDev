@@ -4,11 +4,11 @@ const instructorModel = require("./instructor.model");
 
 
 module.exports = {
-    async getAllCourse(){
+    async getAllCourse() {
         const sql = "SELECT * FROM course";
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
-            return [null, null];    
+            return [null, null];
         });
         if (rows !== null && rows.length !== 0) {
             return [rows, "courses"];
@@ -29,7 +29,7 @@ module.exports = {
     },
     async getCourseDataForCart(course_id) {
         //console.log(`CourseID: ${course_id}`);
-        const instructorRows = await instructorModel.instructorFromACourse(course_id).catch((err) =>{
+        const instructorRows = await instructorModel.instructorFromACourse(course_id).catch((err) => {
             console.log(err.message); // logs "Something"
         });
 
@@ -41,12 +41,12 @@ module.exports = {
         instructors = instructors.join(", ");
 
         const sql = "SELECT id, title, full_price, price, discount, image_sm FROM course WHERE id = ?";
-        const [rows, fields] = await db.query(sql, [course_id]).catch((err) =>{
+        const [rows, fields] = await db.query(sql, [course_id]).catch((err) => {
             console.log(err.message); // logs "Something"
         });
 
         // console.log(rows);
-        if (rows !== null && rows.length !== 0) { 
+        if (rows !== null && rows.length !== 0) {
             rows[0].instructors = instructors;
             // console.log(rows[0]);
             return rows[0];
@@ -54,71 +54,60 @@ module.exports = {
 
         return null;
     },
-    async getCourseDetail(id){
+    async getCourseDetail(id) {
         const sql = "SELECT * FROM course WHERE id = ?";
         var [rows, fields] = await db.query(sql, [id]).catch(error => {
             console.log(error.message);
-            return [null, null];    
+            return [null, null];
         });
         if (rows !== null && rows.length !== 0) {
             return [rows[0], "courses"];
         }
         return [null, null];
     },
-    async getCourseRating(id){
+    async getCourseRating(id) {
         const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id} ORDER BY RAND() LIMIT 3;`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
-            return [null, null];    
+            return [null, null];
         });
         if (rows.length !== 0) {
             return [rows, "courses"];
         }
         return [null, null];
     },
-    async getNumberStudent(id){
+    async getNumberStudent(id) {
         const sql = `SELECT Count(*) as numberStudent FROM course_student WHERE course_id = ${id}`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
-            return null;    
+            return null;
         });
         if (rows.length !== 0) {
             return rows[0].numberStudent;
         }
         return null;
     },
-    async getNumberRating(id){
+    async getNumberRating(id) {
         const sql = `SELECT Count(*) as numberRating FROM course_rating WHERE course_id = ${id}`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
-            return null;    
+            return null;
         });
         if (rows.length !== 0) {
             return rows[0].numberRating;
         }
         return null;
     },
-    async getAverageStar(id){
+    async getAverageStar(id) {
         const sql = `SELECT AVG(point) as averagePoint FROM course_rating WHERE course_id = ${id}`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
-            return null;    
+            return null;
         });
         if (rows.length !== 0) {
             return Math.round(rows[0].averagePoint * 10) / 10;
         }
         return null;
-    },
-    async getIntructor(id){
-        const sql = `SELECT * FROM course_instructor LEFT JOIN instructor ON course_instructor.username = instructor.username WHERE course_id = ${id}`;
-        var [rows, fields] = await db.select(sql).catch(error => {
-            console.log(error.message);
-            return [null, null];    
-        });
-        if (rows.length !== 0) {
-            return [rows[0], "instructor"];
-        }
-        return [null, null];
     },
     async createCourse(course) {
         let res = null;
@@ -131,9 +120,9 @@ module.exports = {
             return { "success": 'Create success' };
         }
     },
-    async update(course_update,condition){
+    async update(course_update, condition) {
         let res = null;
-        res = await db.update(course_update,condition,"course")
+        res = await db.update(course_update, condition, "course")
         if (res.error) {
             console.log(res.error);
             return { "error": res.error };
@@ -141,5 +130,14 @@ module.exports = {
         else {
             return { "success": 'Create success' };
         }
+    },
+
+    async isCourseIdExist(course_id) {
+        const sql = `SELECT * FROM course WHERE id = ?`;
+        const [rows, fields] = await db.query(sql, [course_id]).catch(err =>{
+            console.log(`course.model.js: isCourseIdExist ${err.message}`);
+            return false;
+        });
+        return rows !== null && rows.length !== 0;        
     }
 }
