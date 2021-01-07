@@ -1,4 +1,5 @@
 const db = require('../utils/db');
+const { getCategoryBySubCategoryId } = require('./course.model');
 
 module.exports = {
     /**
@@ -58,5 +59,49 @@ module.exports = {
             ele.hasSubCategory = ele.subCategory.length !== 0;
         }
         return rows;
-    }
+    },
+    async getAllCategory(){
+        const sql = `SELECT * FROM category`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows, "category"];
+        }
+        return [null, null];
+    },
+    async getAllSubCategory(){
+        const sql = `SELECT * FROM sub_category`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows, "sub_category"];
+        }
+        return [null, null];
+    },
+    async getCategoryByCategoryId(category_id){
+        const sql = `SELECT * FROM category WHERE id = ${category_id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows && rows.length !== 0) {  
+            return [rows[0], "category"];
+        }
+        return [null, null];
+    },
+    async getSubCategoryBySubCategoryName(sub_category_name){
+        const sql = `SELECT * FROM sub_category WHERE name = "${sub_category_name}"`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows[0], "sub_category"];
+        }
+        return [null, null];
+    },
 }

@@ -1,8 +1,31 @@
 const db = require("../utils/db");
 const instructorModel = require("./instructor.model");
 
-module.exports = {
 
+module.exports = {
+    async getAllCourse(){
+        const sql = "SELECT * FROM course";
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "courses"];
+        }
+        return [null, null];
+    },
+    async getCourseNewId() {
+        var id = 1;
+        var [rowsAll, colsAll] = await this.getAllCourse();
+        if (rowsAll[0].length === 0)
+            return id;
+        rowsAll.sort((a, b) => Number(a.id) - Number(b.id))
+        for (let index = 0; index < rowsAll.length; index++) {
+            if (Number(rowsAll[index].id) !== id) break;
+            id++;
+        }
+        return id;
+    },
     async getCourseDataForCart(course_id) {
         //console.log(`CourseID: ${course_id}`);
         const instructorRows = await instructorModel.instructorFromACourse(course_id).catch((err) =>{
@@ -96,26 +119,15 @@ module.exports = {
         }
         return [null, null];
     },
-    async getAllCategory(){
-        const sql = `SELECT * FROM category`;
-        var [rows, fields] = await db.select(sql).catch(error => {
-            console.log(error.message);
-            return [null, null];    
-        });
-        if (rows.length !== 0) {
-            return [rows, "category"];
+    async createCourse(course) {
+        let res = null;
+        res = await db.insert(course, 'course');
+        if (res.error) {
+            console.log(res.error);
+            return { "error": res.error };
         }
-        return [null, null];
+        else {
+            return { "success": 'Create success' };
+        }
     },
-    async getAllSubCategory(){
-        const sql = `SELECT * FROM sub_category`;
-        var [rows, fields] = await db.select(sql).catch(error => {
-            console.log(error.message);
-            return [null, null];    
-        });
-        if (rows.length !== 0) {
-            return [rows, "sub_category"];
-        }
-        return [null, null];
-    }
 }

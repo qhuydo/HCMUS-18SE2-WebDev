@@ -26,13 +26,18 @@
 
         <!-- Section: Public Profile -->
         <section class="section">
+            {{#if fail}}
+              <div class="alert alert-danger js-error-alert">
+                <div> {{fail}}</div>
+              </div>
+              {{/if}}
             <form method="POST" action="#">
                 <!-- First row -->
                 <div class="row">
                     <!-- First column -->
                     <div class="col-lg-4 mb-4">
                         <!-- Card -->
-                        <div class="card card-cascade narrower">
+                        <div class="card card-cascade narrower text-center">
                             <!-- Card image -->
                             <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
                                 <h5 class="mb-0 font-weight-bold"><strong>Category</strong></h5>
@@ -41,18 +46,6 @@
 
                             <!-- Card content -->
                             <div class="card-body card-body-cascade text-center">
-                                <div class="input-group mb-3">
-                                    <div class="form-group">
-                                    <label for="sel1">Select category:</label>
-                                    <select class="form-control" id="sel1" name="course[category]">
-                                        {{#each categorys}}
-                                            <script>
-                                                document.write('<option>{{name}}</option>')
-                                            </script>
-                                        {{/each}}
-                                    </select>
-                                    </div>
-                                </div>
                                 <div class="input-group mb-3">
                                     <div class="form-group">
                                     <label for="sel2">Select sub-category:</label>
@@ -115,6 +108,22 @@
                                             aria-describedby="basic-addon1">
                                     </div>
                                 </div>
+                            </div>
+                            <!-- Card content -->
+
+                        </div>
+                        <!-- Card -->
+
+                        <!-- Card -->
+                        <div class="card card-cascade narrower mt-5">
+                            <!-- Card image -->
+                            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+                                <h5 class="mb-0 font-weight-bold"><strong>Discount</strong></h5>
+                            </div>
+                            <!-- Card image -->
+
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
                                 <div class="form-row flex-center">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
@@ -161,7 +170,7 @@
                         <!-- Card -->
 
                         <!-- Card -->
-                        <div class="card card-cascade narrower" style="margin-top: 30px;">
+                        <div class="card card-cascade narrower" style="margin-top: 70px;">
                             <!-- Card image -->
                             <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
                                 <h5 class="mb-0 font-weight-bold"><strong>Description</strong></h5>
@@ -170,7 +179,7 @@
 
                             <!-- Card content -->
                             <div class="card-body card-body-cascade text-center">
-                                <textarea id="mytextarea" name="course[full_description">
+                                <textarea id="mytextarea" name="course[full_description]">
                                     Hello, World!
                                 </textarea>
                             </div>
