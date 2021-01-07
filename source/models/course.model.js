@@ -29,5 +29,27 @@ module.exports = {
         }
 
         return null;
+    },
+    async getCourseDetail(id){
+        const sql = "SELECT * FROM course WHERE id = ?";
+        var [rows, fields] = await db.query(sql, [id]).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows[0], "courses"];
+        }
+        return [null, null];
+    },
+    async getCourseRating(id){
+        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows.length !== 0) {
+            return [rows, "courses"];
+        }
+        return [null, null];
     }
 }

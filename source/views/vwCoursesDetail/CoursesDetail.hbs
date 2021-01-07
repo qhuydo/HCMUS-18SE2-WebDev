@@ -1,30 +1,15 @@
-<!DOCTYPE html>
+{{#section 'titleExtraText'}}| My profile {{/section}}
 
-<html lang="en">
+{{#section 'css'}}
+<link rel="stylesheet" type="text/css" href="/css/vwCoursesDetail/coursesDetail.css">
+{{/section}}
 
-<head>
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>E-Commerce - MDBootstrap</title>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  <!-- Bootstrap core CSS -->
-  <link href="../../css/bootstrap.min.css" rel="stylesheet">
-  <!-- Material Design Bootstrap -->
-  <link href="../../css/mdb.min.css" rel="stylesheet">
-  <link href="index.css" rel="stylesheet">
-
-</head>
+{{#section 'js'}}
+<script type="text/javascript" src="/js/vwCoursesDetail/coursesDetail.js"></script>
+<!--script type="text/javascript" src="/js/addons-pro/mdb-file-upload.min.js"></script-->
+{{/section}}
 
 <body class="product-v1 hidden-sn white-skin animated">
-
-  <!-- Navigation -->
-  <header>
-
-
-  </header>
 
 
   <!-- Main Container -->
@@ -36,7 +21,7 @@
       <!-- News card -->
       <div class="card mt-5 hoverable">
 
-        <div class="row mt-5">
+        <div class="row">
 
           <div class="col-lg-6">
 
@@ -48,14 +33,10 @@
 
                 <div class="carousel-item active">
 
-                  <img style="width: 300px;height: 300px;" src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/17.jpg" alt="First slide"
+                  <img style="width: 400px;height: 400px;" src="{{course.image}}" alt="First slide"
                     class="img-fluid">
 
                 </div>
-
-  
-
-  
 
               </div>
        
@@ -68,37 +49,29 @@
           <div class="col-lg-5 mr-3 text-center text-md-left">
 
             <h2
-              class="h2-responsive text-center text-md-left product-name font-weight-bold dark-grey-text mb-1 ml-xl-0 ml-4">
+              class="h2-responsive text-center text-md-left product-name font-weight-bold dark-grey-text mb-1 ml-xl-0 ml-4 mt-5">
 
-              <strong>Name cource</strong>
+              <strong>{{course.title}}</strong>
 
             </h2>
-
-            <span class="badge badge-danger product mb-4 ml-xl-0 ml-4">bestseller</span>
 
             <h3 class="h3-responsive text-center text-md-left mb-5 ml-xl-0 ml-4">
 
               <span class="red-text font-weight-bold">
 
-                <strong>$price_bill</strong>
+                <strong>{{course.full_price}}</strong>
 
               </span>
 
               <span class="grey-text">
 
                 <small>
-
-                  <s>$ orginal_price</s>
-
+                    $ orginal_price
                 </small>
 
               </span>
 
             </h3>
-
-            
-            
-  
 
           </div>
 
@@ -113,11 +86,7 @@
 
     </div>
     <div>
-      <p>Interested in the field of Machine Learning? Then this course is for you!
-
-        This course has been designed by two professional Data Scientists so that we can share our knowledge and help you learn complex theory, algorithms, and coding libraries in a simple way.
-        
-        We will walk you step-by-step into the World of Machine Learning. With every tutorial, you will develop new skills and improve your understanding of this challenging yet lucrative sub-field of Data Science.</p>
+      <p>{{course.full_description}}</p>
     </div>
     <!-- Preview cource -->
     <div class="divider-new">
@@ -134,8 +103,18 @@
       <h3 class="h3-responsive font-weight-bold blue-text mx-3">Course content</h3>
     
     </div>
-    <h5 style="font-weight: bolder ;">Last update: dd/mm/yyyy</h5>
-   
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Last update:</span>
+      </div>
+      <script>
+          var d = new Date("{{course.last_update}}");
+          var last_update ='value=' + d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear();
+          document.write('<input type="text" id="last_update" class="form-control w-auto" name="course[last_update]" ' + last_update + ' readonly>')
+        </script>
+      
+    </div>  
+       
     <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
 
       <!-- Accordion card -->
@@ -219,253 +198,64 @@
 
       <!-- Main wrapper -->
       <div class="comments-list text-center text-md-left">
+        {{#if review}}
+          {{#each review}}
+            <div class="row mb-5">
 
-        <!-- First row -->
-        <div class="row mb-5">
+            <!-- Image column -->
+            {{#if photo}}
+               <div class="col-sm-2 col-12 mb-3">
+                <img src="{{photo}}" alt="sample image"
+                  class="avatar rounded-circle z-depth-1-half">
+              </div>
+            {{else}}
+              <div class="col-sm-2 col-12 mb-3">
+                <img src="http://placehold.it/200" alt="sample image"
+                class="avatar rounded-circle z-depth-1-half">
+              </div>
+            {{/if}}
+            <!-- Image column -->
 
-          <!-- Image column -->
-          <div class="col-sm-2 col-12 mb-3">
+            <!-- Content column -->
+            <div class="col-sm-10 col-12">
 
-            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (8).jpg" alt="sample image"
-              class="avatar rounded-circle z-depth-1-half">
+              <a>
 
-          </div>
-          <!-- Image column -->
+                <h5 class="user-name font-weight-bold">{{username}}</h5>
 
-          <!-- Content column -->
-          <div class="col-sm-10 col-12">
+              </a>
 
-            <a>
-
-              <h5 class="user-name font-weight-bold">John Doe</h5>
-
-            </a>
-
-            <!-- Rating -->
-            <ul class="rating">
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-            </ul>
-
-            <div class="card-data">
-
-              <ul class="list-unstyled mb-1">
-
-                <li class="comment-date font-small grey-text">
-
-                  <i class="far fa-clock-o"></i> 05/10/2015</li>
-
+              <!-- Rating -->
+              <ul class="rating">
+                <script>
+                for (var j = 1; j <= {{point}}; j++) {
+                    document.write('<i class="fas fa-star blue-text"></i>')
+                }
+                </script>
               </ul>
 
-            </div>
+              <div class="card-data">
 
-            <p class="dark-grey-text article">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis
+                <ul class="list-unstyled mb-1">
 
-              aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur
+                  <li class="comment-date font-small grey-text">
+                    <script>
+                      var d = new Date("{{feedback_date}}");
+                      document.write('<i class="far fa-clock-o"></i>' + d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear())
+                    </script>
+                  </li>
+                </ul>
 
-              sint occaecat cupidatat non proident.</p>
+              </div>
 
-          </div>
-          <!-- Content column -->
-
-        </div>
-        <!-- First row -->
-
-        <!-- Second row -->
-        <div class="row mb-5">
-
-          <!-- Image column -->
-          <div class="col-sm-2 col-12 mb-3">
-
-            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (30).jpg" alt="sample image"
-              class="avatar rounded-circle z-depth-1-half">
-
-          </div>
-          <!-- Image column -->
-
-          <!-- Content column -->
-          <div class="col-sm-10 col-12">
-
-            <a>
-
-              <h5 class="user-name font-weight-bold">Lily Brown</h5>
-
-            </a>
-
-            <!-- Rating -->
-            <ul class="rating">
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-            </ul>
-
-            <div class="card-data">
-
-              <ul class="list-unstyled mb-1">
-
-                <li class="comment-date font-small grey-text">
-
-                  <i class="far fa-clock-o"></i> 05/10/2015</li>
-
-              </ul>
+              <p class="dark-grey-text article">{{comment}}</p>
 
             </div>
-
-            <p class="dark-grey-text article">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis
-
-              aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur
-
-              sint occaecat cupidatat non proident.</p>
+            <!-- Content column -->
 
           </div>
-          <!-- Content column -->
-
-        </div>
-        <!-- Second row -->
-
-        <!-- Third row -->
-        <div class="row mb-5">
-
-          <!-- Image column -->
-          <div class="col-sm-2 col-12 mb-3">
-
-            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (28).jpg" alt="sample image"
-              class="avatar rounded-circle z-depth-1-half">
-
-          </div>
-          <!-- Image column -->
-
-          <!-- Content column -->
-          <div class="col-sm-10 col-12">
-
-            <a>
-
-              <h5 class="user-name font-weight-bold">Martha Smith</h5>
-
-            </a>
-
-            <!-- Rating -->
-            <ul class="rating">
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-              <li>
-
-                <i class="fas fa-star blue-text"></i>
-
-              </li>
-
-            </ul>
-
-            <div class="card-data">
-
-              <ul class="list-unstyled mb-1">
-
-                <li class="comment-date font-small grey-text">
-
-                  <i class="far fa-clock-o"></i> 05/10/2015</li>
-
-              </ul>
-
-            </div>
-
-            <p class="dark-grey-text article">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis
-
-              aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur
-
-              sint occaecat cupidatat non proident.</p>
-
-          </div>
-          <!-- Content column -->
-
-        </div>
-        <!-- Third row -->
-
+          {{/each}}
+        {{/if}}
       </div>
       <!-- Main wrapper -->
 
@@ -1855,42 +1645,3 @@
   </div>
   <!-- Cart Modal -->
 
-  <!-- SCRIPTS -->
-  <!-- JQuery -->
-  <script type="text/javascript" src="../../js/jquery-3.4.1.min.js"></script>
-
-  <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="../../js/popper.min.js"></script>
-
-  <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="../../js/bootstrap.min.js"></script>
-
-  <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="../../js/mdb.min.js"></script>
-
-  <script type="text/javascript">
-    /* WOW.js init */
-    new WOW().init();
-    // SideNav Button Initialization
-
-    $(".button-collapse").sideNav();
-    // SideNav Scrollbar Initialization
-
-    var sideNavScrollbar = document.querySelector('.custom-scrollbar');
-    Ps.initialize(sideNavScrollbar);
-    // Tooltips Initialization
-    $(function () {
-
-      $('[data-toggle="tooltip"]').tooltip()
-    });
-    // Material Select Initialization
-    $(document).ready(function () {
-
-      $('.mdb-select').material_select();
-    });
-
-  </script>
-
-</body>
-
-</html>
