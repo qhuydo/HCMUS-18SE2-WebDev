@@ -18,7 +18,7 @@ router.get('/add', async (req, res) => {
     var fail = null
     if (req.body.fail)
         fail = req.body.fail
-    res.render('vwCourses/addCourse', {
+    res.render('vwCourse/addCourse', {
         sub_categories: sub_categories,
         fail: fail
     });
@@ -77,7 +77,7 @@ router.get('/:id', async (req, res, next) => {
             var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
             var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
             var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
-            return res.render('vwCourseDetail/CourseDetail', {
+            return res.render('vwCourse/CourseDetail', {
                 review: review,
                 course: course,
                 numStudent: countStudent,
@@ -98,9 +98,46 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/edit', async (req, res) => {
     var [course, type] = await courseModel.getCourseDetail(req.params.id)
     var [sub_categories, type] = await categoryModel.getAllSubCategory();
-    res.render('vwCourses/editCourse', {
+    res.render('vwCourse/editCourse', {
         sub_categories: sub_categories,
         course: course
+    });
+})
+
+router.get('/:id/editVideo', async (req, res) =>{
+    if (! await courseModel.isCourseIdExist(req.params.id)) {
+        return res.status(404).send('Course not found');
+    }
+    
+    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
+        return res.status(404).send('Lecture not found');
+    }
+
+    const chapters = await lectureModel.getFullCourseContent(req.params.id);
+    const lecture = await lectureModel.getLectures(req.params.id);
+    const c = await courseModel.getCourseDetail(req.params.id);
+    const description = c[0].full_description;
+    chapters.forEach(element =>{
+        element.lectures = [];
+    })
+    console.log(lecture)
+    lecture.forEach(element => {
+        let youtubeId = extractYoutubeVideoId(element.video);
+        if (youtubeId) {
+            element.youtube_id = youtubeId;
+        }
+        chapters.forEach(element2 =>{
+            if (element2.chapter_id === element.chapter_id)
+            {
+                element2.lectures.push(element);
+            }
+        })
+    });
+    res.render('vwCourse/editVideoCourse', {
+        chapters: chapters,
+        course_id: req.params.id,
+        lecture_id: req.params.lecture_id,
+        description: description
     });
 })
 
@@ -109,7 +146,7 @@ router.post('/:id/edit', async (req, res) => {
         "course",
     ]);
     if (missing) {
-        return res.redirect('/home')
+        return res.redirect('/')
     }
     console.log(req.body.course);
     var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category)

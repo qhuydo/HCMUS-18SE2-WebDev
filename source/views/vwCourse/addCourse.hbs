@@ -1,11 +1,11 @@
 {{#section 'titleExtraText'}}| My profile {{/section}}
 
 {{#section 'css'}}
-<link rel="stylesheet" type="text/css" href="/css/vwCourses/editCourse.css">
+<link rel="stylesheet" type="text/css" href="/css/vwCourse/addCourse.css">
 {{/section}}
 
 {{#section 'js'}}
-<script type="text/javascript" src="/js/vwCourses/editCourse.js"></script>
+<script type="text/javascript" src="/js/vwCourse/addCourse.js"></script>
 <script src='https://cdn.tiny.cloud/1/g5sw03j79upxd126hoysgh3t4ja3dkkc5jxz4h5st5etjiox/tinymce/5/tinymce.min.js'
     referrerpolicy="origin"></script>
 <script>tinymce.init({ selector: '#mytextarea' });</script>
@@ -16,7 +16,7 @@
     var date_value = `[${d.getFullYear()}, ${d.getMonth()}, ${d.getDate()}]`;
     console.log(date_value);
     // -> Wed Jun 09 2010 14:12:01 GMT+0100 (BST)
-    $('#last_update').attr("data-value", date_value).pickadate({
+    $('#birth_date').attr("data-value", date_value).pickadate({
         max: Date.now()
     });
 </script>
@@ -31,8 +31,6 @@
                 <div> {{fail}}</div>
               </div>
               {{/if}}
-            <a class="btn btn-success mb-5" href="/">Return home</a>
-            <a class="btn btn-success mb-5 text-right" href="#">Update content of course</a>
             <form onsubmit="checkSubmit(event)" method="POST" action="#">
                 <!-- First row -->
                 <div class="row">
@@ -51,16 +49,10 @@
                                 <div class="input-group mb-3">
                                     <div class="form-group">
                                     <label for="sel2">Select sub-category:</label>
-                                    <script>
-                                        var sub_category_id = {{course.sub_category}};
-                                    </script>
                                     <select class="form-control" id="sel2" name="course[sub_category]">
                                         {{#each sub_categorys}}
                                             <script>
-                                                if (sub_category_id === {{id}})
-                                                    document.write('<option selected>{{name}}</option>')
-                                                else
-                                                    document.write('<option>{{name}}</option>')
+                                                document.write('<option>{{name}}</option>')
                                             </script>
                                         {{/each}}
                                     </select>
@@ -88,7 +80,7 @@
                                             <span class="input-group-text" id="basic-addon1">Title</span>
                                         </div>
                                         <input type="text" class="form-control" name="course[title]" id="title"
-                                            aria-describedby="basic-addon1" value="{{course.title}}">
+                                            aria-describedby="basic-addon1">
                                     </div>
                                 </div>
                             </div>
@@ -110,10 +102,10 @@
                                 <div class="form-row flex-center">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">Price not discount ($)</span>
+                                            <span class="input-group-text" id="basic-addon1">Price ($)</span>
                                         </div>
                                         <input type="text" class="form-control" name="course[full_price]" id="price"
-                                            aria-describedby="basic-addon1" value="{{course.full_price}}">
+                                            aria-describedby="basic-addon1">
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +130,7 @@
                                             <span class="input-group-text" id="basic-addon1">Discount (%)</span>
                                         </div>
                                         <input type="text" class="form-control" name="course[discount]" id="discount"
-                                            aria-describedby="basic-addon1" value="{{course.discount}}">
+                                            aria-describedby="basic-addon1">
                                     </div>
                                 </div>
                             </div>
@@ -162,13 +154,13 @@
                             <!-- Card content -->
                             <div class="card-body card-body-cascade text-center">
                                 <div class="form-row flex-center">
-                                    <img class="img-fluid mb-1" height="270px" width="480px" id="coursePhoto" src="{{course.image}}" alt="your image">
+                                    <img class="img-fluid mb-1" height="270px" width="480px" id="coursePhoto" src="https://via.placeholder.com/480x270.png" alt="your image">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">Link internet</span>
                                         </div>
                                         <input type="text" class="form-control" name="course[image]" id="URLImage" onfocusout="ReadURL()"
-                                            aria-describedby="basic-addon1" value="{{course.image}}">
+                                            aria-describedby="basic-addon1">
                                     </div>
                                 </div>
                             </div>
@@ -188,7 +180,7 @@
                             <!-- Card content -->
                             <div class="card-body card-body-cascade text-center">
                                 <textarea id="mytextarea" name="course[full_description]">
-                                    {{course.full_description}}
+                                    Hello, World!
                                 </textarea>
                             </div>
                             <!-- Card content -->

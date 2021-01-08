@@ -65,6 +65,18 @@ module.exports = {
         return null;
     },
 
+    async getLectures(course_id) {
+        const sql = `SELECT * FROM lecture WHERE course_id = ?`;
+        const [rows, fields] = await db.query(sql, [course_id]).catch(err =>{
+            console.log(`lecture.model.js: getLectureContent ${err.message}`);
+            return null;
+        });
+        if (rows !== null && rows.length !== 0) {
+            return rows;
+        }
+        return null;
+    },
+
     /**
      * 
      * @param {number} course_id 
@@ -72,9 +84,9 @@ module.exports = {
      */
     async getChapterContent(course_id, chapter_id) {
         const  sql = `SELECT lecture_id, name, video, length, preview FROM lecture `
-            + `WHERE course_id = ? AND chapter_id = ?`;
+            + `WHERE course_id = ${course_id} AND chapter_id = ${chapter_id}`;
         
-        const [rows, fields] = await db.query(sql, [course_id, chapter_id]).catch(err =>{
+        const [rows, fields] = await db.select(sql).catch(err =>{
             console.log(`lecture.model.js: getChapterContent ${err.message}`);
             return null;
         });
