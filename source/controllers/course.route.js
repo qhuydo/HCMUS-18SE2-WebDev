@@ -63,18 +63,18 @@ router.post('/add', async (req, res) => {
 });
 
 
-router.get('/myCourse/', authStudent, async(req, res) => {
+router.get('/myCourse/', authStudent, async (req, res) => {
     const items = [];
 
     let page = req.query.page || 1;
-    page = page < 1? 1: page;
+    page = page < 1 ? 1 : page;
 
     const total = await courseModel.numberOfCourseOfStudent(req.session.username) || 0;
     let nPages = Math.floor(total / paginate.course_limit);
     if (total % paginate.course_limit > 0) {
         nPages++;
     }
-    
+
     const page_numbers = [];
     for (i = 1; i <= nPages; i++) {
         page_numbers.push({
@@ -85,7 +85,7 @@ router.get('/myCourse/', authStudent, async(req, res) => {
 
     const offset = (page - 1) * paginate.course_limit;
     const list = await courseModel.getCourseIdListOfStudent(req.session.username, offset);
-    
+
     if (list !== null && list !== 0) {
         for (const ci of list) {
             const course = await courseModel.getCourseDataForCart(ci.course_id);
@@ -100,7 +100,7 @@ router.get('/myCourse/', authStudent, async(req, res) => {
 
     res.render('vwCourses/byStudent', {
         items,
-        hasCourse: total.length !== 0, 
+        hasCourse: total.length !== 0,
         page_numbers
     })
 
@@ -136,7 +136,7 @@ router.get('/:id', async (req, res, next) => {
                 instructorCourse: countCourseOfInstructor
             });
         }
-        res.render('home')
+        res.render('home');
     }
     next();
 });
@@ -150,35 +150,31 @@ router.get('/:id/edit', async (req, res) => {
     });
 })
 
-router.get('/:id/editVideo', async (req, res) =>{
+router.get('/:id/editVideo', async (req, res) => {
     if (! await courseModel.isCourseIdExist(req.params.id)) {
         return res.status(404).send('Course not found');
     }
-    
+
     if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
         return res.status(404).send('Lecture not found');
     }
-
     const chapters = await lectureModel.getFullCourseContent(req.params.id);
     const lecture = await lectureModel.getLectures(req.params.id);
     const c = await courseModel.getCourseDetail(req.params.id);
     const description = c[0].full_description;
-    chapters.forEach(element =>{
-        element.lectures = [];
-    })
-    console.log(lecture)
-    lecture.forEach(element => {
-        let youtubeId = extractYoutubeVideoId(element.video);
-        if (youtubeId) {
-            element.youtube_id = youtubeId;
-        }
-        chapters.forEach(element2 =>{
-            if (element2.chapter_id === element.chapter_id)
-            {
-                element2.lectures.push(element);
-            }
-        })
-    });
+    if (chapters) {
+        chapters.forEach(element => {
+            element.lectures = [];
+        });
+        console.log(lecture)
+        lecture.forEach(element => {
+            chapters.forEach(element2 => {
+                if (element2.chapter_id === element.chapter_id) {
+                    element2.lectures.push(element);
+                }
+            })
+        });
+    }
     res.render('vwCourse/editVideoCourse', {
         chapters: chapters,
         course_id: req.params.id,
@@ -187,62 +183,62 @@ router.get('/:id/editVideo', async (req, res) =>{
     });
 })
 
-router.post('/:id/addChapter', async (req, res) =>{
+router.post('/:id/addChapter', async (req, res) => {
     var missing = await missingKeys(req.body, [
         "courseVideo",
     ]);
     if (missing) {
-        return res.redirect('/course/'+req.params.id+'/editVideo')
+        return res.redirect('/course/' + req.params.id + '/editVideo');
     }
-    var chapter ={
+    var chapter = {
         chapter_id: await courseModel.getChapterNewId(req.params.id),
-        course_id:req.params.id,
-        chapter_name:req.body.courseVideo.title,
-        lecture_count:0,
-        length:null
+        course_id: req.params.id,
+        chapter_name: req.body.courseVideo.title
     }
     await courseModel.createChapter(chapter);
-    return res.redirect('/course/'+req.params.id+'/editVideo')
+    return res.redirect('/course/' + req.params.id + '/editVideo');
 })
 
-router.post('/:id/addLesson', async (req, res) =>{
+router.post('/:id/addLesson', async (req, res) => {
     var missing = await missingKeys(req.body, [
         "courseVideo",
     ]);
     if (missing) {
-        return res.redirect('/course/'+req.params.id+'/editVideo')
+        return res.redirect('/course/' + req.params.id + '/editVideo');
     }
-    var lesson ={
-        lecture_id: await courseModel.getLessonNewId(req.params.id,req.body.courseVideo.chapter_id),
-        course_id:req.params.id,
+    var lesson = {
+        lecture_id: await courseModel.getLessonNewId(req.params.id, req.body.courseVideo.chapter_id),
+        course_id: req.params.id,
         chapter_id: req.body.courseVideo.chapter_id,
-        name:req.body.courseVideo.title,
-        video:req.body.courseVideo.video,
-        length:null
+        name: req.body.courseVideo.title,
+        video: req.body.courseVideo.video,
+        length: null,
+        preview: Number(req.body.courseVideo.preview)
     }
     await courseModel.createLesson(lesson);
-    return res.redirect('/course/'+req.params.id+'/editVideo')
+    return res.redirect('/course/' + req.params.id + '/editVideo');
 })
 
-router.post('/:id/updateLesson', async (req, res) =>{
+router.post('/:id/updateLesson', async (req, res) => {
     var missing = await missingKeys(req.body, [
         "courseVideo",
     ]);
     if (missing) {
-        return res.redirect('/course/'+req.params.id+'/editVideo')
+        return res.redirect('/course/' + req.params.id + '/editVideo');
     }
-    var lesson ={
-        name:req.body.courseVideo.title,
-        video:req.body.courseVideo.video,
+    var lesson = {
+        name: req.body.courseVideo.title,
+        video: req.body.courseVideo.video,
+        preview: Number(req.body.courseVideo.preview)
     }
-    var condition={
+    var condition = {
         lecture_id: req.body.courseVideo.lecture_id,
-        course_id:req.params.id,
+        course_id: req.params.id,
         chapter_id: req.body.courseVideo.chapter_id,
     }
-    var result = await courseModel.updateLesson(lesson,condition);
+    var result = await courseModel.updateLesson(lesson, condition);
     console.log(result);
-    return res.redirect('/course/'+req.params.id+'/editVideo')
+    return res.redirect('/course/' + req.params.id + '/editVideo');
 })
 
 router.post('/:id/edit', async (req, res) => {
@@ -250,10 +246,10 @@ router.post('/:id/edit', async (req, res) => {
         "course",
     ]);
     if (missing) {
-        return res.redirect('/course/'+req.params.id+'/editVideo')
+        return res.redirect('/course/' + req.params.id + '/editVideo');
     }
     console.log(req.body.course);
-    var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category)
+    var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category);
     const course_update = {
         title: req.body.course.title,
         category: sub_category.category_id,
@@ -286,7 +282,7 @@ router.get('/:id/lecture/:lecture_id', authStudent, async (req, res) => {
     if (! await courseModel.isCourseIdExist(req.params.id)) {
         return res.status(404).send('Course not found');
     }
-    
+
     if (! await lectureModel.isLectureIdExist(req.params.id, req.params.lecture_id)) {
         return res.status(404).send('Lecture not found');
     }
@@ -313,10 +309,6 @@ router.get('/:id/lecture/:lecture_id', authStudent, async (req, res) => {
         lecture: lecture,
         description: description
     });
-});
-
-router.post('/', async (req, res) => {
-    res.status(501).send('Not implemented')
 });
 
 module.exports = router;

@@ -190,7 +190,7 @@ module.exports = {
         }
     },
     async updateLesson(lesson_update, condition) {
-        const sql = `update lecture set name = "${lesson_update.name}", video = "${lesson_update.video}"` 
+        const sql = `update lecture set name = "${lesson_update.name}", video = "${lesson_update.video}", preview = ${lesson_update.preview}` 
         + `where lecture_id = ${condition.lecture_id} and course_id = ${condition.course_id} and chapter_id = ${condition.chapter_id}`
         let res = null;
         res = await db.query(sql,[]);
@@ -252,5 +252,16 @@ module.exports = {
             return rows;
         }
         return null;    
+    }, 
+    async searchCourse(text){
+        const sql = `SELECT * FROM course WHERE MATCH(title) AGAINST("${text}" IN NATURAL LANGUAGE MODE)`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "courses"];
+        }
+        return [null, null];
     }
 }
