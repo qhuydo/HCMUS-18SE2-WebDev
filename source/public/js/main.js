@@ -55,13 +55,13 @@ function searchFunction()
                 if (result[0])
                 {
                     result[0].forEach(element => {
-                        inner +=`<h5><a href="/course/`+ element.id +`">` + element.title + `</a></h5>`;
+                        inner +=`<li class="list-group-item text-left"><a href="/course/`+ element.id +`">` + element.title + `</a></li>`;
                     });
                 }
                 if (result[1])
                 {
                     result[1].forEach(element => {
-                        inner +=`<h5><a href="/course/category?`+ element.id +`">` + element.name + `</a></h5>`;
+                        inner +=`<li class="list-group-item text-left"><a href="/course/category?`+ element.id +`">Category: ` + element.name + `</a></li>`;
                     });
                 }
             }

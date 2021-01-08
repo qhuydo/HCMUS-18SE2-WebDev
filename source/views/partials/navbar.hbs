@@ -55,11 +55,11 @@
           <!-- Search form -->
           <form class="form-inline active-blue-1 my-auto d-inline">
             <div class="md-form my-0">
-              <input class="form-control mb-2" type="text" placeholder="Search" id='search' aria-label="Search" onfocusout="removeSearchResult()" oninput="searchFunction()">
+              <input class="form-control mb-2" type="text" placeholder="Search" id='search' aria-label="Search" onclick="searchFunction()" onfocusout="removeSearchResult()" oninput="searchFunction()">
               <i class="fas fa-search text-black" aria-hidden="true"></i>
             </div>
           </form>
-          <div id='resultSearch'></div>
+          <ul class="list-group" id='resultSearch'></ul>
         </li>
 
       </ul>
