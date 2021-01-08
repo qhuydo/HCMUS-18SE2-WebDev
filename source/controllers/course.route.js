@@ -112,27 +112,25 @@ router.get('/:id/editVideo', async (req, res) =>{
     if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
         return res.status(404).send('Lecture not found');
     }
-
     const chapters = await lectureModel.getFullCourseContent(req.params.id);
     const lecture = await lectureModel.getLectures(req.params.id);
     const c = await courseModel.getCourseDetail(req.params.id);
     const description = c[0].full_description;
-    chapters.forEach(element =>{
-        element.lectures = [];
-    })
-    console.log(lecture)
-    lecture.forEach(element => {
-        let youtubeId = extractYoutubeVideoId(element.video);
-        if (youtubeId) {
-            element.youtube_id = youtubeId;
-        }
-        chapters.forEach(element2 =>{
-            if (element2.chapter_id === element.chapter_id)
-            {
-                element2.lectures.push(element);
-            }
+    if (chapters)
+    {
+        chapters.forEach(element =>{
+            element.lectures = [];
         })
-    });
+        console.log(lecture)
+        lecture.forEach(element => {
+            chapters.forEach(element2 =>{
+                if (element2.chapter_id === element.chapter_id)
+                {
+                    element2.lectures.push(element);
+                }
+            })
+        });
+    }
     res.render('vwCourse/editVideoCourse', {
         chapters: chapters,
         course_id: req.params.id,
@@ -151,9 +149,7 @@ router.post('/:id/addChapter', async (req, res) =>{
     var chapter ={
         chapter_id: await courseModel.getChapterNewId(req.params.id),
         course_id:req.params.id,
-        chapter_name:req.body.courseVideo.title,
-        lecture_count:0,
-        length:null
+        chapter_name:req.body.courseVideo.title
     }
     await courseModel.createChapter(chapter);
     return res.redirect('/course/'+req.params.id+'/editVideo')
@@ -172,7 +168,8 @@ router.post('/:id/addLesson', async (req, res) =>{
         chapter_id: req.body.courseVideo.chapter_id,
         name:req.body.courseVideo.title,
         video:req.body.courseVideo.video,
-        length:null
+        length:null,
+        preview:Number(req.body.courseVideo.preview)
     }
     await courseModel.createLesson(lesson);
     return res.redirect('/course/'+req.params.id+'/editVideo')
@@ -188,6 +185,7 @@ router.post('/:id/updateLesson', async (req, res) =>{
     var lesson ={
         name:req.body.courseVideo.title,
         video:req.body.courseVideo.video,
+        preview:Number(req.body.courseVideo.preview)
     }
     var condition={
         lecture_id: req.body.courseVideo.lecture_id,
@@ -267,10 +265,6 @@ router.get('/:id/lecture/:lecture_id', authStudent, async (req, res) => {
         lecture: lecture,
         description: description
     });
-});
-
-router.post('/', async (req, res) => {
-    res.status(501).send('Not implemented')
 });
 
 module.exports = router;

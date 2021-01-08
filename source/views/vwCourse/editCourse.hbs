@@ -32,7 +32,7 @@
               </div>
               {{/if}}
             <a class="btn btn-success mb-5" href="/">Return home</a>
-            <a class="btn btn-success mb-5 text-right" href="#">Update content of course</a>
+            <a class="btn btn-success mb-5 text-right" href="editVideo">Update content of course</a>
             <form onsubmit="checkSubmit(event)" method="POST" action="#">
                 <!-- First row -->
                 <div class="row">
@@ -55,7 +55,7 @@
                                         var sub_category_id = {{course.sub_category}};
                                     </script>
                                     <select class="form-control" id="sel2" name="course[sub_category]">
-                                        {{#each sub_categorys}}
+                                        {{#each this.sub_categories}}
                                             <script>
                                                 if (sub_category_id === {{id}})
                                                     document.write('<option selected>{{name}}</option>')
@@ -196,7 +196,7 @@
                         </div>
                         <!-- Card -->
                         <div class="text-center">
-                            <input class="btn btn-success text-center" type="submit"></button>
+                            <input class="btn btn-success text-center" type="submit">
                         </div>
                     </div>
                     <!-- Second column -->

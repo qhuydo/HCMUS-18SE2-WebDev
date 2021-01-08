@@ -83,7 +83,7 @@ module.exports = {
      * @param {number} chapter_id 
      */
     async getChapterContent(course_id, chapter_id) {
-        const  sql = `SELECT lecture_id, name, video, length, preview FROM lecture `
+        const  sql = `SELECT lecture_id, name, video, length , preview FROM lecture `
             + `WHERE course_id = ${course_id} AND chapter_id = ${chapter_id}`;
         
         const [rows, fields] = await db.select(sql).catch(err =>{
@@ -96,6 +96,4 @@ module.exports = {
         }
         return null;
     }
-
-
 }

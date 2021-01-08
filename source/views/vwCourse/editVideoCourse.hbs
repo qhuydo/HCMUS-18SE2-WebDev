@@ -24,6 +24,8 @@
 <!--Main layout-->
 <main>
     <div class="container">
+        <a class="btn btn-success mb-5" href="/">Return home</a>
+        <a class="btn btn-success mb-5 text-right" href="edit"> Edit information of course</a>
         <!--Section: Block Content-->
         <section class="mt-5 mb-4">
 
@@ -108,6 +110,10 @@
                                             aria-describedby="basic-addon1">
                                     </div>
                                 </div>
+                                <select class="form-control" id="sel2" name="courseVideo[preview]">
+                                    <option value="1" active>Preview</option>
+                                    <option value="0">Not preview</option>
+                                </select>
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-default">Save</button>
@@ -172,6 +178,10 @@
                                             aria-describedby="basic-addon1">
                                     </div>
                                 </div>
+                                <select class="form-control" id="sel2" name="courseVideo[preview]">
+                                    <option value="1" active>Preview</option>
+                                    <option value="0">Not preview</option>
+                                </select>
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-default">Save</button>
@@ -220,11 +230,16 @@
                                     {{#each this.lectures}}
                                     <div class="card card-body">
                                         <span>
-                                            <p>{{this.name}} <a name="" id="" class="btn btn-sm btn-primary"
+                                            <p>{{this.name}} 
+                                                <a name="" id="" class="btn btn-sm btn-primary"
                                                     title="Add lesson"
                                                     onclick="editLessonModal(this,'{{../chapter_name}}','{{this.name}}','{{this.video}}','{{../chapter_id}}','{{this.lecture_id}}')"
                                                     role="button">
-                                                    <i class="fas fa-pencil-alt"></i></a></p>
+                                                    <i class="fas fa-pencil-alt"></i></a>
+                                                {{#if this.preview}}
+                                                    <i class="fa fa-eye"></i>
+                                                {{/if}}
+                                            </p>
                                         </span>
                                     </div>
                                     {{/each}}

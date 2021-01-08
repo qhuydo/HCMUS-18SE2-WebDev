@@ -190,7 +190,7 @@ module.exports = {
         }
     },
     async updateLesson(lesson_update, condition) {
-        const sql = `update lecture set name = "${lesson_update.name}", video = "${lesson_update.video}"` 
+        const sql = `update lecture set name = "${lesson_update.name}", video = "${lesson_update.video}", preview = ${lesson_update.preview}` 
         + `where lecture_id = ${condition.lecture_id} and course_id = ${condition.course_id} and chapter_id = ${condition.chapter_id}`
         let res = null;
         res = await db.query(sql,[]);
