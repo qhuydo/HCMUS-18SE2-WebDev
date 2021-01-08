@@ -7,11 +7,11 @@ const courseModel = require('../models/course.model');
 
 router.get('/', async(req, res) => {
 
-    const [list,fields]= await courseModel.getAllCourse();
+    const [list,fields]= await courseModel.getSpecial();
 
     
     res.render('home', {
-        courses:list,
+        special_courses:list,
         empty: list.length ===0
     });
     // console.log(req);
