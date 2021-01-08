@@ -1,4 +1,4 @@
-{{#section 'titleExtraText'}}| Watchlist {{/section}}
+{{#section 'titleExtraText'}}| My learning {{/section}}
 
 {{#section 'css'}}
 <style>
@@ -8,56 +8,27 @@
 </style>
 {{/section}}
 
-{{#section 'js'}}
-<script>
-  $('.watchlistRemoveAction').on('click', function () {
-    const course_id = $(this).data('course_id');
-
-    // console.log(course_id);
-    $('#txtRemoveCourseID').val(course_id);
-    $('#watchlistRemoveForm').submit();
-  })
-
-  $('.watchlistMoveAction').on('click', function () {
-    const course_id = $(this).data('course_id');
-
-    // console.log(course_id);
-    $('#txtMoveCourseID').val(course_id);
-    $('#watchlistMoveForm').submit();
-  })
-</script>
-
-{{/section}}
 
 <!--Main layout-->
 <main>
   <div class="container">
     <!--Section: Block Content-->
     <section class="mt-5 mb-4">
-      {{#if session.watchlist}}
+      {{#if hasCourse}}
       <div class="container text-center py-5">
-        <h3 class="mb-0 font-weight-bold"><i class="fas fa-heart"></i> My Watchlist</h3>
+        <h3 class="mb-0 font-weight-bold"><i class="fas fa-chalkboard"></i> My Learning</h3>
       </div>
       <!--Grid row-->
       <div class="row">
-        <div class="col-lg-2"></div>
         <!--Grid column-->
+
         <div class="col-lg-8">
 
-          <!-- Card -->
-          <form id="watchlistRemoveForm" method="POST" action="/watchlist/remove">
-            <input type="hidden" id="txtRemoveCourseID" name="course_id">
-          </form>
-
-          <form id="watchlistMoveForm" method="POST" action="/watchlist/move-to-watchlist">
-            <input type="hidden" id="txtMoveCourseID" name="course_id">
-          </form>
-
-          <div class="card watch-list mb-4">
+          <div class="card mb-4">
 
             <div class="card-body">
 
-              <h5 class="mb-4">Watchlist (<span>{{session.watchlist.length}}</span> items)</h5>
+              <h5 class="mb-4"><span>{{items.length}}</span> items</h5>
               {{#each items}}
               <div class="row mb-4">
                 <div class="col-md-5 col-lg-3 col-xl-3">
@@ -83,7 +54,7 @@
                             <small class="orange-text">{{this.averageStar}}</small>
                             <span>
                               <script>
-                                var point = {{this.averageStar}};
+                                var point = {{ this.averageStar }};
                                 for (var j = 1; j <= 5; j++) {
                                   if (point >= 1) {
                                     document.write('<i class="fas fa-star orange-text"></i>');
@@ -107,35 +78,15 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                       <div>
-                        <a href="javascript:;" type="button" data-course_id="{{this.id}}"
-                          class="card-link-secondary small text-uppercase mr-3 watchlistRemoveAction"><i
-                            class="fas fa-trash-alt mr-1"></i> Remove item </a>
-                        <a href="javascript:;" href="#!" type="button" data-course_id="{{this.id}}"
-                          class="card-link-secondary small text-uppercase watchlistMoveAction"><i
-                            class="fas fa-shopping-cart mr-1"></i> Move to cart </a>
+                        <!-- TODO: EDIT THE LECTURE LINK -->
+                        <a type="button" class="card-link-secondary small text-uppercase mr-3 watchlistRemoveAction"
+                          href="/course/{{this.id}}/lecture/">
+                          <i class="fas fa-play"></i> Start Learning </a>
+                        <a type="button" class="card-link-secondary small text-uppercase mr-3 watchlistRemoveAction"
+                          href="/course/{{this.id}}">
+                          <i class="fas fa-star"></i> Rate this course </a>
+
                       </div>
-                      <p class="mb-0"> {{#is this.discount 0}}
-                        <span class="red-text font-weight-bold">
-                          <strong>{{this.full_price}} </strong>
-                            $
-                        </span>
-                        {{else}}
-
-                        <span class="grey-text">
-                          <s>
-                            <strong>{{this.full_price}} </strong>
-                            <small>
-                              $
-                            </small>
-                          </s>
-                          <span class="red-text font-weight-bold">
-                            <strong>{{this.price}} </strong>
-                              $
-                          </span>
-                        </span>
-                        {{/is}}
-                      </p>
-
                     </div>
                   </div>
                 </div>
@@ -168,6 +119,23 @@
           <!-- Card -->
 
         </div>
+
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="text-center mb-4">Continue your lecture</h5>
+              <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
+                <img class="img-fluid" src="{{items.0.image}}" alt="Previous lecture">
+                <a href="/course/{{this.id}}">
+                  <div class="mask waves-effect waves-light">
+                    <div class="mask rgba-black-slight waves-effect waves-light">Temp</div>
+                  </div>
+                </a>
+              </div>
+              <!-- TODO: add lecture link-->
+            </div>
+          </div>
+        </div>
         <!--Grid column-->
       </div>
       <!--Grid row-->
@@ -180,9 +148,9 @@
           <div class="dark-grey-text pt-4 ml-3 pl-3">
             <div>
               <h2 class="card-title font-weight-bold pt-2">
-                <strong>Your watchlist is empty</strong>
+                <strong>Your course is empty</strong>
               </h2>
-              <p class="">Your watchlist is empty. Keep browsing to find a course!</p>
+              <p class="">Your course is empty. Your course progress will appear hear!</p>
               <a class="btn btn-danger btn-sm btn-rounded clearfix d-none d-md-inline-block waves-effect waves-light"
                 href="/">
                 Keep browsing</a>

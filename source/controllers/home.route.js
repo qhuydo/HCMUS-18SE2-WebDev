@@ -5,12 +5,16 @@ const searchCourse = require('../models/course.model').searchCourse;
 const searchCatergory = require('../models/category.model').searchCategory;
 const courseModel = require('../models/course.model');
 
-router.get('/', async(req, res) => {
+router.get('/', async (req, res) => {
+
+
+
 
     const [list,fields]= await courseModel.getSpecial();
 
-    
+
     res.render('home', {
+
         special_courses:list,
         empty: list.length ===0
     });
@@ -19,20 +23,23 @@ router.get('/', async(req, res) => {
     // console.log(req.session.username);
 });
 
-router.post('/search',async(req, res) => {
+router.post('/search', async (req, res) => {
     let missing = await missingKeys(req.body, [
         "text",
     ]);
     console.log(req.body);
-    if (missing)
-         return res.send(null);
-    var [course,type] = await searchCourse(req.body.text);
-    var [category,type] = await searchCatergory(req.body.text);
+    if (missing) {
+        return res.send(null);
+    }
+    var [course, type] = await searchCourse(req.body.text);
+    var [category, type] = await searchCatergory(req.body.text);
     var array = [];
-    if (course)
+    if (course) {
         array.push(course);
-    if (category)
+    }
+    if (category) {
         array.push(category);
+    }
     res.send(array);
 })
 

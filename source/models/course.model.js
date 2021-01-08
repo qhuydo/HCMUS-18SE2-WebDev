@@ -1,7 +1,7 @@
 const { update } = require("../utils/db");
 const db = require("../utils/db");
 const instructorModel = require("./instructor.model");
-
+const { paginate } = require('./../config/default.json');
 
 module.exports = {
     async getAllCourse() {
@@ -87,7 +87,7 @@ module.exports = {
         }
         instructors = instructors.join(", ");
 
-        const sql = "SELECT id, title, full_price, price, discount, image_sm FROM course WHERE id = ?";
+        const sql = "SELECT id, title, full_price, price, discount, image, image_sm FROM course WHERE id = ?";
         const [rows, fields] = await db.query(sql, [course_id]).catch((err) => {
             console.log(err.message); // logs "Something"
         });
@@ -222,6 +222,37 @@ module.exports = {
         });
         return rows !== null && rows.length !== 0;        
     },
+
+    async numberOfCourseOfStudent(username) {
+        const sql = `SELECT COUNT(*) as count FROM course_student WHERE username = ? `;
+
+        const [rows, fields] = await db.query(sql, [username]).catch((err) => {
+            console.log(`course.model.js: numberOfCourseOfStudent ${err.message}`);
+            return null;
+        });
+
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
+            return rows[0].count;
+        }
+        return null;    
+    },
+
+    async getCourseIdListOfStudent(username, offset){
+        const sql = `SELECT * FROM course_student WHERE username = ? `
+            + ` LIMIT ${paginate.course_limit} OFFSET ${offset}`;
+
+        const [rows, fields] = await db.query(sql, [username]).catch((err) => {
+            console.log(`course.model.js: getCourseListOfStudent ${err.message}`);
+            return null;
+        });
+
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
+            return rows;
+        }
+        return null;    
+    }, 
     async searchCourse(text){
         const sql = `SELECT * FROM course WHERE MATCH(title) AGAINST("${text}" IN NATURAL LANGUAGE MODE)`;
         var [rows, fields] = await db.select(sql).catch(error => {

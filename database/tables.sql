@@ -60,11 +60,12 @@ DROP TABLE IF EXISTS `category`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `image` text,
   `icon` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`)
+  UNIQUE KEY `name_UNIQUE` (`name`),
+  FULLTEXT KEY `fullText` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -97,6 +98,7 @@ CREATE TABLE `course` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_course_sub_category_idx` (`sub_category`),
   KEY `fk_course_category_table_idx` (`category`),
+  FULLTEXT KEY `fullText` (`title`),
   CONSTRAINT `fk_course_category_table` FOREIGN KEY (`category`) REFERENCES `category` (`id`),
   CONSTRAINT `fk_course_sub_category_table` FOREIGN KEY (`sub_category`) REFERENCES `sub_category` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -422,7 +424,7 @@ CREATE TABLE `lecture` (
   KEY `fk_lecture_course` (`course_id`),
   CONSTRAINT `fk_lecture_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
   CONSTRAINT `fk_lecture_course_content` FOREIGN KEY (`chapter_id`) REFERENCES `course_content` (`chapter_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -498,8 +500,17 @@ CREATE TABLE `student` (
   `facebook` text,
   `linkedin` text,
   `youtube` text,
+  `last_review_course_id` int unsigned DEFAULT NULL,
+  `last_review_chapter_id` int unsigned DEFAULT NULL,
+  `last_review_lecture_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`username`),
-  UNIQUE KEY `email_UNIQUE` (`email`)
+  UNIQUE KEY `email_UNIQUE` (`email`),
+  KEY `fk_student_1_idx` (`last_review_course_id`),
+  KEY `fk_student_2_idx` (`last_review_chapter_id`),
+  KEY `fk_student_3_idx` (`last_review_lecture_id`),
+  CONSTRAINT `fk_student_1` FOREIGN KEY (`last_review_course_id`) REFERENCES `course` (`id`),
+  CONSTRAINT `fk_student_2` FOREIGN KEY (`last_review_chapter_id`) REFERENCES `course_content` (`chapter_id`),
+  CONSTRAINT `fk_student_3` FOREIGN KEY (`last_review_lecture_id`) REFERENCES `lecture` (`lecture_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -513,16 +524,13 @@ DROP TABLE IF EXISTS `student_lecture`;
 CREATE TABLE `student_lecture` (
   `username` varchar(45) NOT NULL,
   `course_id` int unsigned NOT NULL,
-  `chapter_id` int unsigned NOT NULL,
   `lecture_id` int unsigned NOT NULL,
   `timestamp` varchar(45) DEFAULT NULL,
   `completion` tinyint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`username`,`course_id`,`chapter_id`,`lecture_id`),
+  PRIMARY KEY (`username`,`course_id`,`lecture_id`),
   UNIQUE KEY `account_UNIQUE` (`username`),
   KEY `fk_student_lecture_course_idx` (`course_id`),
-  KEY `fk_student_lecture_chapter_idx` (`chapter_id`),
   KEY `fk_student_lecture_lecture_idx` (`lecture_id`),
-  CONSTRAINT `fk_student_lecture_chapter` FOREIGN KEY (`chapter_id`) REFERENCES `course_content` (`chapter_id`),
   CONSTRAINT `fk_student_lecture_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
   CONSTRAINT `fk_student_lecture_lecture` FOREIGN KEY (`lecture_id`) REFERENCES `lecture` (`lecture_id`),
   CONSTRAINT `fk_student_lecture_student` FOREIGN KEY (`username`) REFERENCES `student` (`username`)
@@ -582,4 +590,4 @@ CREATE TABLE `watchlist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-08  1:16:44
+-- Dump completed on 2021-01-08 21:09:19

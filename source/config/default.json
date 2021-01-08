@@ -10,6 +10,7 @@
         "queueLimit": 0
     }, 
     "paginate": {
-        "watchlist_limit": 10
+        "watchlist_limit": 10,
+        "course_limit": 10
     }
 }

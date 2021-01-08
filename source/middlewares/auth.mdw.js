@@ -23,9 +23,9 @@ module.exports = {
       req.session.retUrl = req.originalUrl;
       res.status(404);
       return res.render('error', {
-          error_code: 404
+        error_code: 404
       });
+    }
+    next();
   }
-  next();
-}
 }

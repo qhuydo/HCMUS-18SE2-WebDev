@@ -29,14 +29,16 @@ router.get('/', async function (req, res) {
     }
 
     const offset = (page - 1) * paginate.watchlist_limit;
-    
     const list = await watchlistModel.itemsFromWatchList(req.session.username, offset);
-
+    
     if (list !== null && list !== 0) {
         for (const ci of list) {
             // course data for watchlist is the same with cart
             // so I reuse the function anyway
             const course = await courseModel.getCourseDataForCart(ci.course_id);
+            course.countStudent = await courseModel.getNumberStudent(ci.course_id);
+            course.averageStar = await courseModel.getAverageStar(ci.course_id);
+            course.countRating = await courseModel.getNumberRating(ci.course_id);
             items.push(course);
         }
 
