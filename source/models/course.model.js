@@ -15,14 +15,61 @@ module.exports = {
         }
         return [null, null];
     },
+    async getAllChapter(courseId) {
+        const sql = `SELECT * FROM course_content WHERE course_id = ${courseId}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "chapter"];
+        }
+        return [null, null];
+    },
+    async getAllLessionByCourseAndChapterId(courseId,chapterId) {
+        const sql = `SELECT * FROM lecture WHERE course_id = ${courseId} and chapter_id = ${chapterId}`;
+        console.log(sql);
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "lesson"];
+        }
+        return [null, null];
+    },
     async getCourseNewId() {
         var id = 1;
         var [rowsAll, colsAll] = await this.getAllCourse();
-        if (rowsAll[0].length === 0)
+        if (rowsAll === null)
             return id;
         rowsAll.sort((a, b) => Number(a.id) - Number(b.id))
         for (let index = 0; index < rowsAll.length; index++) {
             if (Number(rowsAll[index].id) !== id) break;
+            id++;
+        }
+        return id;
+    },
+    async getChapterNewId(courseId) {
+        var id = 1;
+        var [rowsAll, colsAll] = await this.getAllChapter(courseId);
+        if (rowsAll === null)
+            return id;
+        rowsAll.sort((a, b) => Number(a.chapter_id) - Number(b.chapter_id))
+        for (let index = 0; index < rowsAll.length; index++) {
+            if (Number(rowsAll[index].chapter_id) !== id) break;
+            id++;
+        }
+        return id;
+    },
+    async getLessonNewId(courseId,chapterId) {
+        var id = 1;
+        var [rowsAll, colsAll] = await this.getAllLessionByCourseAndChapterId(courseId,chapterId);
+        if (rowsAll === null)
+            return id;
+        rowsAll.sort((a, b) => Number(a.lecture_id) - Number(b.lecture_id))
+        for (let index = 0; index < rowsAll.length; index++) {
+            if (Number(rowsAll[index].lecture_id) !== id) break;
             id++;
         }
         return id;
@@ -120,7 +167,42 @@ module.exports = {
             return { "success": 'Create success' };
         }
     },
-    async update(course_update, condition) {
+    async createChapter(chapter) {
+        let res = null;
+        res = await db.insert(chapter, 'course_content');
+        if (res.error) {
+            console.log(res.error);
+            return { "error": res.error };
+        }
+        else {
+            return { "success": 'Create success' };
+        }
+    },
+    async createLesson(lesson) {
+        let res = null;
+        res = await db.insert(lesson, 'lecture');
+        if (res.error) {
+            console.log(res.error);
+            return { "error": res.error };
+        }
+        else {
+            return { "success": 'Create success' };
+        }
+    },
+    async updateLesson(lesson_update, condition) {
+        const sql = `update lecture set name = "${lesson_update.name}", video = "${lesson_update.video}"` 
+        + `where lecture_id = ${condition.lecture_id} and course_id = ${condition.course_id} and chapter_id = ${condition.chapter_id}`
+        let res = null;
+        res = await db.query(sql,[]);
+        if (res.error) {
+            console.log(res.error);
+            return { "error": res.error };
+        }
+        else {
+            return { "success": 'Create success' };
+        }
+    },
+    async updateCourse(course_update, condition) {
         let res = null;
         res = await db.update(course_update, condition, "course")
         if (res.error) {

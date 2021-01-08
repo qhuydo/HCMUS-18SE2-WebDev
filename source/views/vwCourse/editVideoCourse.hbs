@@ -1,9 +1,9 @@
 {{#section 'css'}}
 <link rel="stylesheet" type="text/css" href="/css/vwCourse/editVideoCourse.css">
 <style>
-  body {
-    padding-top: 55px;
-  }
+    body {
+        padding-top: 55px;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css" />
@@ -13,190 +13,237 @@
 <script type="text/javascript" src="/js/vwCourse/editVideoCourse.js"></script>
 <script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
 <script>
-  $(document).ready(() => {
-    var player = new Plyr('#player');
-    window.player = player;
-  });
+    $(document).ready(() => {
+        var player = new Plyr('#player');
+        window.player = player;
+    });
 </script>
 
 {{/section}}
 
 <!--Main layout-->
 <main>
-  <div class="container">
-    <!--Section: Block Content-->
-    <section class="mt-5 mb-4">
+    <div class="container">
+        <!--Section: Block Content-->
+        <section class="mt-5 mb-4">
 
-      <!--Grid row-->
-      <div class="row">
-        <script type="text/javascript">
-            var course_id = "{{{course_id}}}";
-        </script>
-        <div id="ModalChapter" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add chapter</h4>
-            </div>
-            <div class="form-row">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1" >Title</span>
+            <!--Grid row-->
+            <div class="row">
+                <script type="text/javascript">
+                    var course_id = "{{{course_id}}}";
+                </script>
+                <div id="ModalChapter" class="modal fade" role="dialog">
+                    <form action="addChapter" method="post">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add chapter</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body mx-3">
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Title</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[title]" id="title"
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-default">Save</button>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <input type="text" class="form-control" name="courseVideo[title]" id="title"
-                        aria-describedby="basic-addon1">
+                    </form>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
-            </div>
-            </div>
-
-            </div>
-        </div>
-        <div id="ModalLesson" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add Lesson</h4>
-            </div>
-            <div class="form-row">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1" >Chapter name</span>
+                <div id="ModalLesson" class="modal fade" role="dialog">
+                    <form action="addLesson" method="post">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Lesson</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body mx-3">
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Chapter id</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[chapter_id]"
+                                            id="chapterId" aria-describedby="basic-addon1" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Chapter name</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[chapter_name]"
+                                            id="chapterName" aria-describedby="basic-addon1" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Title</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[title]"
+                                            id="titleLesson" aria-describedby="basic-addon1" size="50">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Link youtube</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[video]" id="video"
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
                     </div>
-                    <input type="text" class="form-control" name="courseVideo[chapter_name]" id="chapterName"
-                        aria-describedby="basic-addon1" readonly>
+                    </form>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1" >Title</span>
+                <div id="ModalEditLesson" class="modal fade" role="dialog">
+                    <form action="updateLesson" method="post">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Lesson</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body mx-3">
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Chapter id</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[chapter_id]"
+                                            id="chapterId2" aria-describedby="basic-addon1" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Chapter name</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[chapter_name]"
+                                            id="chapterName2" aria-describedby="basic-addon1" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Lesson id</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[lecture_id]"
+                                            id="lectureId" aria-describedby="basic-addon1" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Title</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[title]" id="title2"
+                                            aria-describedby="basic-addon1" size="50">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Link youtube</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="courseVideo[video]" id="video2"
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
                     </div>
-                    <input type="text" class="form-control" name="courseVideo[title]" id="title"
-                        aria-describedby="basic-addon1" size="50">
+                    </form>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Link youtube</span>
+
+                <!--Grid column-->
+                <div class="card w-100">
+                    <div class="card-body">
+                        <span>
+                            <h3 class="text-center">
+                                Course outline
+                                <a name="" id="" class="btn btn-sm btn-primary" title="Edit Category"
+                                    data-toggle="modal" data-target="#ModalChapter">
+                                    <i class="fas fa-plus"></i></a>
+                            </h3>
+
+                        </span>
+
+                        <hr>
+                        <!--Accordion wrapper-->
+                        <div class="accordion md-accordion" id="accordionEx1" role="tablist"
+                            aria-multiselectable="true">
+                            {{#each chapters}}
+                            <!-- Accordion card -->
+                            <div class="card">
+                                <!-- Card header -->
+                                <div class="card-header" role="tab" id="headingTwo{{this.chapter_id}}">
+                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx1"
+                                        href="#collapseTwo{{this.chapter_id}}" aria-expanded="false"
+                                        aria-controls="collapseTwo{{this.chapter_id}}">
+                                        <h5 class="mb-0">
+                                            {{this.chapter_name}} <i class="fas fa-angle-down rotate-icon"></i>
+                                            <a name="" id="" class="btn btn-sm btn-primary" title="Add lesson"
+                                                onclick="addLessonModal(this,'{{this.chapter_name}}','{{this.chapter_id}}')"
+                                                role="button">
+                                                <i class="fas fa-plus"></i></a>
+                                        </h5>
+                                    </a>
+                                </div>
+
+                                <div class="collapse" id="collapseTwo{{this.chapter_id}}">
+                                    {{#each this.lectures}}
+                                    <div class="card card-body">
+                                        <span>
+                                            <p>{{this.name}} <a name="" id="" class="btn btn-sm btn-primary"
+                                                    title="Add lesson"
+                                                    onclick="editLessonModal(this,'{{../chapter_name}}','{{this.name}}','{{this.video}}','{{../chapter_id}}','{{this.lecture_id}}')"
+                                                    role="button">
+                                                    <i class="fas fa-pencil-alt"></i></a></p>
+                                        </span>
+                                    </div>
+                                    {{/each}}
+                                </div>
+
+                            </div>
+                            <!-- Accordion card -->
+                            {{/each}}
+                        </div>
+                        <!-- Accordion wrapper -->
                     </div>
-                    <input type="text" class="form-control" name="courseVideo[video]" id="title"
-                        aria-describedby="basic-addon1">
                 </div>
+                <!-- Card -->
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
-            </div>
-            </div>
+            <!--Grid row-->
 
-            </div>
-        </div>
-        <div id="ModalEditLesson" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add Lesson</h4>
-            </div>
-            <div class="form-row">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1" >Chapter name</span>
-                    </div>
-                    <input type="text" class="form-control" name="courseVideo[chapter_name]" id="chapterName2"
-                        aria-describedby="basic-addon1" readonly>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1" >Title</span>
-                    </div>
-                    <input type="text" class="form-control" name="courseVideo[title]" id="title2"
-                        aria-describedby="basic-addon1" size="50">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Link youtube</span>
-                    </div>
-                    <input type="text" class="form-control" name="courseVideo[video]" id="video2"
-                        aria-describedby="basic-addon1">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
-            </div>
-            </div>
+        </section>
+        <!--Section: Block Content-->
 
-            </div>
-        </div>
-
-        <!--Grid column-->
-          <div class="card w-100">
-            <div class="card-body">
-                <span>
-                    <h3 class="text-center">
-                        Course outline
-                        <a name="" id="" class="btn btn-sm btn-primary" title="Edit Category"
-                        data-toggle="modal" data-target="#ModalChapter">
-                        <i class="fas fa-plus"></i></a>
-                    </h3>
-                    
-                </span>
-              
-              <hr>
-              <!--Accordion wrapper-->
-              <div class="accordion md-accordion" id="accordionEx1" role="tablist" aria-multiselectable="true">
-                {{#each chapters}}             
-                <!-- Accordion card -->
-                <div class="card">
-                  <!-- Card header -->
-                  <div class="card-header" role="tab" id="headingTwo{{this.chapter_id}}">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx1"
-                      href="#collapseTwo{{this.chapter_id}}" aria-expanded="false"
-                      aria-controls="collapseTwo{{this.chapter_id}}">
-                      <h5 class="mb-0">
-                        {{this.chapter_name}} <i class="fas fa-angle-down rotate-icon"></i>
-                        <a name="" id="" class="btn btn-sm btn-primary" title="Add lesson"
-                        onclick="addLessonModal(this,'{{this.chapter_name}}')" role="button">
-                        <i class="fas fa-plus"></i></a>
-                      </h5>
-                    </a>
-                  </div>
-
-                  <div class="collapse" id="collapseTwo{{this.chapter_id}}">
-                      {{#each this.lectures}}
-                          <div class="card card-body">
-                            <span>
-                              <p>{{this.name}} <a name="" id="" class="btn btn-sm btn-primary" title="Add lesson"
-                                onclick="editLessonModal(this,'{{../chapter_name}}','{{this.name}}','{{this.video}}')" role="button">
-                                <i class="fas fa-pencil-alt"></i></a></p>
-                            </span>
-                         </div>
-                      {{/each}}
-                  </div>
-
-                </div>
-                <!-- Accordion card -->
-                {{/each}}
-              </div>
-              <!-- Accordion wrapper -->
-            </div>
-          </div>
-        <!-- Card -->
-      </div>
-      <!--Grid row-->
-
-    </section>
-    <!--Section: Block Content-->
-
-  </div>
+    </div>
 </main>
 <!--Main layout-->

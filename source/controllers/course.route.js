@@ -141,12 +141,70 @@ router.get('/:id/editVideo', async (req, res) =>{
     });
 })
 
+router.post('/:id/addChapter', async (req, res) =>{
+    var missing = await missingKeys(req.body, [
+        "courseVideo",
+    ]);
+    if (missing) {
+        return res.redirect('/course/'+req.params.id+'/editVideo')
+    }
+    var chapter ={
+        chapter_id: await courseModel.getChapterNewId(req.params.id),
+        course_id:req.params.id,
+        chapter_name:req.body.courseVideo.title,
+        lecture_count:0,
+        length:null
+    }
+    await courseModel.createChapter(chapter);
+    return res.redirect('/course/'+req.params.id+'/editVideo')
+})
+
+router.post('/:id/addLesson', async (req, res) =>{
+    var missing = await missingKeys(req.body, [
+        "courseVideo",
+    ]);
+    if (missing) {
+        return res.redirect('/course/'+req.params.id+'/editVideo')
+    }
+    var lesson ={
+        lecture_id: await courseModel.getLessonNewId(req.params.id,req.body.courseVideo.chapter_id),
+        course_id:req.params.id,
+        chapter_id: req.body.courseVideo.chapter_id,
+        name:req.body.courseVideo.title,
+        video:req.body.courseVideo.video,
+        length:null
+    }
+    await courseModel.createLesson(lesson);
+    return res.redirect('/course/'+req.params.id+'/editVideo')
+})
+
+router.post('/:id/updateLesson', async (req, res) =>{
+    var missing = await missingKeys(req.body, [
+        "courseVideo",
+    ]);
+    if (missing) {
+        return res.redirect('/course/'+req.params.id+'/editVideo')
+    }
+    var lesson ={
+        name:req.body.courseVideo.title,
+        video:req.body.courseVideo.video,
+    }
+    var condition={
+        lecture_id: req.body.courseVideo.lecture_id,
+        course_id:req.params.id,
+        chapter_id: req.body.courseVideo.chapter_id,
+    }
+    var result = await courseModel.updateLesson(lesson,condition);
+    console.log(result);
+    return res.redirect('/course/'+req.params.id+'/editVideo')
+})
+
 router.post('/:id/edit', async (req, res) => {
     var missing = await missingKeys(req.body, [
         "course",
     ]);
     if (missing) {
-        return res.redirect('/')
+        return res.redirect('/course/'+req.params.id+'/editVideo')
     }
     console.log(req.body.course);
     var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category)
@@ -167,7 +225,7 @@ router.post('/:id/edit', async (req, res) => {
     const condition = {
         id: req.params.id
     }
-    var result = await courseModel.update(course_update, condition);
+    var result = await courseModel.updateCourse(course_update, condition);
     if (result.error) {
         console.log(result.error)
         req.body.fail = "Create with this query not success";
