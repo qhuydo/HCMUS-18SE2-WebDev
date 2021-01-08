@@ -8,6 +8,8 @@ const dateformat = require('dateformat');
 const { authStudent } = require('../middlewares/auth.mdw');
 const lectureModel = require('../models/lecture.model');
 const { extractYoutubeVideoId } = require('../utils/linkExtractor');
+const { paginate } = require('../config/default.json');
+const cartModel = require('../models/cart.model');
 
 router.get('/byCat', async (req, res) => {
     res.render('vwCourses/byCat');
@@ -60,6 +62,50 @@ router.post('/add', async (req, res) => {
     res.redirect('/')
 });
 
+
+router.get('/myCourse/', authStudent, async(req, res) => {
+    const items = [];
+
+    let page = req.query.page || 1;
+    page = page < 1? 1: page;
+
+    const total = await courseModel.numberOfCourseOfStudent(req.session.username) || 0;
+    let nPages = Math.floor(total / paginate.course_limit);
+    if (total % paginate.course_limit > 0) {
+        nPages++;
+    }
+    
+    const page_numbers = [];
+    for (i = 1; i <= nPages; i++) {
+        page_numbers.push({
+            value: i,
+            isCurrentPage: i === +page
+        });
+    }
+
+    const offset = (page - 1) * paginate.course_limit;
+    const list = await courseModel.getCourseIdListOfStudent(req.session.username, offset);
+    
+    if (list !== null && list !== 0) {
+        for (const ci of list) {
+            const course = await courseModel.getCourseDataForCart(ci.course_id);
+            course.countStudent = await courseModel.getNumberStudent(ci.course_id);
+            course.averageStar = await courseModel.getAverageStar(ci.course_id);
+            course.countRating = await courseModel.getNumberRating(ci.course_id);
+            items.push(course);
+        }
+
+    }
+    // console.log(items);
+
+    res.render('vwCourses/byStudent', {
+        items,
+        hasCourse: total.length !== 0, 
+        page_numbers
+    })
+
+});
+
 router.get('/:id', async (req, res, next) => {
     if (req.session.type === "instructor") {
         res.status(501).send('Not implemented');
@@ -77,7 +123,7 @@ router.get('/:id', async (req, res, next) => {
             var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
             var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
             var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
-            return res.render('vwCourse/CourseDetail', {
+            return res.render('vwCourse/courseDetail', {
                 review: review,
                 course: course,
                 numStudent: countStudent,

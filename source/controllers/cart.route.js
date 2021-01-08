@@ -9,39 +9,41 @@ const router = express.Router();
 const Decimal = require('decimal.js');
 
 router.get('/', async function (req, res) {
-    const items = [];
+  const items = [];
 
-    full_price = new Decimal(0);
-    total_price = new Decimal(0);
-    discount = new Decimal(0);
+  full_price = new Decimal(0);
+  total_price = new Decimal(0);
+  discount = new Decimal(0);
 
-    if (req.session.cart !== null && req.session.cart.length !== 0) {
-      for(const ci of req.session.cart) {
-          const course = await courseModel.getCourseDataForCart(ci.course_id);
-          items.push(course);
-          full_price = full_price.plus(Number.parseFloat(course.full_price));
-          total_price = total_price.plus(Number.parseFloat(course.price));
-      }
-  
-      discount = full_price.minus(total_price);
-
+  if (req.session.cart !== null && req.session.cart.length !== 0) {
+    for (const ci of req.session.cart) {
+      const course = await courseModel.getCourseDataForCart(ci.course_id);
+      course.countStudent = await courseModel.getNumberStudent(ci.course_id);
+      course.averageStar = await courseModel.getAverageStar(ci.course_id);
+      course.countRating = await courseModel.getNumberRating(ci.course_id);
+      items.push(course);
+      full_price = full_price.plus(Number.parseFloat(course.full_price));
+      total_price = total_price.plus(Number.parseFloat(course.price));
     }
-    // console.log(items);
+    discount = full_price.minus(total_price);
 
-    res.render('vwCart/index.hbs', {
-        items,
-        full_price,
-        total_price,
-        discount
-    });
+  }
+  // console.log(items);
+
+  res.render('vwCart/index.hbs', {
+    items,
+    full_price,
+    total_price,
+    discount
+  });
 });
 
 router.post('/add', async function (req, res) {
   const course_id = +req.body.course_id;
   const username = req.session.username;
-  
+
   await cartModel.addItemToCart(username, course_id);
-  
+
   await req.session.save(function (err) {
     console.log(err);
     res.redirect(req.headers.referer);
@@ -58,7 +60,7 @@ router.post('/remove', async function (req, res) {
     console.log(err);
     res.redirect(req.headers.referer);
   });
-  
+
 });
 
 router.post('/move-to-watchlist', async function (req, res) {
@@ -68,7 +70,7 @@ router.post('/move-to-watchlist', async function (req, res) {
 
   await cartModel.removeItemFromCart(username, course_id);
   await watchlistModel.addItemToWatchlist(username, course_id);
-  
+
   await req.session.save(function (err) {
     res.redirect(req.headers.referer);
   });
