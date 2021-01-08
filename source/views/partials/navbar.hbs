@@ -53,13 +53,16 @@
       <ul class="navbar-nav mr-auto" style="text-align:center">
         <li class="nav-item">
           <!-- Search form -->
-          <form class="form-inline active-blue-1 my-auto d-inline">
+          <form class="form-inline active-blue-1 my-auto d-inline waves-light waves-effect waves-light">
             <div class="md-form my-0">
               <input class="form-control mb-2" type="text" placeholder="Search" id='search' aria-label="Search" onclick="searchFunction()" onfocusout="removeSearchResult()" oninput="searchFunction()">
               <i class="fas fa-search text-black" aria-hidden="true"></i>
             </div>
           </form>
           <ul class="list-group" id='resultSearch'></ul>
+          <!-- div class="dropdown-wrapper" id='resultSearch'-->
+            <!-- -->
+          <!--/div-->
         </li>
 
       </ul>
@@ -72,7 +75,7 @@
         <!-- button for student-->
         {{#eq session.type "student"}}
         <li class="nav-item">
-          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold mr-4" href="/course/myCourse"><i class="fas fa-chalkboard"></i>
+          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold mr-4" href="/course/myLearning"><i class="fas fa-chalkboard"></i>
           My learning</a>
         </li>
         <li class="nav-item">
@@ -94,7 +97,7 @@
         <!-- button for instructor-->
         {{#eq session.type "instructor"}}
         <li class="nav-item">
-          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="#">
+          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="/course/myCourse">
             <i class="fas fa-chalkboard"></i> My course</a>
         </li>
         {{/eq}}

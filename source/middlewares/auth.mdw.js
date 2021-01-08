@@ -27,5 +27,16 @@ module.exports = {
       });
     }
     next();
+  },
+
+  authInstructor(req, res, next) {
+    if (req.session.auth !== true || req.session.type !== "instructor") {
+      req.session.retUrl = req.originalUrl;
+      res.status(404);
+      return res.render('error', {
+        error_code: 404
+      });
+    }
+    next();
   }
 }

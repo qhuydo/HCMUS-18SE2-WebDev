@@ -5,7 +5,7 @@ const instructorModel = require('../models/instructor.model');
 const categoryModel = require('../models/category.model');
 const missingKeys = require("../utils/otherFunction").missingKeys;
 const dateformat = require('dateformat');
-const { authStudent } = require('../middlewares/auth.mdw');
+const auth = require('../middlewares/auth.mdw');
 const lectureModel = require('../models/lecture.model');
 const { extractYoutubeVideoId } = require('../utils/linkExtractor');
 const { paginate } = require('../config/default.json');
@@ -63,7 +63,7 @@ router.post('/add', async (req, res) => {
 });
 
 
-router.get('/myCourse/', authStudent, async (req, res) => {
+router.get('/myLearning', auth.authStudent, async (req, res) => {
     const items = [];
 
     let page = req.query.page || 1;
@@ -106,39 +106,80 @@ router.get('/myCourse/', authStudent, async (req, res) => {
 
 });
 
+router.get('/myCourse', auth.authInstructor, async (req, res) => {
+    const items = [];
+
+    let page = req.query.page || 1;
+    page = page < 1 ? 1 : page;
+
+    const total = await courseModel.numberOfCourseOfStudent(req.session.username) || 0;
+    let nPages = Math.floor(total / paginate.course_limit);
+    if (total % paginate.course_limit > 0) {
+        nPages++;
+    }
+
+    const page_numbers = [];
+    for (i = 1; i <= nPages; i++) {
+        page_numbers.push({
+            value: i,
+            isCurrentPage: i === +page
+        });
+    }
+
+    const offset = (page - 1) * paginate.course_limit;
+    const list = await courseModel.getCourseIdListOfInstructor(req.session.username, offset);
+
+    if (list !== null && list !== 0) {
+        for (const ci of list) {
+            const course = await courseModel.getCourseDataForCart(ci.course_id);
+            course.countStudent = await courseModel.getNumberStudent(ci.course_id);
+            course.averageStar = await courseModel.getAverageStar(ci.course_id);
+            course.countRating = await courseModel.getNumberRating(ci.course_id);
+            items.push(course);
+        }
+
+    }
+    // console.log(items);
+
+    return res.render('vwCourses/byInstructor', {
+        items,
+        hasCourse: total.length !== 0,
+        page_numbers
+    })
+});
+
 router.get('/:id', async (req, res, next) => {
     if (req.session.type === "instructor") {
-        res.status(501).send('Not implemented');
+        // res.status(501).send('Not implemented');
     }
-    if (req.session.type === "student" || req.session.type === "adminstrator") {
-        var [course, type] = await courseModel.getCourseDetail(req.params.id);
-        //var [course_content,type] = await courseModel
-        if (course) {
-            var [review, type] = await courseModel.getCourseRating(req.params.id);
-            var countStudent = await courseModel.getNumberStudent(req.params.id);
-            var averageStar = await courseModel.getAverageStar(req.params.id);
-            var countRating = await courseModel.getNumberRating(req.params.id);
-            var [instructor, type] = await instructorModel.getInstructor(req.params.id);
-            var studentOfInstructor = await instructorModel.getNumberStudent(instructor.username);
-            var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
-            var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
-            var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
-            return res.render('vwCourse/courseDetail', {
-                review: review,
-                course: course,
-                numStudent: countStudent,
-                avgStar: averageStar,
-                numRating: countRating,
-                instructor: instructor,
-                instructorStudent: studentOfInstructor,
-                instructorReview: reviewOfInstructor,
-                instructorAvgStart: avgStartOfInstructor,
-                instructorCourse: countCourseOfInstructor
-            });
-        }
-        res.render('home');
+    // if (req.session.type === "student" || req.session.type === "adminstrator") {
+    var [course, type] = await courseModel.getCourseDetail(req.params.id);
+    //var [course_content,type] = await courseModel
+    if (course) {
+        var [review, type] = await courseModel.getCourseRating(req.params.id);
+        var countStudent = await courseModel.getNumberStudent(req.params.id);
+        var averageStar = await courseModel.getAverageStar(req.params.id);
+        var countRating = await courseModel.getNumberRating(req.params.id);
+        var [instructor, type] = await instructorModel.getInstructor(req.params.id);
+        var studentOfInstructor = await instructorModel.getNumberStudent(instructor.username);
+        var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
+        var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
+        var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
+        return res.render('vwCourse/courseDetail', {
+            review: review,
+            course: course,
+            numStudent: countStudent,
+            avgStar: averageStar,
+            numRating: countRating,
+            instructor: instructor,
+            instructorStudent: studentOfInstructor,
+            instructorReview: reviewOfInstructor,
+            instructorAvgStart: avgStartOfInstructor,
+            instructorCourse: countCourseOfInstructor
+        });
     }
-    next();
+    res.render('home');
+    // }
 });
 
 router.get('/:id/edit', async (req, res) => {
@@ -276,7 +317,7 @@ router.post('/:id/edit', async (req, res) => {
     res.redirect('/course/' + req.params.id + '/edit');
 })
 
-router.get('/:id/lecture/:lecture_id', authStudent, async (req, res) => {
+router.get('/:id/lecture/:lecture_id', auth.authStudent, async (req, res) => {
     // console.log(req.params.id);
     // console.log(req.params.lecture_id);
     if (! await courseModel.isCourseIdExist(req.params.id)) {

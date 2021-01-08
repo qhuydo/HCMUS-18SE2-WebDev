@@ -274,6 +274,37 @@ module.exports = {
             return [rows, "courses"];
         }
         return [null, null];
+    }, 
+
+    async numberOfCourseOfInstructor(username) {
+        const sql = `SELECT COUNT(*) as count FROM course_instructor WHERE username = ? `;
+
+        const [rows, fields] = await db.query(sql, [username]).catch((err) => {
+            console.log(`course.model.js: numberOfCourseOfInstructor ${err.message}`);
+            return null;
+        });
+
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
+            return rows[0].count;
+        }
+        return null;    
+    }, 
+
+    async getCourseIdListOfInstructor(username, offset){
+        const sql = `SELECT * FROM course_instructor WHERE username = ? `
+            + ` LIMIT ${paginate.course_limit} OFFSET ${offset}`;
+
+        const [rows, fields] = await db.query(sql, [username]).catch((err) => {
+            console.log(`course.model.js: getCourseIdListOfInstructor ${err.message}`);
+            return null;
+        });
+
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
+            return rows;
+        }
+        return null;    
     }
     
 }

@@ -7,7 +7,7 @@ $('.dropdown-menu a.dropdown-toggle').on('mouseenter', function (e) {
         }
         var $subMenu = $(this).next(".dropdown-menu");
         $subMenu.toggleClass('show');
-        
+
         $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function (e) {
             $('.dropdown-submenu .show').removeClass("show");
         });
@@ -35,8 +35,7 @@ $('.dropdown-menu a.dropdown-toggle').on('click', function (e) {
     return true;
 });
 
-function searchFunction()
-{
+function searchFunction() {
     var input = $("#search").val();
     $.ajax({
         type: "POST",
@@ -44,37 +43,43 @@ function searchFunction()
         dataType: 'json',
         async: false,
         data: {
-            text:input
+            text: input
         },
-        success: function(result) {
+        success: function (result) {
+            // <div class="dropdown-menu dropdown-menu-right dropdown-cyan show" aria-labelledby="navbarDropdownMenuLink-4">
+            //     <a class="dropdown-item waves-effect waves-light dark-grey-text" href="/account/profile"><i class="fas fa-user-edit"></i> My Profile</a>
+            //     <hr class="dropdown-divider">
+            //     <a class="dropdown-item waves-effect waves-light dark-grey-text" href="/account/logout"><i class="fas fa-sign-out-alt"></i> Log out</a>
+            //   </div>
             var resultSearch = document.getElementById('resultSearch');
             resultSearch.innerHTML = "";
-            var inner = ""
-            if (result && result !== undefined && result.length !== 0)
-            {
-                if (result[0])
-                {
+            var inner = `<div class="dropdown-menu ml-5 dropdown-cyan show" aria-labelledby="resultSearch">`;
+            //var inner = `<ul class="search-dropdown z-depth-3">`;
+            if (result && result !== undefined && result.length !== 0) {
+                if (result[0]) {
                     result[0].forEach(element => {
-                        inner +=`<li class="list-group-item text-left"><a href="/course/`+ element.id +`">` + element.title + `</a></li>`;
+                        inner += `<li class="list-group-item text-left"><a href="/course/${element.id}">${element.title}</a></li>`;
+                        // inner += `<a class="dropdown-item waves-effect waves-light dark-grey-text" href="/course/${element.id}">${element.title}</a>`;
                     });
                 }
-                if (result[1])
-                {
+                if (result[1]) {
                     result[1].forEach(element => {
-                        inner +=`<li class="list-group-item text-left"><a href="/course/category?`+ element.id +`">Category: ` + element.name + `</a></li>`;
+                        inner += `<li class="list-group-item text-left"><a href="/course/category?${element.id}">Category: ${element.name}</a></li>`;
+                        // inner += `<a class="dropdown-item waves-effect waves-light dark-grey-text" href="/course/category?${element.id}">Category: ${element.name}</a>`;
                     });
                 }
+                inner += `</div>`;
+                // inner += `</ul>`;
             }
-            else
-            {
-                inner += `<p>not result<p>`;
+            else {
+                inner += `<p>No result<p>`;
             }
             resultSearch.innerHTML = inner;
         }
     });
 }
 
-function removeSearchResult(){
+function removeSearchResult() {
     var resultSearch = document.getElementById('resultSearch');
     resultSearch.innerHTML = "";
 }

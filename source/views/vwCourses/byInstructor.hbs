@@ -1,4 +1,4 @@
-{{#section 'titleExtraText'}}| My learning {{/section}}
+{{#section 'titleExtraText'}}| My Course {{/section}}
 
 {{#section 'css'}}
 <style>
@@ -16,12 +16,12 @@
     <section class="mt-5 mb-4">
       {{#if hasCourse}}
       <div class="container text-center py-5">
-        <h3 class="mb-0 font-weight-bold"><i class="fas fa-chalkboard"></i> My Learning</h3>
+        <h3 class="mb-0 font-weight-bold"><i class="fas fa-chalkboard"></i> My Course</h3>
       </div>
       <!--Grid row-->
       <div class="row">
         <!--Grid column-->
-
+        <div class="col-lg-2"></div>
         <div class="col-lg-8">
 
           <div class="card mb-4">
@@ -80,11 +80,11 @@
                       <div>
                         <!-- TODO: EDIT THE LECTURE LINK -->
                         <a type="button" class="card-link-secondary small text-uppercase mr-3 watchlistRemoveAction"
-                          href="/course/{{this.id}}/lecture/">
-                          <i class="fas fa-play"></i> Start Learning </a>
+                          href="/course/{{this.id}}/edit">
+                          <i class="fas fa-edit"></i> Edit course </a>
                         <a type="button" class="card-link-secondary small text-uppercase mr-3 watchlistRemoveAction"
-                          href="/course/{{this.id}}">
-                          <i class="fas fa-star"></i> Rate this course </a>
+                          href="/course/{{this.id}}/editVideo">
+                          <i class="fas fa-photo-video"></i> Edit video </a>
 
                       </div>
                     </div>
@@ -118,23 +118,6 @@
           </div>
           <!-- Card -->
 
-        </div>
-
-        <div class="col-lg-4">
-          <div class="card mb-4">
-            <div class="card-body">
-              <h5 class="text-center mb-4">Continue your lecture</h5>
-              <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
-                <img class="img-fluid" src="{{items.0.image}}" alt="Previous lecture">
-                <a href="/course/{{items.0.id}}">
-                  <div class="mask waves-effect waves-light">
-                    <div class="mask rgba-black-slight waves-effect waves-light">Temp</div>
-                  </div>
-                </a>
-              </div>
-              <!-- TODO: add lecture link-->
-            </div>
-          </div>
         </div>
         <!--Grid column-->
       </div>
