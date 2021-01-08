@@ -34,3 +34,47 @@ $('.dropdown-menu a.dropdown-toggle').on('click', function (e) {
     }
     return true;
 });
+
+function searchFunction()
+{
+    var input = $("#search").val();
+    $.ajax({
+        type: "POST",
+        url: "/search",
+        dataType: 'json',
+        async: false,
+        data: {
+            text:input
+        },
+        success: function(result) {
+            var resultSearch = document.getElementById('resultSearch');
+            resultSearch.innerHTML = "";
+            var inner = ""
+            if (result && result !== undefined && result.length !== 0)
+            {
+                if (result[0])
+                {
+                    result[0].forEach(element => {
+                        inner +=`<h5><a href="/course/`+ element.id +`">` + element.title + `</a></h5>`;
+                    });
+                }
+                if (result[1])
+                {
+                    result[1].forEach(element => {
+                        inner +=`<h5><a href="/course/category?`+ element.id +`">` + element.name + `</a></h5>`;
+                    });
+                }
+            }
+            else
+            {
+                inner += `<p>not result<p>`;
+            }
+            resultSearch.innerHTML = inner;
+        }
+    });
+}
+
+function removeSearchResult(){
+    var resultSearch = document.getElementById('resultSearch');
+    resultSearch.innerHTML = "";
+}

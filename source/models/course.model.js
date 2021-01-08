@@ -221,5 +221,16 @@ module.exports = {
             return false;
         });
         return rows !== null && rows.length !== 0;        
+    },
+    async searchCourse(text){
+        const sql = `SELECT * FROM course WHERE MATCH(title) AGAINST("${text}" IN NATURAL LANGUAGE MODE)`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "courses"];
+        }
+        return [null, null];
     }
 }
