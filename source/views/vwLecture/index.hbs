@@ -100,11 +100,11 @@
                         <input type="checkbox" class="form-check-input" id="materialChecked{{this.lecture_id}}">
                         <label class="form-check-label" for="materialChecked{{this.lecture_id}}">
                           {{#if (eq this.lecture_id ../../lecture.lecture_id)}}
-                          <a href="/course/{{../../course_id}}/lecture/{{this.lecture_id}}" class="text-default">
+                          <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}" class="text-default">
                             {{this.name}}
                           </a>
                           {{else}}
-                          <a href="/course/{{../../course_id}}/lecture/{{this.lecture_id}}" class="text-dark">
+                          <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}" class="text-dark">
                             {{this.name}}
                           </a>
                           {{/if}}
