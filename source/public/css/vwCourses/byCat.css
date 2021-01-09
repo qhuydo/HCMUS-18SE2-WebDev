@@ -1,0 +1,17 @@
+.imageSlide{
+    width: 260px;
+    height: 200px;
+    -webkit-border-radius: 0px;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 0px;
+    -moz-background-clip: padding;
+    border-radius: 0px;
+    background-clip: padding-box;
+    margin: 7px 0 0 5px;
+    float: left;
+}
+.card-ecommerce{
+    width: 270px;
+    height: 550px;
+    float: left;
+}

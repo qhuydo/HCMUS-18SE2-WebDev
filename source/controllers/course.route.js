@@ -13,7 +13,74 @@ const cartModel = require('../models/cart.model');
 const { parseJSON } = require('jquery');
 
 router.get('/byCat', async (req, res) => {
-    res.render('vwCourses/byCat');
+    console.log(req.query);
+    var searchBefore = "default";
+    var [allCategory,type] = await categoryModel.getAllCategory();
+    let page = req.query.page || 1;
+    page = page < 1 ? 1 : page;
+    if (req.session.searchBefore)
+    {
+        searchBefore = req.session.searchBefore;
+    }
+    if (req.query.orderBy)
+    {
+        searchBefore = req.query.orderBy;
+    }
+    if (req.query.category_id)
+    {
+        searchBefore = req.query.category_id
+    }
+    var total = 0;
+    if (Number.isNaN(searchBefore))
+        total = await courseModel.countCourseSort(searchBefore,null,0) || 0;
+    else
+        total = await courseModel.countCourseSort(null,searchBefore,0) || 0;
+    console.log(total);
+    let nPages = Math.floor(total / 6);
+    if (total % 6 > 0) {
+        nPages++;
+    }
+
+    const page_numbers = [];
+    for (i = 1; i <= nPages; i++) {
+        page_numbers.push({
+            value: i,
+            isCurrentPage: i === +page
+        });
+    }
+    var courses = [];
+    const offset = (page - 1) * 6;
+    if (req.session.searchBefore === searchBefore)
+    {
+        courses = await courseModel.courseSort(searchBefore,searchBefore,offset);
+        courses.forEach(async element => {
+            var [category,type] = await categoryModel.getCategoryByCategoryId(element.category);
+            element.category = category;
+            element.isBuy = await courseModel.isBuy(element.id,req.session.username);
+            element.inCart = await cartModel.hasItemInCart(req.session.username,element.id);
+        });
+        return res.render('vwCourses/byCat',{
+            categories:allCategory,
+            courses:courses,
+            page_numbers
+        });
+    }
+    courses = await courseModel.courseSort(searchBefore,searchBefore,offset);
+    if (courses)
+    {
+        courses.forEach(async element => {
+            var [category,type] = await categoryModel.getCategoryByCategoryId(element.category);
+            element.category = category;
+            element.isBuy = await courseModel.isBuy(element.id,req.session.username);
+            element.inCart = await cartModel.hasItemInCart(req.session.username,element.id);
+        });
+    }
+    req.session.searchBefore = searchBefore;
+    res.render('vwCourses/byCat',{
+        categories:allCategory,
+        courses:courses,
+        page_numbers
+    });
 });
 
 router.get('/add', async (req, res) => {

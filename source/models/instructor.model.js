@@ -33,12 +33,12 @@ module.exports = {
         +` WHERE course_instructor.username = "${intructor_username}"`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
-            return [null, null];    
+            return 0;    
         });
         if (rows.length !== 0) {
             return Math.round(rows[0].averagePoint * 10) / 10;
         }
-        return [null, null];
+        return 0;
     },
     async getNumberStudent(intructor_username){
         const sql = `SELECT Count(*) as numberStudent FROM course_instructor` 

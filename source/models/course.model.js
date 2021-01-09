@@ -2,6 +2,8 @@ const { update } = require("../utils/db");
 const db = require("../utils/db");
 const instructorModel = require("./instructor.model");
 const { paginate } = require('./../config/default.json');
+const { getAverageStar } = require("./instructor.model");
+const categoryModel = require("./category.model");
 
 module.exports = {
     async getAllCourse() {
@@ -348,5 +350,108 @@ module.exports = {
             return [rows, "courses"];
         }
         return [null, null];
-    }, 
+    },
+    async countCourseSort(orderBy,categoryFilter,page){
+        var sql=`SELECT * FROM course`;
+        if (orderBy)
+        {
+            var [rows,cols] = await db.select(sql).catch(error => {
+                console.log(error.message);
+                return [null, null];
+            });
+            if (rows)
+                return rows.length;
+            else
+                return 0;
+        }
+        if (categoryFilter)
+        {
+            sql += ` WHERE category = ${categoryFilter}`;
+            var [rows,cols] = await db.select(sql).catch(error => {
+                console.log(error.message);
+                return [null, null];
+            });
+            if (rows)
+                return rows.length;
+            else
+                return 0;
+        }
+        return 0;
+    },
+    async courseSort(orderBy,categoryFilter,offset){
+        var sql=`SELECT * FROM course`;
+        if (orderBy === "default")
+        {
+            sql += ` LIMIT 6 OFFSET ${offset}`;
+            var [rows,cols] = await db.select(sql).catch(error => {
+                console.log(error.message);
+                return [null, null];
+            });
+            if (rows)
+            {
+                rows.forEach(async element => {
+                    element.avgStar = await this.getAverageStar(element.id);
+                    var [instructor, type] = await instructorModel.getInstructor(element.id);
+                    element.instructor = instructor;
+                });
+                return rows;
+            }
+            else
+                return 0;
+        }
+        if (categoryFilter !== "popularity" && categoryFilter !== "avgStart" && categoryFilter !== "lowCost" && categoryFilter !== "highCost")
+        {
+            sql += ` WHERE category = ${categoryFilter} LIMIT 6 OFFSET ${offset}`;
+            var [rows,cols] = await db.select(sql).catch(error => {
+                console.log(error.message);
+                return null;
+            });
+            if (rows)
+            {
+                rows.forEach(async element => {
+                    element.avgStar = await this.getAverageStar(element.id);
+                    var [instructor, type] = await instructorModel.getInstructor(element.id);
+                    element.instructor = instructor;
+                });
+                return rows;
+            }
+            else
+                return null;
+        }
+        if (orderBy === "popularity")
+            sql += ` ORDER BY student_count DESC LIMIT 6 OFFSET ${offset}`;
+        var [rows,cols] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows)
+        {
+            rows.forEach(async element => {
+                element.avgStar = await this.getAverageStar(element.id)
+                var [instructor, type] = await instructorModel.getInstructor(element.id);
+                element.instructor = instructor;
+            });
+            if (orderBy === "popularity")
+                return rows;
+        }
+        else
+        {
+            return null;
+        }
+        if (orderBy === "lowCost")
+            rows.sort((a,b) => (a.price - b.price))
+        if (orderBy === "highCost")
+            rows.sort((a,b) => (b.price - a.price))
+        if (orderBy === "avgStart")
+            rows.sort((a,b) => (b.avgStar - a.avgStar))
+        var count = 0;
+        var array = [];
+        for (var i=offset;i<rows.length;i++)
+        {
+            if (count >= 6) return array;
+            array.push(rows[i]);
+            count ++;
+        }
+        return array;
+    }
 }
