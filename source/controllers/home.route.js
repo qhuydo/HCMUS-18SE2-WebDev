@@ -11,11 +11,14 @@ router.get('/', async (req, res) => {
 
 
     const [list,fields]= await courseModel.getSpecial();
+    const[list1,fields]=await courseModel.getLast();
+
 
 
     res.render('home', {
 
         special_courses:list,
+        last_courses:list1,
         empty: list.length ===0
     });
     // console.log(req);
