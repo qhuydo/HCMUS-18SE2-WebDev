@@ -48,7 +48,22 @@ router.post('/add', async function (req, res) {
     console.log(err);
     res.redirect(req.headers.referer);
   });
+})
 
+router.put('/add', async function (req, res) {
+  const course_id = +req.body.course_id;
+  if (req.session === null || req.session.username === null)
+      return res.send(false);
+  const username = req.session.username;
+
+  await cartModel.addItemToCart(username, course_id);
+
+  await req.session.save(function (err) {
+    if (err)
+        res.send(false)
+    else
+        res.send(true);
+  });
 })
 
 router.post('/remove', async function (req, res) {

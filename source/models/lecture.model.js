@@ -42,18 +42,18 @@ module.exports = {
         return rows;
     },
 
-    async isLectureIdExist(course_id, lecture_id) {
-        const sql = `SELECT * FROM lecture WHERE course_id = ? AND lecture_id = ?`;
-        const [rows, fields] = await db.query(sql, [course_id, lecture_id]).catch(err => {
+    async isLectureIdExist(course_id, lecture_id, chapter_id) {
+        const sql = `SELECT * FROM lecture WHERE course_id = ? AND lecture_id = ? AND chapter_id = ?`;
+        const [rows, fields] = await db.query(sql, [course_id, lecture_id, chapter_id]).catch(err => {
             console.log(`lecture.model.js: getLectureContent ${err.message}`);
             return false;
         });
         return rows !== null && rows.length !== 0;
     },
 
-    async getLecture(course_id, lecture_id) {
-        const sql = `SELECT * FROM lecture WHERE course_id = ? AND lecture_id = ?`;
-        const [rows, fields] = await db.query(sql, [course_id, lecture_id]).catch(err => {
+    async getLecture(course_id, lecture_id, chapter_id) {
+        const sql = `SELECT * FROM lecture WHERE course_id = ? AND lecture_id = ? AND chapter_id = ?`;
+        const [rows, fields] = await db.query(sql, [course_id, lecture_id, chapter_id]).catch(err => {
             console.log(`lecture.model.js: getLectureContent ${err.message}`);
             return null;
         });

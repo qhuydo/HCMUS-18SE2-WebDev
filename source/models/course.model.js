@@ -305,8 +305,8 @@ module.exports = {
         }
         return null;    
     },
-    async get9RelateSort(sub_category_id,category_id){
-        const sql = `SELECT * FROM course where not course.category = ${category_id} and course.sub_category = ${sub_category_id}`
+    async get9RelateSort(sub_category_id,category_id,course_id){
+        const sql = `SELECT * FROM course where not course.category = ${category_id} and course.sub_category = ${sub_category_id} and not course.id = ${course_id}`
                    + ` union SELECT * FROM course WHERE course.category = ${category_id} and not course.sub_category = ${sub_category_id}`
                    + ` union SELECT * FROM course where not course.category = ${category_id}` 
         var [rows, fields] = await db.select(sql).catch(error => {

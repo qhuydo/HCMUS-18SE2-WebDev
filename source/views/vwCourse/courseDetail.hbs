@@ -99,7 +99,21 @@
                 document.write(last_update)
               </script>
             </h5>
-
+            {{#if isBuy}}
+              <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+                <i class="fas fa-check ml-3"></i>
+              </a>
+            {{else}}
+              {{#if inCart}}
+              <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
+                <i class="fas fa-luggage-cart"></i>
+              </a>
+              {{else}}
+              <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="addToCartFunction({{id}});">
+                <i class="fas fa-cart-plus ml-3"></i>
+              </a>
+              {{/if}}
+            {{/if}}
           </div>
 
         </div>
@@ -162,12 +176,12 @@
             if (document.getElementById('Preview course').textContent === "Don't have any preview")
               document.getElementById('Preview course').innerHTML = "";
             document.getElementById('Preview course').innerHTML += `<div class="card-body text-secondary">
-                                                                          <a href="#">&nbsp;&nbsp;{{name}}</a>
+                                                                          <a href="/course/{{../../course.id}}/lecture?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}">&nbsp;&nbsp;{{name}}</a>
                                                                           </div>`;
           </script>
           {{else}}
           <div class="card-body">
-            <a href="#">{{name}}</a>
+            <a href="/course/{{../../course.id}}/lecture?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}">{{name}}</a>
           </div>
           {{/if}}
           {{/each}}
@@ -451,17 +465,21 @@
 
                   <span class="float-right">
                     {{#if isBuy}}
-                    <a class="" data-toggle="tooltip" data-placement="top" title="is buy">
+                    <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
 
                       <i class="fas fa-check ml-3"></i>
 
                     </a>
                     {{else}}
-                    <a class="" data-toggle="tooltip" data-placement="top" title="Add to Cart">
-
-                      <i class="fas fa-shopping-cart ml-3"></i>
-
-                    </a>
+                      {{#if inCart}}
+                      <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
+                        <i class="fas fa-luggage-cart"></i>
+                      </a>
+                      {{else}}
+                      <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="addToCartFunction({{id}});">
+                        <i class="fas fa-cart-plus ml-3"></i>
+                      </a>
+                      {{/if}}
                     {{/if}}
 
                   </span>

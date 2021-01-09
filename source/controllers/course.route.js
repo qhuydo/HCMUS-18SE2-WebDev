@@ -167,7 +167,9 @@ router.get('/:id', async (req, res, next) => {
         var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
         var chapters = await lectureModel.getFullCourseContent(req.params.id);
         const lecture = await lectureModel.getLectures(req.params.id);
-        var relateItem = await courseModel.get9RelateSort(course.sub_category,course.category)
+        var relateItem = await courseModel.get9RelateSort(course.sub_category,course.category,course.id)
+        var isBuy = await courseModel.isBuy(course.id,req.session.username);
+        var inCart = await cartModel.hasItemInCart(req.session.username,course.id);
         if (relateItem)
         {
             relateItem.forEach(async element => { 
@@ -175,7 +177,9 @@ router.get('/:id', async (req, res, next) => {
                 if (req.session.username)
                     element.isBuy = await courseModel.isBuy(element.id,req.session.username);
                 else
-                    element.isBuy = false;
+                    element.isBuy = null;
+                if (req.session.username)
+                    element.inCart = await cartModel.hasItemInCart(req.session.username,element.id);
             });
         }
         if (chapters) {
@@ -196,6 +200,8 @@ router.get('/:id', async (req, res, next) => {
         return res.render('vwCourse/courseDetail', {
             review: review,
             course: course,
+            isBuy: isBuy,
+            inCart: inCart,
             numStudent: countStudent,
             avgStar: averageStar,
             numRating: countRating,
@@ -351,19 +357,24 @@ router.post('/:id/edit', async (req, res) => {
     res.redirect('/course/' + req.params.id + '/edit');
 })
 
-router.get('/:id/lecture/:lecture_id', auth.authStudent, async (req, res) => {
-    // console.log(req.params.id);
-    // console.log(req.params.lecture_id);
+router.get('/:id/lecture', auth.authStudent, async (req, res) => {
+    var missing = await missingKeys(req.query, [
+        "lecture_id",
+        "chapter_id"
+    ]);
+    if (missing) {
+        return res.redirect('/course/' + req.params.id + '/editVideo');
+    }
     if (! await courseModel.isCourseIdExist(req.params.id)) {
         return res.status(404).send('Course not found');
     }
 
-    if (! await lectureModel.isLectureIdExist(req.params.id, req.params.lecture_id)) {
+    if (! await lectureModel.isLectureIdExist(req.params.id, req.query.lecture_id, req.query.chapter_id)) {
         return res.status(404).send('Lecture not found');
     }
 
     const chapters = await lectureModel.getFullCourseContent(req.params.id);
-    const lecture = await lectureModel.getLecture(req.params.id, req.params.lecture_id);
+    const lecture = await lectureModel.getLecture(req.params.id, req.query.lecture_id, req.query.chapter_id);
     const c = await courseModel.getCourseDetail(req.params.id);
     const description = c[0].full_description;
     let youtubeId = extractYoutubeVideoId(lecture.video);
@@ -373,14 +384,14 @@ router.get('/:id/lecture/:lecture_id', auth.authStudent, async (req, res) => {
     console.log({
         chapters: chapters,
         course_id: req.params.id,
-        lecture_id: req.params.lecture_id,
+        lecture_id: req.query.lecture_id,
         lecture: lecture,
         description: description
     })
     res.render('vwLecture/index', {
         chapters: chapters,
         course_id: req.params.id,
-        lecture_id: req.params.lecture_id,
+        lecture_id: req.query.lecture_id,
         lecture: lecture,
         description: description
     });
