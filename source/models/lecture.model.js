@@ -1,9 +1,17 @@
+const e = require("express");
 const db = require("../utils/db");
 const { extractYoutubeVideoId } = require("../utils/linkExtractor");
 
 module.exports = {
 
     /**
+     * chapters: [
+     *  TextRow {
+     *      chapter_id: number,
+     *      chapter_name: string,
+     *      lectures: [Array]
+     *  }
+     * ]
      * @param {*} course_id 
      */
     async getFullCourseContent(course_id) {
@@ -17,21 +25,13 @@ module.exports = {
             for (const chapter of rows) {
                 const chap_rows = await this.getChapterContent(course_id, chapter.chapter_id);
                 if (typeof (chap_rows) !== 'undefined' && chap_rows !== null && chap_rows.length !== 0) {
-
-                    // for (const chap of chap_rows) {
-                    //     let youtubeId = extractYoutubeVideoId(chap.video);
-                    //     if (youtubeId) {
-                    //         chap.youtube_id = youtubeId;
-                    //     }
-                    // }
-
-                    for (let index = 0; index < chap_rows.length; index++) {
-                        let youtubeId = extractYoutubeVideoId(chap_rows[index].video);
+                    chap_rows.forEach(element => {
+                        let youtubeId = extractYoutubeVideoId(element.video);
                         if (youtubeId) {
-                            chap_rows[index].youtube_id = youtubeId;
+                            element.youtube_id = youtubeId;
                         }
+                    });
 
-                    }
 
                     chapter.lectures = chap_rows;
                 } else {

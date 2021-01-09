@@ -15,6 +15,7 @@
     const player = new Plyr('#player');
     window.player = player;
   });
+
 </script>
 
 
@@ -25,19 +26,19 @@
   <div class="container">
     <!--Section: Block Content-->
     <section class="mt-5 mb-4">
-
+      {{#if chapters}}
       <!--Grid row-->
       <div class="row">
         <!--Grid column-->
         <div class="col-lg-8">
 
+          {{#if lecture}}
           <div class="card mb-4">
-
             <div class="card-body">
               {{#if lecture.youtube_id}}
               <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="{{lecture.youtube_id}}"></div>
               {{else}}
-              <div class="container">
+              <div class="container card-img-top">
                 <video id="player" controls crossorigin playsinline poster="">
                   <source src="{{lecture.video}}" type="video/mp4" size="480">
                   <!-- Fallback for browsers that don't support the <video> element -->
@@ -45,26 +46,83 @@
                 </video>
               </div>
               {{/if}}
-              <h5 class="mt-3 mb-0">{{lecture.name}}</h5>
+              <h5 class="card-title mt-4 mb-0">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input lectureCheck"
+                    id="checkThisLecture">
+                  <label class="form-check-label" for="checkThisLecture">
+                    {{lecture.name}}
+                    </a>
+                  </label>
+                </div>
+              </h5>
+              <hr>
+
             </div>
           </div>
+          {{else}}
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="view zoom z-depth-1">
+                <img src="https://images.unsplash.com/photo-1566651786780-12a170c64a9a?&w=1000&h=500" class="img-fluid"
+                  alt="Empty watchlist image">
+                <div class="mask">
+                  <div class="dark-grey-text pt-4 ml-3 pl-3">
+                    <div>
+                      <h2 class="card-title font-weight-bold pt-2">
+                        <strong>The lecture is currently unavailable</strong>
+                      </h2>
+                      <p class="">Please wait for your instructor posting the lecture. Keep Learning!</p>
+                      <a class="btn btn-danger btn-sm btn-rounded clearfix d-none d-md-inline-block waves-effect waves-light"
+                        href="/course/myLearning">
+                        My learning</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/if}}
           <!-- Card -->
 
           <!--Grid row-->
           <div class="row">
             <!--Grid column-->
+            <div class="col-lg-12">
 
-                <!-- Card -->
-                <div class="card mb-4">
+              <div class="card accordion md-accordion" id="accordionDescription" role="tablist"
+                aria-multiselectable="true">
+                <div class="card-body">
+                  <div class="card">
+                    <!-- Card header -->
+                    <div class="card-header" role="tab" id="headingTwoDescription" data-parent="#accordionDescription">
+                      <a class="collapsed" data-toggle="collapse" href="#collapseTwoDescription" aria-expanded="true"
+                        aria-controls="collapseTwoDescription">
+                        <h4 class="mb-0">
+                          Lecture content
+                          <i class="fas fa-angle-down rotate-icon"></i>
+                        </h4>
+                      </a>
+                    </div>
 
-                  <div class="card-body">
-                    <h4 class="card-title">Lecture content</h4>
-                    {{{description}}}
+                    <!-- Card body -->
+                    <div id="collapseTwoDescription" class="collapse show" role="tabpanel"
+                      aria-labelledby="headingTwoDescription" data-parent="#accordionDescription">
+                      <div class="card-body">
+                        {{{description}}}
+                      </div>
+                      <i class="fas fa-angle-up"></i>
+                    </div>
+
                   </div>
+
+                  <!-- Card -->
+                </div>
                 <!-- Card -->
               </div>
             </div>
-            <!--Grid column-->
+          </div>
+          <!--Grid column-->
           <!--Grid row-->
         </div>
         <!--Grid column-->
@@ -80,9 +138,12 @@
                 <div class="card">
 
                   <!-- Card header -->
+                  <script>
+                    console.log("{{../chapter_id}} {{this.chapter_id}}");
+                  </script>
                   <div class="card-header" role="tab" id="headingTwo{{this.chapter_id}}">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx1"
-                      href="#collapseTwo{{this.chapter_id}}" aria-expanded="false"
+                      href="#collapseTwo{{this.chapter_id}}" aria-expanded="true"
                       aria-controls="collapseTwo{{this.chapter_id}}">
                       <h5 class="mb-0">
                         {{this.chapter_name}} <i class="fas fa-angle-down rotate-icon"></i>
@@ -91,42 +152,72 @@
                   </div>
 
                   <!-- Card body -->
-                  <div id="collapseTwo{{this.chapter_id}}" class="collapse" role="tabpanel"
+                  {{#if (eq ../chapter_id this.chapter_id)}}
+                  <div id="collapseTwo{{this.chapter_id}}" class="collapse show" role="tabpanel"
                     aria-labelledby="headingTwo{{this.chapter_id}}" data-parent="#accordionEx1">
-                    <div class="card-body">
-                      {{#each this.lectures}}
-                      <!-- Material checked -->
-                      <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="materialChecked{{this.lecture_id}}">
-                        <label class="form-check-label" for="materialChecked{{this.lecture_id}}">
-                          {{#if (eq this.lecture_id ../../lecture.lecture_id)}}
-                          <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}" class="text-default">
-                            {{this.name}}
-                          </a>
-                          {{else}}
-                          <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}" class="text-dark">
-                            {{this.name}}
-                          </a>
-                          {{/if}}
-                        </label>
-                      </div>
-                      {{/each}}
-
+                  {{else}}
+                  <div id="collapseTwo{{this.chapter_id}}" class="collapse show" role="tabpanel"
+                  aria-labelledby="headingTwo{{this.chapter_id}}" data-parent="#accordionEx1">
+                  {{/if}}
+                  <div class="card-body">
+                    {{#each this.lectures}}
+                    <!-- Material checked -->
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="materialChecked{{this.lecture_id}}">
+                      <label class="form-check-label" for="materialChecked{{this.lecture_id}}">
+                        {{#if (and (eq this.lecture_id ../../lecture.lecture_id) (eq ../chapter_id
+                        ../../lecture.chapter_id))}}
+                        <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
+                          class="text-default">
+                          {{this.name}}
+                        </a>
+                        {{else}}
+                        <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
+                          class="text-dark">
+                          {{this.name}}
+                        </a>
+                        {{/if}}
+                      </label>
                     </div>
-                  </div>
+                    {{/each}}
 
+                  </div>
                 </div>
-                <!-- Accordion card -->
-                {{/each}}
+
+                  </div>
+                  <!-- Accordion card -->
+                  {{/each}}
+                </div>
+                <!-- Accordion wrapper -->
               </div>
-              <!-- Accordion wrapper -->
+            </div>
+          </div>
+          <!-- Card -->
+        </div>
+        <!--Grid row-->
+        {{else}}
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="view zoom z-depth-1">
+              <img src="https://images.unsplash.com/photo-1536500320800-973914fca764?fit=crop&w=1200&h=500&q=80"
+                class="img-fluid" alt="Empty watchlist image">
+              <div class="mask">
+                <div class="dark-grey-text pt-4 ml-3 pl-3">
+                  <div>
+                    <h2 class="card-title font-weight-bold pt-2">
+                      <strong>The course is currently unavailable</strong>
+                    </h2>
+                    <p class="">Please wait for your instructor posting the lecture. Keep Learning!</p>
+                    <a class="btn btn-danger btn-sm btn-rounded clearfix d-none d-md-inline-block waves-effect waves-light"
+                      href="/course/myLearning">
+                      My learning</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <!-- Card -->
-      </div>
-      <!--Grid row-->
-
+        {{/if}}
     </section>
     <!--Section: Block Content-->
 

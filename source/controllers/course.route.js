@@ -362,38 +362,72 @@ router.get('/:id/lecture', auth.authStudent, async (req, res) => {
         "lecture_id",
         "chapter_id"
     ]);
-    if (missing) {
-        return res.redirect('/course/' + req.params.id + '/editVideo');
-    }
-    if (! await courseModel.isCourseIdExist(req.params.id)) {
-        return res.status(404).send('Course not found');
+    
+    // if (missing) {
+    //     return res.redirect('/course/' + req.params.id + '/editVideo');
+    // } // student cannot edit video
+
+    let course_id = req.params.id;
+    let chapter_id = req.query.chapter_id;
+    let lecture_id = req.query.lecture_id;
+    if (course_id === undefined || ! await courseModel.isCourseIdExist(req.params.id)) {
+        return res.status(404).render('error', {
+            error_code: 404
+        });
     }
 
-    if (! await lectureModel.isLectureIdExist(req.params.id, req.query.lecture_id, req.query.chapter_id)) {
-        return res.status(404).send('Lecture not found');
+    if (chapter_id !== undefined && lecture_id !== undefined &&
+        ! await lectureModel.isLectureIdExist(req.params.id, req.query.lecture_id, req.query.chapter_id)) {
+        return res.status(404).render('error', {
+            error_code: 404
+        });
     }
 
+    
     const chapters = await lectureModel.getFullCourseContent(req.params.id);
-    const lecture = await lectureModel.getLecture(req.params.id, req.query.lecture_id, req.query.chapter_id);
-    const c = await courseModel.getCourseDetail(req.params.id);
-    const description = c[0].full_description;
-    let youtubeId = extractYoutubeVideoId(lecture.video);
-    if (youtubeId) {
-        lecture.youtube_id = youtubeId;
+    if (chapter_id === undefined) {
+        if (chapters !== undefined && chapters.length > 0) {
+            chapter_id = chapters[0].chapter_id;
+        }
+
+        console.log(chapters[0]);
+        if (chapter_id !== undefined && lecture_id === undefined) {
+            if (chapters[0].lectures !== undefined && chapters[0].lectures.length > 0) {
+                lecture_id = chapters[0].lectures[0].lecture_id;
+            }
+        }
     }
+
+    let lecture = null;
+    if (lecture_id !== undefined) {
+        lecture = await lectureModel.getLecture(course_id, lecture_id, chapter_id);
+    }
+
+    const c = await courseModel.getCourseDetail(course_id);
+    const description = c[0].full_description;
+
+    let youtubeId = null;
+    if (lecture !== null) {
+        youtubeId = extractYoutubeVideoId(lecture.video);
+        if (youtubeId) {
+            lecture.youtube_id = youtubeId;
+        }
+    }
+
     console.log({
-        chapters: chapters,
-        course_id: req.params.id,
-        lecture_id: req.query.lecture_id,
+        chapters,
+        course_id,
+        lecture_id,
         lecture: lecture,
-        description: description
+        description
     })
     res.render('vwLecture/index', {
-        chapters: chapters,
-        course_id: req.params.id,
-        lecture_id: req.query.lecture_id,
+        chapters,
+        course_id,
+        lecture_id,
+        chapter_id,
         lecture: lecture,
-        description: description
+        description
     });
 });
 
