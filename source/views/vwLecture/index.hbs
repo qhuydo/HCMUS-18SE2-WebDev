@@ -11,13 +11,18 @@
 {{#section 'js'}}
 <script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
 <script>
-  $(document).ready(() => {
+
+  $(() => {
+    $('.toast').toast('show');
     const player = new Plyr('#player');
     window.player = player;
+    window.chapter_id = +{{chapter_id}};
+    window.lecture_id = +{{lecture.lecture_id}};
+    
   });
 
 </script>
-
+<script type="text/javascript" src="/js/vwLecture/index.js"></script>
 
 {{/section}}
 
@@ -48,8 +53,13 @@
               {{/if}}
               <h5 class="card-title mt-4 mb-0">
                 <div class="form-check">
-                  <input type="checkbox" class="form-check-input lectureCheck"
-                    id="checkThisLecture">
+                  {{#if lecture.completion}}
+                  <input type="checkbox" class="form-check-input" id="checkThisLecture" checked
+                    onchange="toggleCheckbox(this)" data-course_id={{course_id}} data-chapter_id={{chapter_id}} data-lecture_id={{this.lecture_id}}>
+                  {{else}}
+                  <input type="checkbox" class="form-check-input" id="checkThisLecture"
+                    onchange="toggleCheckbox(this)" data-course_id={{course_id}} data-chapter_id={{chapter_id}} data-lecture_id={{this.lecture_id}}>
+                  {{/if}}
                   <label class="form-check-label" for="checkThisLecture">
                     {{lecture.name}}
                     </a>
@@ -157,32 +167,40 @@
                     aria-labelledby="headingTwo{{this.chapter_id}}" data-parent="#accordionEx1">
                   {{else}}
                   <div id="collapseTwo{{this.chapter_id}}" class="collapse show" role="tabpanel"
-                  aria-labelledby="headingTwo{{this.chapter_id}}" data-parent="#accordionEx1">
-                  {{/if}}
-                  <div class="card-body">
-                    {{#each this.lectures}}
-                    <!-- Material checked -->
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="materialChecked{{this.lecture_id}}">
-                      <label class="form-check-label" for="materialChecked{{this.lecture_id}}">
-                        {{#if (and (eq this.lecture_id ../../lecture.lecture_id) (eq ../chapter_id
-                        ../../lecture.chapter_id))}}
-                        <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
-                          class="text-default">
-                          {{this.name}}
-                        </a>
+                    aria-labelledby="headingTwo{{this.chapter_id}}" data-parent="#accordionEx1">
+                    {{/if}}
+                    <div class="card-body">
+                      {{#each this.lectures}}
+                      <!-- Material checked -->
+                      <div class="form-check">
+                        {{#if this.completion}}
+                        <input type="checkbox" class="form-check-input" id="materialChecked{{../chapter_id}}-{{this.lecture_id}}"
+                          checked onchange="toggleCheckbox(this)" data-chapter_id={{../chapter_id}}
+                          data-lecture_id={{this.lecture_id}} data-course_id={{../../lecture.chapter_id}}>
                         {{else}}
-                        <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
-                          class="text-dark">
-                          {{this.name}}
-                        </a>
+                        <input type="checkbox" class="form-check-input" id="materialChecked{{../chapter_id}}-{{this.lecture_id}}"
+                          onchange="toggleCheckbox(this)" data-chapter_id={{../chapter_id}}
+                           data-lecture_id={{this.lecture_id}} data-course_id={{../../lecture.chapter_id}}>
                         {{/if}}
-                      </label>
-                    </div>
-                    {{/each}}
+                        <label class="form-check-label" for="materialChecked{{../chapter_id}}-{{this.lecture_id}}">
+                          {{#if (and (eq this.lecture_id ../../lecture.lecture_id) (eq ../chapter_id
+                          ../../lecture.chapter_id))}}
+                          <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
+                            class="text-default">
+                            {{this.name}}
+                          </a>
+                          {{else}}
+                          <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
+                            class="text-dark">
+                            {{this.name}}
+                          </a>
+                          {{/if}}
+                        </label>
+                      </div>
+                      {{/each}}
 
-                  </div>
-                </div>
+                      </div>
+                    </div>
 
                   </div>
                   <!-- Accordion card -->

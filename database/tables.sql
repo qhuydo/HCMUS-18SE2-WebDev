@@ -524,13 +524,15 @@ DROP TABLE IF EXISTS `student_lecture`;
 CREATE TABLE `student_lecture` (
   `username` varchar(45) NOT NULL,
   `course_id` int unsigned NOT NULL,
+  `chapter_id` int unsigned NOT NULL,
   `lecture_id` int unsigned NOT NULL,
   `timestamp` varchar(45) DEFAULT NULL,
   `completion` tinyint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`username`,`course_id`,`lecture_id`),
-  UNIQUE KEY `account_UNIQUE` (`username`),
+  PRIMARY KEY (`username`,`course_id`,`lecture_id`,`chapter_id`),
   KEY `fk_student_lecture_course_idx` (`course_id`),
   KEY `fk_student_lecture_lecture_idx` (`lecture_id`),
+  KEY `fk_student_lecture_chapter_idx` (`chapter_id`),
+  CONSTRAINT `fk_student_lecture_chapter` FOREIGN KEY (`chapter_id`) REFERENCES `course_content` (`chapter_id`),
   CONSTRAINT `fk_student_lecture_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
   CONSTRAINT `fk_student_lecture_lecture` FOREIGN KEY (`lecture_id`) REFERENCES `lecture` (`lecture_id`),
   CONSTRAINT `fk_student_lecture_student` FOREIGN KEY (`username`) REFERENCES `student` (`username`)
@@ -590,4 +592,4 @@ CREATE TABLE `watchlist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-08 21:09:19
+-- Dump completed on 2021-01-10  3:47:14

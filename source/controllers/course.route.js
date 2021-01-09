@@ -11,30 +11,28 @@ const { extractYoutubeVideoId } = require('../utils/linkExtractor');
 const { paginate } = require('../config/default.json');
 const cartModel = require('../models/cart.model');
 const { parseJSON } = require('jquery');
+const { authStudent } = require('../middlewares/auth.mdw');
 
 router.get('/byCat', async (req, res) => {
     console.log(req.query);
     var searchBefore = "default";
-    var [allCategory,type] = await categoryModel.getAllCategory();
+    var [allCategory, type] = await categoryModel.getAllCategory();
     let page = req.query.page || 1;
     page = page < 1 ? 1 : page;
-    if (req.session.searchBefore)
-    {
+    if (req.session.searchBefore) {
         searchBefore = req.session.searchBefore;
     }
-    if (req.query.orderBy)
-    {
+    if (req.query.orderBy) {
         searchBefore = req.query.orderBy;
     }
-    if (req.query.category_id)
-    {
+    if (req.query.category_id) {
         searchBefore = req.query.category_id
     }
     var total = 0;
     if (Number.isNaN(searchBefore))
-        total = await courseModel.countCourseSort(searchBefore,null,0) || 0;
+        total = await courseModel.countCourseSort(searchBefore, null, 0) || 0;
     else
-        total = await courseModel.countCourseSort(null,searchBefore,0) || 0;
+        total = await courseModel.countCourseSort(null, searchBefore, 0) || 0;
     console.log(total);
     let nPages = Math.floor(total / 6);
     if (total % 6 > 0) {
@@ -50,35 +48,33 @@ router.get('/byCat', async (req, res) => {
     }
     var courses = [];
     const offset = (page - 1) * 6;
-    if (req.session.searchBefore === searchBefore)
-    {
-        courses = await courseModel.courseSort(searchBefore,searchBefore,offset);
+    if (req.session.searchBefore === searchBefore) {
+        courses = await courseModel.courseSort(searchBefore, searchBefore, offset);
         courses.forEach(async element => {
-            var [category,type] = await categoryModel.getCategoryByCategoryId(element.category);
+            var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
             element.category = category;
-            element.isBuy = await courseModel.isBuy(element.id,req.session.username);
-            element.inCart = await cartModel.hasItemInCart(req.session.username,element.id);
+            element.isBuy = await courseModel.isBuy(element.id, req.session.username);
+            element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
         });
-        return res.render('vwCourses/byCat',{
-            categories:allCategory,
-            courses:courses,
+        return res.render('vwCourses/byCat', {
+            categories: allCategory,
+            courses: courses,
             page_numbers
         });
     }
-    courses = await courseModel.courseSort(searchBefore,searchBefore,offset);
-    if (courses)
-    {
+    courses = await courseModel.courseSort(searchBefore, searchBefore, offset);
+    if (courses) {
         courses.forEach(async element => {
-            var [category,type] = await categoryModel.getCategoryByCategoryId(element.category);
+            var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
             element.category = category;
-            element.isBuy = await courseModel.isBuy(element.id,req.session.username);
-            element.inCart = await cartModel.hasItemInCart(req.session.username,element.id);
+            element.isBuy = await courseModel.isBuy(element.id, req.session.username);
+            element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
         });
     }
     req.session.searchBefore = searchBefore;
-    res.render('vwCourses/byCat',{
-        categories:allCategory,
-        courses:courses,
+    res.render('vwCourses/byCat', {
+        categories: allCategory,
+        courses: courses,
         page_numbers
     });
 });
@@ -234,27 +230,25 @@ router.get('/:id', async (req, res, next) => {
         var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
         var chapters = await lectureModel.getFullCourseContent(req.params.id);
         const lecture = await lectureModel.getLectures(req.params.id);
-        var relateItem = await courseModel.get9RelateSort(course.sub_category,course.category,course.id)
-        var isBuy = await courseModel.isBuy(course.id,req.session.username);
-        var inCart = await cartModel.hasItemInCart(req.session.username,course.id);
-        if (relateItem)
-        {
-            relateItem.forEach(async element => { 
+        var relateItem = await courseModel.get9RelateSort(course.sub_category, course.category, course.id)
+        var isBuy = await courseModel.isBuy(course.id, req.session.username);
+        var inCart = await cartModel.hasItemInCart(req.session.username, course.id);
+        if (relateItem) {
+            relateItem.forEach(async element => {
                 element.avgStar = await courseModel.getAverageStar(element.id);
                 if (req.session.username)
-                    element.isBuy = await courseModel.isBuy(element.id,req.session.username);
+                    element.isBuy = await courseModel.isBuy(element.id, req.session.username);
                 else
                     element.isBuy = null;
                 if (req.session.username)
-                    element.inCart = await cartModel.hasItemInCart(req.session.username,element.id);
+                    element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
             });
         }
         if (chapters) {
             chapters.forEach(element => {
                 element.lectures = [];
             });
-            if (lecture)
-            {
+            if (lecture) {
                 lecture.forEach(element => {
                     chapters.forEach(element2 => {
                         if (element2.chapter_id === element.chapter_id) {
@@ -277,8 +271,8 @@ router.get('/:id', async (req, res, next) => {
             instructorReview: reviewOfInstructor,
             instructorAvgStart: avgStartOfInstructor,
             instructorCourse: countCourseOfInstructor,
-            chapters:chapters,
-            relateItems:relateItem
+            chapters: chapters,
+            relateItems: relateItem
         });
     }
     res.render('home');
@@ -310,8 +304,7 @@ router.get('/:id/editVideo', async (req, res) => {
         chapters.forEach(element => {
             element.lectures = [];
         });
-        if (lecture)
-        {
+        if (lecture) {
             lecture.forEach(element => {
                 chapters.forEach(element2 => {
                     if (element2.chapter_id === element.chapter_id) {
@@ -321,8 +314,7 @@ router.get('/:id/editVideo', async (req, res) => {
             });
         }
     }
-    else
-    {
+    else {
         chapters = [];
     }
     res.render('vwCourse/editVideoCourse', {
@@ -424,78 +416,112 @@ router.post('/:id/edit', async (req, res) => {
     res.redirect('/course/' + req.params.id + '/edit');
 })
 
-router.get('/:id/lecture', auth.authStudent, async (req, res) => {
-    var missing = await missingKeys(req.query, [
-        "lecture_id",
-        "chapter_id"
-    ]);
-    
-    // if (missing) {
-    //     return res.redirect('/course/' + req.params.id + '/editVideo');
-    // } // student cannot edit video
+router.route('/:id/lecture')
+    .get(auth.authStudent, async (req, res) => {
+        var missing = await missingKeys(req.query, [
+            "lecture_id",
+            "chapter_id"
+        ]);
 
-    let course_id = req.params.id;
-    let chapter_id = req.query.chapter_id;
-    let lecture_id = req.query.lecture_id;
-    if (course_id === undefined || ! await courseModel.isCourseIdExist(req.params.id)) {
-        return res.status(404).render('error', {
-            error_code: 404
-        });
-    }
-
-    if (chapter_id !== undefined && lecture_id !== undefined &&
-        ! await lectureModel.isLectureIdExist(req.params.id, req.query.lecture_id, req.query.chapter_id)) {
-        return res.status(404).render('error', {
-            error_code: 404
-        });
-    }
-
-    
-    const chapters = await lectureModel.getFullCourseContent(req.params.id);
-    if (chapter_id === undefined) {
-        if (chapters !== undefined && chapters.length > 0) {
-            chapter_id = chapters[0].chapter_id;
+        // if (missing) {
+        //     return res.redirect('/course/' + req.params.id + '/editVideo');
+        // } // student cannot edit video
+        const username = req.session.username;
+        let course_id = req.params.id;
+        let chapter_id = req.query.chapter_id;
+        let lecture_id = req.query.lecture_id;
+        if (course_id === undefined || ! await courseModel.isCourseIdExist(req.params.id)) {
+            return res.status(404).render('error', {
+                error_code: 404
+            });
         }
 
-        console.log(chapters[0]);
-        if (chapter_id !== undefined && lecture_id === undefined) {
-            if (chapters[0].lectures !== undefined && chapters[0].lectures.length > 0) {
-                lecture_id = chapters[0].lectures[0].lecture_id;
+        if (chapter_id !== undefined && lecture_id !== undefined &&
+            ! await lectureModel.isLectureIdExist(req.params.id, req.query.lecture_id, req.query.chapter_id)) {
+            return res.status(404).render('error', {
+                error_code: 404
+            });
+        }
+
+
+        const chapters = await lectureModel.getFullCourseContent(req.params.id);
+        console.log(chapters)
+        if (chapter_id === undefined) {
+            if (chapters !== undefined && chapters.length > 0) {
+                chapter_id = chapters[0].chapter_id;
+            }
+
+            console.log(chapters[0]);
+            if (chapter_id !== undefined && lecture_id === undefined) {
+                if (chapters[0].lectures !== undefined && chapters[0].lectures.length > 0) {
+                    lecture_id = chapters[0].lectures[0].lecture_id;
+                }
             }
         }
-    }
 
-    let lecture = null;
-    if (lecture_id !== undefined) {
-        lecture = await lectureModel.getLecture(course_id, lecture_id, chapter_id);
-    }
+        chapters.forEach(async element => {
+            element.lectures.forEach(async subElements => {
+                // console.log(`element.chapter_id ${element.chapter_id}`);
+                const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, element.chapter_id, subElements.lecture_id);
+                // console.log("hihi") ;
+                // console.log(progress_data);
+                if (progress_data !== null && progress_data.length > 0) {
+                    subElements.completion = progress_data[0].completion;
+                }
+            });
+        });
 
-    const c = await courseModel.getCourseDetail(course_id);
-    const description = c[0].full_description;
-
-    let youtubeId = null;
-    if (lecture !== null) {
-        youtubeId = extractYoutubeVideoId(lecture.video);
-        if (youtubeId) {
-            lecture.youtube_id = youtubeId;
+        let lecture = null;
+        if (lecture_id !== undefined) {
+            lecture = await lectureModel.getLecture(course_id, lecture_id, chapter_id);
+            if (lecture !== null) {
+                const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, chapter_id, course_id);
+                if (progress_data !== null && progress_data.length > 0) {
+                    lecture.timestamp = progress_data[0].timestamp;
+                    lecture.completion = progress_data[0].completion;
+                }
+            }
         }
-    }
 
-    console.log({
-        chapters,
-        course_id,
-        lecture_id,
-        lecture: lecture,
-        description
+        const c = await courseModel.getCourseDetail(course_id);
+        const description = c[0].full_description;
+
+        let youtubeId = null;
+        if (lecture !== null) {
+            youtubeId = extractYoutubeVideoId(lecture.video);
+            if (youtubeId) {
+                lecture.youtube_id = youtubeId;
+            }
+        }
+
+        console.log({
+            chapters,
+            course_id,
+            lecture_id,
+            lecture: lecture,
+            description
+        })
+        res.render('vwLecture/index', {
+            chapters,
+            course_id,
+            lecture_id,
+            chapter_id,
+            lecture: lecture,
+            description
+        });
     })
-    res.render('vwLecture/index', {
-        chapters,
-        course_id,
-        lecture_id,
-        chapter_id,
-        lecture: lecture,
-        description
+    .put(auth.authStudent, async (req, res) => {
+        if (req.session === null || req.session.username === null) {
+            return res.send(false);
+        }
+        const username = req.session.username;
+        const course_id = +req.body.course_id;
+        const chapter_id = +req.body.chapter_id;
+        const lecture_id = +req.body.lecture_id;
+        const completion = +req.body.completion;
+
+        return res.send(await lectureModel.updateLectureState(username, course_id, chapter_id, lecture_id, completion));
+
     });
-});
 
 module.exports = router;
