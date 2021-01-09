@@ -16,7 +16,6 @@ module.exports = {
         if (rows !== null && rows.length !== 0) {
             for (const chapter of rows) {
                 const chap_rows = await this.getChapterContent(course_id, chapter.chapter_id);
-                console.log(chap_rows);
                 if (typeof (chap_rows) !== 'undefined' && chap_rows !== null && chap_rows.length !== 0) {
 
                     // for (const chap of chap_rows) {
@@ -40,7 +39,6 @@ module.exports = {
                 }
             }
         }
-        console.log(rows);
         return rows;
     },
 

@@ -1,0 +1,41 @@
+.imagePreview{
+    width: 100px;
+    height: 100px;
+    -webkit-border-radius: 60px;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 60px;
+    -moz-background-clip: padding;
+    border-radius: 60px;
+    background-clip: padding-box;
+    margin: 7px 0 0 5px;
+    float: left;
+}
+.imageInstructor{
+    width: 150px;
+    height: 150px;
+    -webkit-border-radius: 100px;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 100px;
+    -moz-background-clip: padding;
+    border-radius: 100px;
+    background-clip: padding-box;
+    margin: 7px 0 0 5px;
+    float: left;
+}
+.imageSlide{
+    width: 300px;
+    height: 200px;
+    -webkit-border-radius: 0px;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 0px;
+    -moz-background-clip: padding;
+    border-radius: 0px;
+    background-clip: padding-box;
+    margin: 7px 0 0 5px;
+    float: left;
+}
+.card-ecommerce{
+    width: 300px;
+    height: 500px;
+    float: left;
+}

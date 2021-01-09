@@ -28,7 +28,6 @@ module.exports = {
     },
     async getAllLessionByCourseAndChapterId(courseId,chapterId) {
         const sql = `SELECT * FROM lecture WHERE course_id = ${courseId} and chapter_id = ${chapterId}`;
-        console.log(sql);
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
@@ -305,6 +304,38 @@ module.exports = {
             return rows;
         }
         return null;    
+    },
+    async get9RelateSort(sub_category_id,category_id){
+        const sql = `SELECT * FROM course where not course.category = ${category_id} and course.sub_category = ${sub_category_id}`
+                   + ` union SELECT * FROM course WHERE course.category = ${category_id} and not course.sub_category = ${sub_category_id}`
+                   + ` union SELECT * FROM course where not course.category = ${category_id}` 
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return null;
+        });
+        if (rows !== null && rows.length !== 0) {
+            if (rows.length > 9)
+            {
+                while (rows.length > 9)
+                {
+                    rows.pop();
+                }
+            }
+            return rows;
+        }
+        return null;
+    },
+    async isBuy(course_id,username){
+        const sql = `SELECT * FROM course_student WHERE username = "${username}" and course_id = ${course_id}`;
+        const [rows, fields] = await db.select(sql).catch((err) => {
+            console.log(`course.model.js: getCourseListOfStudent ${err.message}`);
+            return false;
+        });
+
+        // console.log(rows);
+        if (rows !== null && rows.length !== 0) {
+            return true;
+        }
+        return false;
     }
-    
 }

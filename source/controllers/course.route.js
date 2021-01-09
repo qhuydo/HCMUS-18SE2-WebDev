@@ -10,6 +10,7 @@ const lectureModel = require('../models/lecture.model');
 const { extractYoutubeVideoId } = require('../utils/linkExtractor');
 const { paginate } = require('../config/default.json');
 const cartModel = require('../models/cart.model');
+const { parseJSON } = require('jquery');
 
 router.get('/byCat', async (req, res) => {
     res.render('vwCourses/byCat');
@@ -33,7 +34,6 @@ router.post('/add', async (req, res) => {
     if (missing) {
         return res.redirect('/home');
     }
-    console.log(req.body.course);
     var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category);
     const course_new = {
         // id: await courseModel.getCourseNewId(), // the id field is auto-increment, thus no need to get new ie
@@ -165,6 +165,34 @@ router.get('/:id', async (req, res, next) => {
         var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
         var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
         var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
+        var chapters = await lectureModel.getFullCourseContent(req.params.id);
+        const lecture = await lectureModel.getLectures(req.params.id);
+        var relateItem = await courseModel.get9RelateSort(course.sub_category,course.category)
+        if (relateItem)
+        {
+            relateItem.forEach(async element => { 
+                element.avgStar = await courseModel.getAverageStar(element.id);
+                if (req.session.username)
+                    element.isBuy = await courseModel.isBuy(element.id,req.session.username);
+                else
+                    element.isBuy = false;
+            });
+        }
+        if (chapters) {
+            chapters.forEach(element => {
+                element.lectures = [];
+            });
+            if (lecture)
+            {
+                lecture.forEach(element => {
+                    chapters.forEach(element2 => {
+                        if (element2.chapter_id === element.chapter_id) {
+                            element2.lectures.push(element);
+                        }
+                    })
+                });
+            }
+        }
         return res.render('vwCourse/courseDetail', {
             review: review,
             course: course,
@@ -175,7 +203,9 @@ router.get('/:id', async (req, res, next) => {
             instructorStudent: studentOfInstructor,
             instructorReview: reviewOfInstructor,
             instructorAvgStart: avgStartOfInstructor,
-            instructorCourse: countCourseOfInstructor
+            instructorCourse: countCourseOfInstructor,
+            chapters:chapters,
+            relateItems:relateItem
         });
     }
     res.render('home');
@@ -199,7 +229,7 @@ router.get('/:id/editVideo', async (req, res) => {
     if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
         return res.status(404).send('Lecture not found');
     }
-    const chapters = await lectureModel.getFullCourseContent(req.params.id);
+    var chapters = await lectureModel.getFullCourseContent(req.params.id);
     const lecture = await lectureModel.getLectures(req.params.id);
     const c = await courseModel.getCourseDetail(req.params.id);
     const description = c[0].full_description;
@@ -207,14 +237,20 @@ router.get('/:id/editVideo', async (req, res) => {
         chapters.forEach(element => {
             element.lectures = [];
         });
-        console.log(lecture)
-        lecture.forEach(element => {
-            chapters.forEach(element2 => {
-                if (element2.chapter_id === element.chapter_id) {
-                    element2.lectures.push(element);
-                }
-            })
-        });
+        if (lecture)
+        {
+            lecture.forEach(element => {
+                chapters.forEach(element2 => {
+                    if (element2.chapter_id === element.chapter_id) {
+                        element2.lectures.push(element);
+                    }
+                })
+            });
+        }
+    }
+    else
+    {
+        chapters = [];
     }
     res.render('vwCourse/editVideoCourse', {
         chapters: chapters,
@@ -278,7 +314,6 @@ router.post('/:id/updateLesson', async (req, res) => {
         chapter_id: req.body.courseVideo.chapter_id,
     }
     var result = await courseModel.updateLesson(lesson, condition);
-    console.log(result);
     return res.redirect('/course/' + req.params.id + '/editVideo');
 })
 
@@ -289,7 +324,6 @@ router.post('/:id/edit', async (req, res) => {
     if (missing) {
         return res.redirect('/course/' + req.params.id + '/editVideo');
     }
-    console.log(req.body.course);
     var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category);
     const course_update = {
         title: req.body.course.title,
