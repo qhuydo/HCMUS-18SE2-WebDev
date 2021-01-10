@@ -46,6 +46,19 @@ module.exports = {
         return [null, null];
       
     },
+    async getSubCategory(id) {
+        const sql = `SELECT * FROM sub_category Where id = ?`;
+
+        var [rows, fields] = await db.query(sql, [id]).catch(error => {
+            console.log(error.message);
+            return [null, null];    
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows[0], "sub_category"];
+        }
+        return [null, null];
+      
+    },
     async updateAccount(table, username, update_account) {
         var [oldAccount, field] = await this.selectAccountWithUsername(table, username);
         if (oldAccount) {
@@ -116,6 +129,25 @@ module.exports = {
         }
         return false;
     },
+    async updateSubCategory(id, SubCategory) {
+        var [oldSubCategory, field] = await this.getSubCategory(id);
+
+        if (oldSubCategory) {
+            if (SubCategory.hasOwnProperty('name') && SubCategory['name'] !== null)
+                oldSubCategory.name = SubCategory.name;
+            if (SubCategory.hasOwnProperty('image') && SubCategory['image'] !== null)
+                oldSubCategory.image = SubCategory.image;
+            if (SubCategory.hasOwnProperty('icon') && SubCategory['icon'] !== null)
+                oldSubCategory.icon = SubCategory.icon;
+
+            const sql = `UPDATE sub_category SET name = ?, image = ?, icon = ? WHERE id = ?`;
+            var result = await db.query(sql, [oldSubCategory.name, oldSubCategory.image, oldSubCategory.icon, Number(oldSubCategory.id)])
+            if (result.error)
+                return false;
+            return oldSubCategory;
+        }
+        return false;
+    },
 
     async getAll(table) {
         const sql = `SELECT * FROM ${table}`;
@@ -141,10 +173,29 @@ module.exports = {
         }
         return true;
     },
+    async deleteSubCategory(id) {
+        var value = await db.delete({ id: id }, "sub_category");
+        if (value.error) {
+            console.log(value.error);
+            return false;
+        }
+        return true;
+    },
     async createCategory(category) {
         let res = null;
         res = await db.insert(category, 'category');
         if (res.error) {
+            return { "error": res.error };
+        }
+        else {
+            return { "success": 'Create success' };
+        }
+    },
+    async createSubCategory(sub_category) {
+        let res = null;
+        res = await db.insert(sub_category, 'sub_category');
+        if (res.error) {
+            console.log(res.error);
             return { "error": res.error };
         }
         else {
@@ -177,4 +228,28 @@ module.exports = {
             return { "success": 'Create success' };
         }
     },
+    async getNewCategoryId() {
+        var id = 1;
+        var [rowsAll, colsAll] = await this.getAll("category");
+        if (rowsAll[0].length === 0)
+            return id;
+        rowsAll.sort((a, b) => Number(a.id) - Number(b.id))
+        for (let index = 0; index < rowsAll.length; index++) {
+            if (Number(rowsAll[index].id) !== id) break;
+            id++;
+        }
+        return id;
+    },
+    async getNewSubCategoryId() {
+        var id = 1;
+        var [rowsAll, colsAll] = await this.getAll("sub_category");
+        if (rowsAll[0].length === 0)
+            return id;
+        rowsAll.sort((a, b) => Number(a.id) - Number(b.id))
+        for (let index = 0; index < rowsAll.length; index++) {
+            if (Number(rowsAll[index].id) !== id) break;
+            id++;
+        }
+        return id;
+    }
 }

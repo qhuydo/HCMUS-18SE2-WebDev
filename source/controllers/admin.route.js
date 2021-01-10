@@ -9,18 +9,6 @@ function isUsername(username) {
     return validator.matches(username, "^[a-zA-Z0-9_\.\-]*$");
 }
 
-async function getCategoryId() {
-    var id = 1;
-    var [rowsAll, colsAll] = await admin.getAll("category");
-    if (rowsAll[0].length === 0)
-        return id;
-    rowsAll.sort((a, b) => Number(a.id) - Number(b.id))
-    for (let index = 0; index < rowsAll.length; index++) {
-        if (Number(rowsAll[index].id) !== id) break;
-        id++;
-    }
-    return id;
-}
 router.get('/account', async (req, res) => { // Tạo một danh sách xem tất cả instructor, tất cả học sinh
     
     if (req.query.typeAccount && req.query.page) {
@@ -107,8 +95,12 @@ router.get('/category', async (req, res) => {
     });
 });
 
-router.get('/category/add', async (req, res) => {
-    res.render('vwAdmin/addCategory');
+router.get('/sub_category', async (req, res) => {
+
+    var [rowsAll, colsAll] = await admin.getAll("sub_category");
+    res.render('vwAdmin/allSubCategory', {
+        rows: rowsAll,
+    });
 });
 
 router.post('/category/add', async (req, res) => {
@@ -123,20 +115,37 @@ router.post('/category/add', async (req, res) => {
     }
     else {
         const category = {
-            id: await getCategoryId(),
+            id: await admin.getNewCategoryId(),
             name: req.body.name,
             image: null,
             icon: null
         }
-        var rows = await admin.createCategory(category);
-        if (rows.error) {
-            return res.render('vwAdmin/addCategory', {
-                fail: rows.error,
-            });
+        await admin.createCategory(category);
+        res.redirect('/admin/category');
+    }
+});
+
+router.post('/sub_category/add', async (req, res) => {
+    let missing = await missingKeys(req.body, [
+        "name",
+        "category_id"
+    ]);
+
+    if (missing) {
+        return res.render('vwAdmin/allCategory', {
+            fail: "One or more keys are missing or null",
+        });
+    }
+    else {
+        const sub_category = {
+            id: await admin.getNewSubCategoryId(),
+            category_id:req.body.category_id,
+            name: req.body.name,
+            image: null,
+            icon: null
         }
-        else {
-            res.redirect('/admin/category')
-        }
+        await admin.createSubCategory(sub_category);
+        res.redirect('/admin/category');
     }
 });
 
@@ -193,6 +202,41 @@ router.post('/account/:username', async function (req, res) {
 
 router.delete('/account/:username', async function (req, res) {
     var result = await admin.deleteAccount(req.body.typeAccount, req.params.id)
+    res.send(result);
+});
+
+router.get('/sub_category/:id', async function (req, res) {
+    var [sub_category, table] = await admin.getSubCategory(req.params.id);
+    res.render('vwAdmin/editSubCategory', {
+        sub_category: sub_category
+    });
+});
+
+router.post('/sub_category/:id', async function (req, res) {
+    let missing = await missingKeys(req.body, [
+        "sub_category",
+    ]);
+    var [sub_category, table] = await admin.getSubCategory(req.params.id);
+    if (missing) {
+        return res.render('vwAdmin/editSubCategory', {
+            sub_category: sub_category,
+            fail: "One or more keys are missing or null",
+        });
+    }
+    var result = await admin.updateSubCategory(req.params.id, req.body.sub_category);
+    if (result !== false) {
+        return res.render('vwAdmin/editSubCategory', {
+            sub_category: result,
+        });
+    }
+    res.render('vwAdmin/editSubCategory', {
+        sub_category: sub_category,
+        fail: "Error update"
+    });
+});
+
+router.delete('/sub_category/:id', async function (req, res) {
+    var result = await admin.deleteSubCategory(req.params.id)
     res.send(result);
 });
 
