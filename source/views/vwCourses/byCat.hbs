@@ -69,7 +69,37 @@
               <!-- Radio group -->
               <div class="card-body pt-0 pl-2">
                 {{#each categories}}
-                <p><a href="/course/byCat/?category_id={{id}}">{{name}}</a></p>
+                 <p><a href="/course/byCat/?category_id={{id}}">{{name}}</a></p>
+                {{/each}}
+              </div>
+              <!-- Radio group -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Accordion card -->
+        <div class="card">
+
+          <!-- Card header -->
+          <div class="card-header pb-0 pl-2" role="tab" id="headingOne3">
+            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne3" aria-expanded="true"
+              aria-controls="collapseOne2">
+              <h5 class="font-weight-bold dark-grey-text"><strong>Sub_category</strong><i
+                  class="fas fa-angle-down rotate-icon"></i>
+              </h5>
+              <div class="divider"></div>
+            </a>
+          </div>
+
+          <!-- Card body -->
+          <div id="collapseOne3" class="collapse show" role="tabpanel" aria-labelledby="headingOne3"
+            data-parent="#accordionEx">
+            <div class="card-body pt-0 pl-2">
+              <!-- Radio group -->
+              <div class="card-body pt-0 pl-2">
+                {{#each sub_categories}}
+                  <p><a href="/course/byCat/?sub_category_id={{id}}">{{name}}</a></p>
                 {{/each}}
               </div>
               <!-- Radio group -->

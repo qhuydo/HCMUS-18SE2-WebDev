@@ -32,17 +32,17 @@
             {{#each lcAllCategories}}
             {{#if hasSubCategory}}
             <li class="dropdown-submenu"><a class="dropdown-item dark-grey-text font-weight-bold dropdown-toggle pr-5"
-                href="/courses/byCat?category_id={{id}}">{{{icon}}} {{name}}</a>
+                href="/course/byCat?category_id={{id}}">{{{icon}}} {{name}}</a>
               <ul class="dropdown-menu">
 
                 {{#each subCategory}}
-                <li><a class="dropdown-item dark-grey-text" href="/courses/{{this.id}}">{{{icon}}}
+                <li><a class="dropdown-item dark-grey-text" href="/course/byCat?sub_category_id={{this.id}}">{{{icon}}}
                     {{name}}</a></li>
                 {{/each}}
               </ul>
             </li>
             {{else}}
-            <li><a class="dropdown-item dark-grey-text font-weight-bold" href="/courses/byCat?category_id={{this.id}}">{{{icon}}}
+            <li><a class="dropdown-item dark-grey-text font-weight-bold" href="/course/byCat?category_id={{this.id}}">{{{icon}}}
                 {{name}}</a></li>
             {{/if}}
             {{/each}}

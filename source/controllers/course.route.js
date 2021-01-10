@@ -10,13 +10,11 @@ const lectureModel = require('../models/lecture.model');
 const { extractYoutubeVideoId } = require('../utils/linkExtractor');
 const { paginate } = require('../config/default.json');
 const cartModel = require('../models/cart.model');
-const { parseJSON } = require('jquery');
-const { authStudent } = require('../middlewares/auth.mdw');
 
 router.get('/byCat', async (req, res) => {
-    console.log(req.query);
     var searchBefore = "default";
     var [allCategory, type] = await categoryModel.getAllCategory();
+    var [allSubcategory, type] = await categoryModel.getAllSubCategory();
     let page = req.query.page || 1;
     page = page < 1 ? 1 : page;
     if (req.session.searchBefore) {
@@ -24,16 +22,29 @@ router.get('/byCat', async (req, res) => {
     }
     if (req.query.orderBy) {
         searchBefore = req.query.orderBy;
+        req.session.sub_category_id = null;
     }
     if (req.query.category_id) {
         searchBefore = req.query.category_id
+        req.session.sub_category_id = null;
+    }
+    if (req.query.sub_category_id){
+        searchBefore = req.query.sub_category_id
+        req.session.sub_category_id = req.query.sub_category_id
     }
     var total = 0;
-    if (Number.isNaN(searchBefore))
-        total = await courseModel.countCourseSort(searchBefore, null, 0) || 0;
+    if (isNaN(searchBefore))
+        total = await courseModel.countCourseSort(searchBefore, null, null) || 0;
     else
-        total = await courseModel.countCourseSort(null, searchBefore, 0) || 0;
-    console.log(total);
+    {
+        console.log(searchBefore);
+        console.log(1);
+        if (req.session.sub_category_id)
+            total = await courseModel.countCourseSort(null, null, req.session.sub_category_id) || 0;
+        else
+            total = await courseModel.countCourseSort(null, searchBefore, null) || 0;
+    }
+    console.log(total)
     let nPages = Math.floor(total / 6);
     if (total % 6 > 0) {
         nPages++;
@@ -49,20 +60,40 @@ router.get('/byCat', async (req, res) => {
     var courses = [];
     const offset = (page - 1) * 6;
     if (req.session.searchBefore === searchBefore) {
-        courses = await courseModel.courseSort(searchBefore, searchBefore, offset);
-        courses.forEach(async element => {
-            var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
-            element.category = category;
-            element.isBuy = await courseModel.isBuy(element.id, req.session.username);
-            element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
-        });
+        if (isNaN(searchBefore))
+            courses = await courseModel.courseSort(searchBefore, null, null,offset);
+        else
+        {
+            if (req.session.sub_category_id)
+                courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset);
+            else
+                courses = await courseModel.courseSort(null, searchBefore, null,offset);
+        }
+        if (courses)
+        {
+            courses.forEach(async element => {
+                var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
+                element.category = category;
+                element.isBuy = await courseModel.isBuy(element.id, req.session.username);
+                element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
+            });
+        }
         return res.render('vwCourses/byCat', {
             categories: allCategory,
+            sub_categories:allSubcategory,
             courses: courses,
             page_numbers
         });
     }
-    courses = await courseModel.courseSort(searchBefore, searchBefore, offset);
+    if (isNaN(searchBefore))
+        courses = await courseModel.courseSort(searchBefore, null, null,offset);
+    else
+    {
+        if (req.session.sub_category_id)
+            courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset);
+        else
+            courses = await courseModel.courseSort(null, searchBefore, null,offset);
+    }
     if (courses) {
         courses.forEach(async element => {
             var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
@@ -74,6 +105,7 @@ router.get('/byCat', async (req, res) => {
     req.session.searchBefore = searchBefore;
     res.render('vwCourses/byCat', {
         categories: allCategory,
+        sub_categories:allSubcategory,
         courses: courses,
         page_numbers
     });

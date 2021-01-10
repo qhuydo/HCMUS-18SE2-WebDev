@@ -349,7 +349,7 @@ module.exports = {
         }
         return [null, null];
     },
-    async countCourseSort(orderBy, categoryFilter, page) {
+    async countCourseSort(orderBy, categoryFilter, sub_categoryFilter) {
         var sql = `SELECT * FROM course`;
         if (orderBy) {
             var [rows, cols] = await db.select(sql).catch(error => {
@@ -358,8 +358,7 @@ module.exports = {
             });
             if (rows)
                 return rows.length;
-            else
-                return 0;
+            return 0;
         }
         if (categoryFilter) {
             sql += ` WHERE category = ${categoryFilter}`;
@@ -372,10 +371,57 @@ module.exports = {
             else
                 return 0;
         }
+        if (sub_categoryFilter) {
+            sql += ` WHERE sub_category = ${sub_categoryFilter}`;
+            var [rows, cols] = await db.select(sql).catch(error => {
+                console.log(error.message);
+                return [null, null];
+            });
+            if (rows)
+                return rows.length;
+            else
+                return 0;
+        }
         return 0;
     },
-    async courseSort(orderBy, categoryFilter, offset) {
+    async courseSort(orderBy, categoryFilter,sub_categoryFilter, offset) {
         var sql = `SELECT * FROM course`;
+        if (categoryFilter) {
+            sql += ` WHERE category = ${categoryFilter} LIMIT 6 OFFSET ${offset}`;
+            var [rows, cols] = await db.select(sql).catch(error => {
+                console.log(error.message);
+                return null;
+            });
+            if (rows) {
+                rows.forEach(async element => {
+                    element.avgStar = await this.getAverageStar(element.id);
+                    var [instructor, type] = await instructorModel.getInstructor(element.id);
+                    element.instructor = instructor;
+                });
+                return rows;
+            }
+            else {
+                return null;
+            }
+        }
+        if (sub_categoryFilter) {
+            sql += ` WHERE sub_category = ${sub_categoryFilter} LIMIT 6 OFFSET ${offset}`;
+            var [rows, cols] = await db.select(sql).catch(error => {
+                console.log(error.message);
+                return null;
+            });
+            if (rows) {
+                rows.forEach(async element => {
+                    element.avgStar = await this.getAverageStar(element.id);
+                    var [instructor, type] = await instructorModel.getInstructor(element.id);
+                    element.instructor = instructor;
+                });
+                return rows;
+            }
+            else {
+                return null;
+            }
+        }
         if (orderBy === "default") {
             sql += ` LIMIT 6 OFFSET ${offset}`;
             var [rows, cols] = await db.select(sql).catch(error => {
@@ -392,24 +438,6 @@ module.exports = {
             }
             else {
                 return 0;
-            }
-        }
-        if (categoryFilter !== "popularity" && categoryFilter !== "avgStart" && categoryFilter !== "lowCost" && categoryFilter !== "highCost") {
-            sql += ` WHERE category = ${categoryFilter} LIMIT 6 OFFSET ${offset}`;
-            var [rows, cols] = await db.select(sql).catch(error => {
-                console.log(error.message);
-                return null;
-            });
-            if (rows) {
-                rows.forEach(async element => {
-                    element.avgStar = await this.getAverageStar(element.id);
-                    var [instructor, type] = await instructorModel.getInstructor(element.id);
-                    element.instructor = instructor;
-                });
-                return rows;
-            }
-            else {
-                return null;
             }
         }
         if (orderBy === "popularity") {
