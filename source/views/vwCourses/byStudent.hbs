@@ -125,14 +125,28 @@
             <div class="card-body">
               <h5 class="text-center mb-4">Continue your lecture</h5>
               <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
-                <img class="img-fluid" src="{{items.0.image}}" alt="Previous lecture">
-                <a href="/course/{{items.0.id}}">
+                {{#if last_review_lecture}}
+                <img class="img-fluid" src="{{last_review_course.image}}" alt="Previous lecture">
+                <a href="/course/{{last_review_course.id}}/lecture/?chapter_id={{last_review_lecture.chapter_id}}&lecture_id={{last_review_lecture.lecture_id}}">
                   <div class="mask waves-effect waves-light">
-                    <div class="mask rgba-black-slight waves-effect waves-light">Temp</div>
+                    <div class="mask rgba-black-slight waves-effect waves-light"></div>
                   </div>
                 </a>
+                {{else}}
+                <img class="img-fluid" src="{{items.0.image}}" alt="Previous lecture">
+                <a href="/course/{{items.0.id}}/lecture/">
+                  <div class="mask waves-effect waves-light">
+                    <div class="mask rgba-black-slight waves-effect waves-light"></div>
+                  </div>
+                </a>
+                {{/if}}
               </div>
-              <!-- TODO: add lecture link-->
+              {{#if last_review_lecture}}
+              <h5 class="card-title mt-3">
+                <a href="/course/{{last_review_course.id}}/lecture/?chapter_id={{last_review_lecture.chapter_id}}&lecture_id={{last_review_lecture.lecture_id}}"
+                  ><i class="fas fa-play mr-3"></i>{{last_review_lecture.name}}</a>
+              </h5>
+              {{/if}}
             </div>
           </div>
         </div>

@@ -133,10 +133,12 @@ module.exports = {
      * @param {string} username the username, and must exist in the database.
      * @returns {*} an object contains data from the database.
      * the return object consists of these keys
+     * ```
      * [{
      *  username, password, email, fullname, birth_date, photo, bio, about_me, 
      *  website, twitter, facebook, linkedin, youtube 
-     * }, type], type is either "student" or "instructor"
+     * }, type]```, type is either `student` or `instructor`
+     * 
      * Returns [null, null] if the query failed.
      */
     async getUserInfo(username) {

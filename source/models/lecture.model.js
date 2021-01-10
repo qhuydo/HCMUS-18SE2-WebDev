@@ -161,7 +161,7 @@ module.exports = {
         const sql = "INSERT INTO student_lecture (username, course_id, chapter_id, lecture_id, timestamp) "
             + "VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE timestamp = ?";
 
-        const [rows, fields] = await db.query(sql, [username, course_id, chapter_id, lecture_id, timestamp]).catch(err => {
+        const [rows, fields] = await db.query(sql, [username, course_id, chapter_id, lecture_id, timestamp, timestamp]).catch(err => {
             console.log(`lecture.model.js: updateLectureTimeStamp ${err.message}`);
             return false;
         });
@@ -193,5 +193,25 @@ module.exports = {
         });
 
         return rows !== null && rows.length !== 0;
-    }
+    },
+
+    /**
+     * Update the `last_review_course_id`, `last_review_chapter_id`, `last_review_lecture_id` columns
+     * in the `student` table
+     * @param {string} username 
+     * @param {number} course_id 
+     * @param {number} chapter_id 
+     * @param {number} lecture_id
+     */
+    async recordStudentLastLecture(username, course_id, chapter_id, lecture_id) {
+        if (!await didStudentBoughtThisCourse(username, course_id)) {
+            return false;
+        }
+        const sql = `UPDATE student SET last_review_course_id = ?, last_review_chapter_id = ?, last_review_lecture_id = ? where username=?`;
+        const [rows, fileds] = await db.query(sql, [course_id, chapter_id, lecture_id, username]);
+        if (rows.error) {
+            return false;
+        }
+        return true;
+    },
 }

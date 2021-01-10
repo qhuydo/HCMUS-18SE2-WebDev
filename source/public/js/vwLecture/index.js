@@ -17,6 +17,66 @@ toastr.options = {
     "hideMethod": "fadeOut"
 }
 
+$(() => {
+    window.player.on('ready', ()=> {
+        if (!window.completion){
+            loadCurrentTimeStamp(window.timestamp);
+        }
+    });
+    window.player.on('pause', () => {
+        console.log(window.player.currentTime);
+        sendTimeStamp(`${window.player.currentTime}`);
+    });
+    window.player.on('ended', ()=>{
+        console.log(window.player.currentTime);
+        sendTimeStamp(window.player.currentTime);
+        markAsChecked();
+    });
+});
+
+function loadCurrentTimeStamp(timestamp) {
+    if (!isNaN(timestamp)) {
+        window.player.currentTime = timestamp;
+    }
+}
+
+function sendTimeStamp(timestamp) {
+    console.log({
+        course_id: window.course_id,
+        chapter_id: window.chapter_id,
+        lecture_id: window.lecture_id,
+        timestamp
+    });
+    $.ajax({
+        url: `/course/${window.course_id}/lecture/`,
+        type: 'PUT',
+        dataType: 'json',
+        data: {
+            course_id: window.course_id,
+            chapter_id: window.chapter_id,
+            lecture_id: window.lecture_id,
+            timestamp
+        },
+
+        success: (result) => {
+            console.log(result);
+            if (result) {
+                toastr["success"]("", "Changes saved");
+            }
+            else {
+                toastr["warning"]("", "Changes were not saved");
+            }
+        },
+    });
+}
+
+function markAsChecked() {
+    $(`#checkThisLecture`).attr('checked', true);
+    $(`#materialChecked${window.chapter_id}-${window.lecture_id}`).attr('checked', true);
+    toggleCheckbox($('#checkThisLecture')[0].outerHTML);
+}
+
+
 function toggleCheckbox(element) {
 
     const data = $(element).data();

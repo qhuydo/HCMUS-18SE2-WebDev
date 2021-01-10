@@ -12,14 +12,22 @@
 <script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
 <script>
 
-  $(() => {
+$(() => {
     $('.toast').toast('show');
-    const player = new Plyr('#player');
+    const player = new Plyr('#player', {
+      title: "{{lecture.name}}"
+    });
+
     window.player = player;
-    window.chapter_id = +{{chapter_id}};
-    window.lecture_id = +{{lecture.lecture_id}};
-    
-  });
+
+    // cache variables
+    window.course_id = +{{course_id}};
+    window.chapter_id = +{{ chapter_id }};
+    window.lecture_id = +{{ lecture.lecture_id }};
+    window.completion = +{{lecture.completion}};
+    window.timestamp = Number({{lecture.timestamp}});
+
+});
 
 </script>
 <script type="text/javascript" src="/js/vwLecture/index.js"></script>

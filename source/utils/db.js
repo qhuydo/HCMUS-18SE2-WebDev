@@ -38,6 +38,6 @@ module.exports = {
         const sql = `update ${table_name} set ? where ?`;
         return promisePool.query(sql, [new_data, condition]).catch(function (err) {
             return { "error": err.message };
-        });;
+        });
     }
 };

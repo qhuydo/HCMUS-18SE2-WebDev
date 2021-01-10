@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const accountModel = require('../models/account.model');
+const cartModel = require('../models/cart.model');
+const categoryModel = require('../models/category.model');
 const courseModel = require('../models/course.model');
 const instructorModel = require('../models/instructor.model');
-const categoryModel = require('../models/category.model');
+const lectureModel = require('../models/lecture.model');
 const missingKeys = require("../utils/otherFunction").missingKeys;
 const dateformat = require('dateformat');
 const auth = require('../middlewares/auth.mdw');
-const lectureModel = require('../models/lecture.model');
 const { extractYoutubeVideoId } = require('../utils/linkExtractor');
 const { paginate } = require('../config/default.json');
-const cartModel = require('../models/cart.model');
 
 router.get('/byCat', async (req, res) => {
     var searchBefore = "default";
@@ -191,12 +192,28 @@ router.get('/myLearning', auth.authStudent, async (req, res) => {
         }
 
     }
-    // console.log(items);
 
+    const [student, _] = await accountModel.getUserInfo(req.session.username);
+    // console.log(items);
+    let last_review_lecture = null;
+    let last_review_course = null;
+    // console.log(student);
+    if (student.last_review_lecture_id) {
+        last_review_lecture = await lectureModel.getLecture(
+            student.last_review_course_id,
+            student.last_review_lecture_id,
+            student.last_review_chapter_id
+        );
+        // console.log(last_review_lecture);
+        last_review_course = (await courseModel.getCourseDetail(student.last_review_course_id))[0];
+        //console.log(last_review_course);
+    }
     res.render('vwCourses/byStudent', {
         items,
         hasCourse: total.length !== 0,
-        page_numbers
+        page_numbers,
+        last_review_course,
+        last_review_lecture
     })
 
 });
@@ -462,13 +479,13 @@ router.route('/:id/lecture')
         let course_id = req.params.id;
         let chapter_id = req.query.chapter_id;
         let lecture_id = req.query.lecture_id;
-        if (course_id === undefined || ! await courseModel.isCourseIdExist(req.params.id)) {
+        if (!course_id|| ! await courseModel.isCourseIdExist(req.params.id)) {
             return res.status(404).render('error', {
                 error_code: 404
             });
         }
 
-        if (chapter_id !== undefined && lecture_id !== undefined &&
+        if (chapter_id && lecture_id &&
             ! await lectureModel.isLectureIdExist(req.params.id, req.query.lecture_id, req.query.chapter_id)) {
             return res.status(404).render('error', {
                 error_code: 404
@@ -477,15 +494,15 @@ router.route('/:id/lecture')
 
 
         const chapters = await lectureModel.getFullCourseContent(req.params.id);
-        console.log(chapters)
-        if (chapter_id === undefined) {
-            if (chapters !== undefined && chapters.length > 0) {
+        // console.log(chapters)
+        if (!chapter_id) {
+            if (chapters && chapters.length > 0) {
                 chapter_id = chapters[0].chapter_id;
             }
 
-            console.log(chapters[0]);
-            if (chapter_id !== undefined && lecture_id === undefined) {
-                if (chapters[0].lectures !== undefined && chapters[0].lectures.length > 0) {
+            // console.log(chapters[0]);
+            if (chapter_id && !lecture_id) {
+                if (chapters[0].lectures && chapters[0].lectures.length > 0) {
                     lecture_id = chapters[0].lectures[0].lecture_id;
                 }
             }
@@ -504,7 +521,7 @@ router.route('/:id/lecture')
         });
 
         let lecture = null;
-        if (lecture_id !== undefined) {
+        if (lecture_id) {
             lecture = await lectureModel.getLecture(course_id, lecture_id, chapter_id);
             if (lecture !== null) {
                 const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, chapter_id, course_id);
@@ -526,13 +543,17 @@ router.route('/:id/lecture')
             }
         }
 
-        console.log({
-            chapters,
-            course_id,
-            lecture_id,
-            lecture: lecture,
-            description
-        })
+        if (course_id) {
+            await lectureModel.recordStudentLastLecture(username, course_id, chapter_id, lecture_id);
+        }
+
+        // console.log({
+        //     chapters,
+        //     course_id,
+        //     lecture_id,
+        //     lecture: lecture,
+        //     description
+        // })
         res.render('vwLecture/index', {
             chapters,
             course_id,
@@ -550,9 +571,16 @@ router.route('/:id/lecture')
         const course_id = +req.body.course_id;
         const chapter_id = +req.body.chapter_id;
         const lecture_id = +req.body.lecture_id;
-        const completion = +req.body.completion;
+        const completion = req.body.completion;
+        const timestamp = req.body.timestamp;
 
-        return res.send(await lectureModel.updateLectureState(username, course_id, chapter_id, lecture_id, completion));
+        if (completion) {
+            return res.send(await lectureModel.updateLectureState(username, course_id, chapter_id, lecture_id, completion));
+        }
+        if (timestamp) {
+            return res.send(await lectureModel.updateLectureTimeStamp(username, course_id, chapter_id, lecture_id, timestamp));
+        }
+
 
     });
 
