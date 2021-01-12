@@ -487,5 +487,37 @@ module.exports = {
         });
 
         return rows !== null && rows.length !== 0;
+    },
+    /**
+     * Add a list of couses to the student account
+     * @param {string} username 
+     * @param {array} courses an array of courses, each of element must contain a
+     * field named `id` which is the course ID in the course table.
+     */
+    async addCoursesToStudentAccount(username, courses) {
+        const sql = `INSERT IGNORE INTO course_student SET username = ?, course_id = ?`;
+        for (const course of courses) {
+            await db.query(sql, [username, course.id]).catch(err => {
+                console.log(`course.model.js: didStudentBoughtThisCourse ${err.message}`);
+                return false;
+            });
+        }
+        return true;
+    },
+
+    /**
+     * get the total number of lectures of a course
+     * @param {number} id 
+     * @returns number
+     */
+    async numberOfLectures(id) {
+        const sql = `SELECT COUNT(*) lecture_count FROM lecture WHERE course_id = ?`;    
+
+        const [rows, fields] = await db.query(sql, [id]).catch(err => {
+            console.log(`course.model.js: numberOfLectures ${err.message}`);
+            return null;
+        });
+
+        return rows[0].lecture_count;
     }
 }

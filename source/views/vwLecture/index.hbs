@@ -3,6 +3,14 @@
   body {
     padding-top: 55px;
   }
+
+  .word-wrap-one-line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+    -webkit-box-orient: vertical;
+  }
 </style>
 
 <link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css" />
@@ -14,9 +22,7 @@
 
 $(() => {
     $('.toast').toast('show');
-    const player = new Plyr('#player', {
-      title: "{{lecture.name}}"
-    });
+    const player = new Plyr('#player');
 
     window.player = player;
 
@@ -75,7 +81,12 @@ $(() => {
                 </div>
               </h5>
               <hr>
-
+              {{#if next_lecture}}
+              <a class="word-wrap-one-line" href="/course/{{course_id}}/lecture/?lecture_id={{next_lecture.lecture_id}}&chapter_id={{next_lecture.chapter_id}}" style="float: right">
+                <i class="fas fa-angle-double-right"></i>
+                {{next_lecture.name}}
+              </a>
+              {{/if}}
             </div>
           </div>
           {{else}}
@@ -184,22 +195,22 @@ $(() => {
                         {{#if this.completion}}
                         <input type="checkbox" class="form-check-input" id="materialChecked{{../chapter_id}}-{{this.lecture_id}}"
                           checked onchange="toggleCheckbox(this)" data-chapter_id={{../chapter_id}}
-                          data-lecture_id={{this.lecture_id}} data-course_id={{../../lecture.chapter_id}}>
+                          data-lecture_id={{this.lecture_id}} data-course_id={{../../lecture.course_id}}>
                         {{else}}
                         <input type="checkbox" class="form-check-input" id="materialChecked{{../chapter_id}}-{{this.lecture_id}}"
                           onchange="toggleCheckbox(this)" data-chapter_id={{../chapter_id}}
-                           data-lecture_id={{this.lecture_id}} data-course_id={{../../lecture.chapter_id}}>
+                           data-lecture_id={{this.lecture_id}} data-course_id={{../../lecture.course_id}}>
                         {{/if}}
                         <label class="form-check-label" for="materialChecked{{../chapter_id}}-{{this.lecture_id}}">
                           {{#if (and (eq this.lecture_id ../../lecture.lecture_id) (eq ../chapter_id
                           ../../lecture.chapter_id))}}
                           <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
-                            class="text-default">
+                            class="text-default lectureName">
                             {{this.name}}
                           </a>
                           {{else}}
                           <a href="/course/{{../../course_id}}/lecture/?lecture_id={{this.lecture_id}}&chapter_id={{../chapter_id}}"
-                            class="text-dark">
+                            class="text-dark lectureName">
                             {{this.name}}
                           </a>
                           {{/if}}

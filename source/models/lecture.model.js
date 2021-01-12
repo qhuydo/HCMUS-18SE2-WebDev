@@ -1,6 +1,7 @@
 const e = require("express");
 const db = require("../utils/db");
 const { extractYoutubeVideoId } = require("../utils/linkExtractor");
+const courseModel = require("./course.model");
 const { didStudentBoughtThisCourse } = require("./course.model");
 
 module.exports = {
@@ -208,10 +209,127 @@ module.exports = {
             return false;
         }
         const sql = `UPDATE student SET last_review_course_id = ?, last_review_chapter_id = ?, last_review_lecture_id = ? where username=?`;
-        const [rows, fileds] = await db.query(sql, [course_id, chapter_id, lecture_id, username]);
-        if (rows.error) {
+        await db.query(sql, [course_id, chapter_id, lecture_id, username]).catch((err, rows, fields) => {
+            console.log(`lecture.model.js: updateAsReviews ${err.message}`);
             return false;
-        }
+        });
+
+        const anotherSql = `UPDATE course_student SET last_review_chapter_id = ?, last_review_lecture_id = ? WHERE username = ? AND course_id = ?`;
+        const [anotherRows, _] = await db.query(anotherSql, [chapter_id, lecture_id, username, course_id]).catch((err, rows, fields) => {
+            console.log(`lecture.model.js: updateAsReviews ${err.message}`);
+            return false;
+        });
+
         return true;
     },
+
+    async numberOfUnreviewedCourse(username){
+        const sql = `SELECT COUNT(*) as count FROM course_student WHERE username=? AND reviewed = 0`;
+        const [rows, fileds] = await db.query(sql, [username]);
+        if (rows.error) {
+            return null;
+        }
+        return rows[0].count;
+    },
+
+    async updateAsReviewed(username, course_id) {
+        const sql = `UPDATE course_student SET reviewed = 1 WHERE username = ? AND course_id = ?`;
+        await db.query(sql, [username, course_id]).catch((err, rows, fields) => {
+            console.log(`lecture.model.js: updateAsReviews ${err.message}`);
+        });
+        return true;
+    },
+    
+    async didTheCourseReviewedByStudent(username, course_id) {
+        const sql = `SELECT reviewed from course_student  WHERE username = ? AND course_id = ?`;
+        const [rows, fields] = await db.query(sql, [username, course_id]).catch((err, rows, fields) => {
+            console.log(`lecture.model.js: updateAsReviews ${err.message}`);
+        });
+        if (rows && rows.length == 0) {
+            return false;
+        }
+        return rows[0].reviewed == 1;
+    },
+
+    /**
+     * Get the chapter_id and lecture_id corresponded with the next lecture of the given param
+     * @param {number} course_id 
+     * @param {number} chapter_id 
+     * @param {number} lecture_id 
+     * Return the lecture object (i.e the row from the lecture table)
+     */
+    async getNextLecture(course_id, chapter_id, lecture_id) {
+        
+        const sql = `SELECT * FROM lecture WHERE course_id = ? AND ((chapter_id = ? AND lecture_id > ?) OR (chapter_id > ?)) `
+         + `ORDER BY chapter_id ASC, course_id ASC`
+
+        const [rows, fields] = await db.query(sql, [course_id, chapter_id, lecture_id, chapter_id]).catch((err, rows, fields) => {
+            console.log(`lecture.model.js: getNextLecture ${err.message}`);
+        });
+
+        if (!rows || (rows && rows.length == 0)) {
+            return null;
+        }
+        return rows[0];
+    },
+
+    /**
+     * Get the most recent lecture from a course that the student accessed 
+     * @param {string} username 
+     * @param {number} course_id 
+     * @returns a row in course_student table
+     */
+    async getLastReviewedLecture(username, course_id) {
+        const sql = `SELECT * FROM course_student WHERE username = ? AND course_id = ?`
+
+        const [rows, fields] = await db.query(sql, [username, course_id]).catch((err, rows, fields) => {
+            console.log(`lecture.model.js: getLastReviewedLecture ${err.message}`);
+        });
+
+        if (!rows || (rows && rows.length == 0)) {
+            return null;
+        }
+        return rows[0];
+    }, 
+
+    /**
+     * 
+     * @param {string} username 
+     * @param {int} course_id 
+     * @returns number
+     */
+    async numberOfLearnedLectures(username, course_id) {
+        const sql = `SELECT COUNT(*) as lecture_count FROM student_lecture WHERE username = ? AND course_id = ?`;
+        
+        const [rows, fields] = await db.query(sql, [username, course_id]).catch((err, rows, fields) => {
+            console.log(`lecture.model.js: numberOfLearnedLectures ${err.message}`);
+        });
+
+        if (!rows || (rows && rows.length == 0)) {
+            return null;
+        }
+        return rows[0].lecture_count;
+    },
+
+    /**
+     * 
+     * @param {string} username 
+     * @param {number} course_id 
+     * @returns `true` when the course is complete (instructors uploaded the video completely) 
+     * and the student has checked all the lectures
+     */
+    async didStudentFinishTheCourse(username, course_id) {
+        const n_learned_lectures = await this.numberOfLearnedLectures(username, course_id);
+        
+        const course = (await courseModel.getCourseDetail(course_id))[0];
+        if (!course || !course.completion) {
+            return false;
+        }
+
+        const n_lectures = await courseModel.numberOfLectures(course_id);
+        return n_learned_lectures && n_lectures && n_learned_lectures === n_lectures;
+    }
+
+
+
 }

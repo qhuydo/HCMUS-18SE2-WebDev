@@ -75,7 +75,11 @@
         <!-- button for student-->
         {{#eq session.type "student"}}
         <li class="nav-item">
-          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold mr-4" href="/course/myLearning"><i class="fas fa-chalkboard"></i>
+          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold mr-4" href="/course/myLearning">
+          {{#if numberOfUnreviewedCourse}}
+          <span class="badge badge-danger">{{numberOfUnreviewedCourse}}</span>
+          {{/if}}
+          <i class="fas fa-chalkboard"></i>
           My learning</a>
         </li>
         <li class="nav-item">

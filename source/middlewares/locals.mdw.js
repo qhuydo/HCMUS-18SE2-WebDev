@@ -1,5 +1,6 @@
 const cartModel = require('../models/cart.model');
 const categoryModel = require('../models/category.model');
+const lectureModel = require('../models/lecture.model');
 const watchlistModel = require('../models/watchlist.model');
 
 module.exports = function (app) {
@@ -21,8 +22,8 @@ module.exports = function (app) {
 
     app.use(async function (req, res, next) {
         res.locals.lcAllCategories = await categoryModel.allWithSub();
-
         if (typeof (res.locals.session) !== 'undefine' && res.locals.session.type === 'student') {
+            res.locals.numberOfUnreviewedCourse = await lectureModel.numberOfUnreviewedCourse(req.session.username);
             req.session.cart = await cartModel.allItemsFromCart(req.session.username);
             req.session.watchlist = await watchlistModel.allItemsFromWatchList(req.session.username);
         }

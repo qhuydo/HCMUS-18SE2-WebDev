@@ -94,6 +94,7 @@ CREATE TABLE `course` (
   `total_rating` int unsigned DEFAULT '0',
   `student_count` int DEFAULT '0',
   `completion` tinyint NOT NULL DEFAULT '0',
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_course_sub_category_idx` (`sub_category`),
@@ -290,6 +291,9 @@ DROP TABLE IF EXISTS `course_student`;
 CREATE TABLE `course_student` (
   `course_id` int unsigned NOT NULL,
   `username` varchar(45) NOT NULL,
+  `last_review_chapter_id` int unsigned DEFAULT NULL,
+  `last_review_lecture_id` int unsigned DEFAULT NULL,
+  `reviewed` tinyint DEFAULT '0',
   PRIMARY KEY (`course_id`,`username`),
   KEY `fk_course_student_student_idx` (`username`),
   CONSTRAINT `fk_course_student_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
@@ -592,4 +596,4 @@ CREATE TABLE `watchlist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-10  3:47:14
+-- Dump completed on 2021-01-13  0:54:13

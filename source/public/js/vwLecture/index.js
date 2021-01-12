@@ -19,9 +19,7 @@ toastr.options = {
 
 $(() => {
     window.player.on('ready', ()=> {
-        if (!window.completion){
-            loadCurrentTimeStamp(window.timestamp);
-        }
+        loadCurrentTimeStamp(window.timestamp);
     });
     window.player.on('pause', () => {
         console.log(window.player.currentTime);
@@ -32,15 +30,28 @@ $(() => {
         sendTimeStamp(window.player.currentTime);
         markAsChecked();
     });
+
+    // enumerate the lectures
+    $('.lectureName').each(function(i, obj) {
+        obj.text = `${i + 1}. ${obj.text}`;
+    });
+
+    // record the timestamp before leave the page
+    $(window).bind('beforeunload', function(){
+        window.player.pause();
+        sendTimeStamp(window.player.currentTime, false);
+    });
+    
 });
 
 function loadCurrentTimeStamp(timestamp) {
+    console.log(`Current timestamp ${timestamp}`);
     if (!isNaN(timestamp)) {
         window.player.currentTime = timestamp;
     }
 }
 
-function sendTimeStamp(timestamp) {
+function sendTimeStamp(timestamp, verbose=true) {
     console.log({
         course_id: window.course_id,
         chapter_id: window.chapter_id,
@@ -59,12 +70,14 @@ function sendTimeStamp(timestamp) {
         },
 
         success: (result) => {
-            console.log(result);
-            if (result) {
-                toastr["success"]("", "Changes saved");
-            }
-            else {
-                toastr["warning"]("", "Changes were not saved");
+            if (verbose) {
+                console.log(result);
+                if (result) {
+                    toastr["success"]("", "Changes saved");
+                }
+                else {
+                    toastr["warning"]("", "Changes were not saved");
+                }
             }
         },
     });

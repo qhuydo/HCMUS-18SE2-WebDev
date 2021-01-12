@@ -5,26 +5,43 @@
   body {
     padding-top: 35px;
   }
+
+  .word-wrap-one-line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+    -webkit-box-orient: vertical;
+  }
+
 </style>
 {{/section}}
 
 {{#section 'js'}}
 <script>
-  $('.cartRemoveAction').on('click', function () {
-    const course_id = $(this).data('course_id');
+  $(() => {
+    $('.cartRemoveAction').on('click', function () {
+      const course_id = $(this).data('course_id');
 
-    // console.log(course_id);
-    $('#txtRemoveCourseID').val(course_id);
-    $('#cartRemoveForm').submit();
-  })
+      // console.log(course_id);
+      $('#txtRemoveCourseID').val(course_id);
+      $('#cartRemoveForm').submit();
+    });
 
-  $('.cartMoveAction').on('click', function () {
-    const course_id = $(this).data('course_id');
+    $('.cartMoveAction').on('click', function () {
+      const course_id = $(this).data('course_id');
 
-    // console.log(course_id);
-    $('#txtMoveCourseID').val(course_id);
-    $('#cartMoveForm').submit();
-  })
+      // console.log(course_id);
+      $('#txtMoveCourseID').val(course_id);
+      $('#cartMoveForm').submit();
+    });
+    
+    $('#purchase-button').on('click', function() {
+      $('#purchaseForm').submit();
+    });
+
+  });
+
 </script>
 
 {{/section}}
@@ -53,6 +70,9 @@
             <input type="hidden" id="txtMoveCourseID" name="course_id">
           </form>
 
+          <form id="purchaseForm" method="POST" action="/cart/">
+          </form>
+
           <div class="card watch-list mb-4">
 
             <div class="card-body">
@@ -75,8 +95,8 @@
                   <div>
                     <div class="d-flex justify-content-between">
                       <div>
-                        <p><a href="/course/{{this.id}}" class="text-dark">{{this.title}}</a></p>
-                        <p class="mb-3 text-muted text-uppercase small">By {{this.instructors}}
+                        <p><a href="/course/{{this.id}}" class="text-dark word-wrap-one-line">{{this.title}}</a></p>
+                        <p class="mb-3 text-muted text-uppercase small word-wrap-one-line">By {{this.instructors}}
                         </p>
                         <p>
                           <span>
@@ -150,8 +170,6 @@
           </div>
           <!-- Card -->
 
-
-
         </div>
         <!--Grid column-->
 
@@ -179,7 +197,7 @@
                   </li>
                 </ul>
 
-                <button type="button" class="btn btn-primary btn-block waves-effect waves-light">PURCHASE</button>
+                <button id="purchase-button" type="button" class="btn btn-primary btn-block waves-effect waves-light">PURCHASE</button>
 
             </div>
           </div>

@@ -182,12 +182,15 @@ router.get('/myLearning', auth.authStudent, async (req, res) => {
     const offset = (page - 1) * paginate.course_limit;
     const list = await courseModel.getCourseIdListOfStudent(req.session.username, offset);
 
+    const username = req.session.username;
     if (list !== null && list !== 0) {
         for (const ci of list) {
             const course = await courseModel.getCourseDataForCart(ci.course_id);
             course.countStudent = await courseModel.getNumberStudent(ci.course_id);
             course.averageStar = await courseModel.getAverageStar(ci.course_id);
             course.countRating = await courseModel.getNumberRating(ci.course_id);
+            course.reviewed = await lectureModel.didTheCourseReviewedByStudent(username, ci.course_id);
+            course.finished = await lectureModel.didStudentFinishTheCourse(username, ci.course_id);
             items.push(course);
         }
 
@@ -472,9 +475,6 @@ router.route('/:id/lecture')
             "chapter_id"
         ]);
 
-        // if (missing) {
-        //     return res.redirect('/course/' + req.params.id + '/editVideo');
-        // } // student cannot edit video
         const username = req.session.username;
         let course_id = req.params.id;
         let chapter_id = req.query.chapter_id;
@@ -484,7 +484,10 @@ router.route('/:id/lecture')
                 error_code: 404
             });
         }
-
+        
+        // marked the course as reviewed - the student has browsed the lecture content
+        await lectureModel.updateAsReviewed(username, course_id);
+        
         if (chapter_id && lecture_id &&
             ! await lectureModel.isLectureIdExist(req.params.id, req.query.lecture_id, req.query.chapter_id)) {
             return res.status(404).render('error', {
@@ -492,15 +495,26 @@ router.route('/:id/lecture')
             });
         }
 
-
         const chapters = await lectureModel.getFullCourseContent(req.params.id);
-        // console.log(chapters)
+
+        // When the does not specify chapter_id and lecture_id
+        // Get the last lecture
+        if (!chapter_id && !lecture_id) {
+            const last_lecture = await lectureModel.getLastReviewedLecture(username, course_id);
+            if (last_lecture) {
+                chapter_id = last_lecture.last_review_chapter_id;
+                lecture_id = last_lecture.last_review_lecture_id;
+            }
+        }
+
+        // Get the first lecture of the course if not found the last reviewed lecture
+        // or the chapter_id and course_id are not specified in the link
         if (!chapter_id) {
+
             if (chapters && chapters.length > 0) {
                 chapter_id = chapters[0].chapter_id;
             }
 
-            // console.log(chapters[0]);
             if (chapter_id && !lecture_id) {
                 if (chapters[0].lectures && chapters[0].lectures.length > 0) {
                     lecture_id = chapters[0].lectures[0].lecture_id;
@@ -512,8 +526,7 @@ router.route('/:id/lecture')
             element.lectures.forEach(async subElements => {
                 // console.log(`element.chapter_id ${element.chapter_id}`);
                 const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, element.chapter_id, subElements.lecture_id);
-                // console.log("hihi") ;
-                // console.log(progress_data);
+
                 if (progress_data !== null && progress_data.length > 0) {
                     subElements.completion = progress_data[0].completion;
                 }
@@ -524,7 +537,7 @@ router.route('/:id/lecture')
         if (lecture_id) {
             lecture = await lectureModel.getLecture(course_id, lecture_id, chapter_id);
             if (lecture !== null) {
-                const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, chapter_id, course_id);
+                const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, chapter_id, lecture_id);
                 if (progress_data !== null && progress_data.length > 0) {
                     lecture.timestamp = progress_data[0].timestamp;
                     lecture.completion = progress_data[0].completion;
@@ -546,21 +559,17 @@ router.route('/:id/lecture')
         if (course_id) {
             await lectureModel.recordStudentLastLecture(username, course_id, chapter_id, lecture_id);
         }
+        
+        const next_lecture = await lectureModel.getNextLecture(course_id, chapter_id, lecture_id);
 
-        // console.log({
-        //     chapters,
-        //     course_id,
-        //     lecture_id,
-        //     lecture: lecture,
-        //     description
-        // })
         res.render('vwLecture/index', {
             chapters,
             course_id,
             lecture_id,
             chapter_id,
             lecture: lecture,
-            description
+            description,
+            next_lecture
         });
     })
     .put(auth.authStudent, async (req, res) => {

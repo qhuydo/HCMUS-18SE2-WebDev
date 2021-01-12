@@ -53,5 +53,26 @@ module.exports = {
                 return null;
             });
         }
+    },
+
+    /**
+     * Remove all items from cart in the database 
+     * 
+     */
+    async removeAllItemsFromCart(username) {
+        var allItems = await this.allItemsFromCart(username);
+        if (!allItems) {
+            return null;
+        }
+        
+        const sql = "DELETE FROM cart WHERE username = ?";
+        await db.query(sql, [username]).catch((err) => {
+            console.log(`cart.model.js: removeAllItemsFromCart ${err.message}`);
+            return null;
+        });
+        allItems.forEach(element => {
+            element.id = element.course_id;
+        });
+        return allItems;
     }
 }

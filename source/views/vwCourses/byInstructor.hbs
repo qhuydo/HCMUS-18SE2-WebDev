@@ -5,6 +5,14 @@
   body {
     padding-top: 35px;
   }
+    .word-wrap-one-line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+    -webkit-box-orient: vertical;
+  }
+
 </style>
 {{/section}}
 
@@ -46,8 +54,8 @@
                   <div>
                     <div class="d-flex justify-content-between">
                       <div>
-                        <p><a href="/course/{{this.id}}" class="text-dark">{{this.title}}</a></p>
-                        <p class="mb-3 text-muted text-uppercase small">By {{this.instructors}}
+                        <p><a href="/course/{{this.id}}" class="text-dark word-wrap-one-line">{{this.title}}</a></p>
+                        <p class="mb-3 text-muted text-uppercase small word-wrap-one-line">By {{this.instructors}}
                         </p>
                         <p>
                           <span>
