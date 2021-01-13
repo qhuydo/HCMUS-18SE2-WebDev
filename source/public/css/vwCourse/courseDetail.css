@@ -1,3 +1,7 @@
+body { 
+    padding-top: 100px; 
+}
+
 .imagePreview{
     width: 100px;
     height: 100px;
@@ -22,6 +26,7 @@
     margin: 7px 0 0 5px;
     float: left;
 }
+
 .imageSlide{
     width: 300px;
     height: 200px;
@@ -38,4 +43,25 @@
     width: 300px;
     height: 500px;
     float: left;
+}
+
+/* #scrollspy .nav-item {
+    width: 100%;
+    } */
+    
+    /* #scrollspy a {
+    font-weight: 400;
+    padding: 0 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    color: black;
+    }
+    
+    #scrollspy li .active {
+    font-weight: 600;
+    } */
+    
+.scrollspy-container {
+    position: relative;
+    overflow: auto;
 }

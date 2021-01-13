@@ -18,3 +18,12 @@ function addToCartFunction(course_id){
             }
     }});
 }
+
+$(() => {
+    // enumerate the lectures
+    $('.lectureName').each(function(i, obj) {
+        console.log(obj.text);
+        obj.text = `${i + 1}. ${obj.text}`;
+    });
+
+});
