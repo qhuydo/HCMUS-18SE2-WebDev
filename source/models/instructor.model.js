@@ -13,7 +13,7 @@ module.exports = {
         return [null, null];
     },
     async instructorFromACourse(course_id) {
-        const sql = "SELECT instructor.username, fullname FROM course_instructor"
+        const sql = "SELECT instructor.username, fullname, photo, bio, about_me FROM course_instructor"
             + " INNER JOIN instructor ON instructor.username = course_instructor.username"
             + " WHERE course_id = ?";
         
@@ -77,5 +77,25 @@ module.exports = {
             return rows[0].averagePoint;
         }
         return [null, null];
+    },
+    async instructorDetailsFromACourse(course_id){
+        const instructorRows = await this.instructorFromACourse(course_id).catch((err) => {
+            console.log(err.message); // logs "Something"
+        });
+
+        for (const i of instructorRows) {
+            i.studentOfInstructor = await this.getNumberStudent(i.username);
+            i.reviewOfInstructor = await this.getNumberReview(i.username);
+            i.avgStarOfInstructor = await this.getAverageStar(i.username);
+            i.countCourseOfInstructor = await this.getNumberCourse(i.username);
+        }
+
+        // instructorRows.foreach(async (element) => {
+        //     element.studentOfInstructor = await this.getNumberStudent(element.username);
+        //     element.reviewOfInstructor = await this.getNumberReview(element.username);
+        //     element.avgStartOfInstructor = await this.getAverageStar(element.username);
+        //     element.countCourseOfInstructor = await this.getNumberCourse(element.username);
+        // });
+        return instructorRows;
     }
 }

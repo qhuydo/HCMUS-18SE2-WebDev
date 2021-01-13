@@ -114,7 +114,7 @@ module.exports = {
         return [null, null];
     },
     async getCourseRating(id) {
-        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id} ORDER BY RAND() LIMIT 3;`;
+        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id} ORDER BY feedback_date DESC LIMIT 3;`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
@@ -123,6 +123,40 @@ module.exports = {
             return [rows, "courses"];
         }
         return [null, null];
+    },
+    /**
+     * Get comment of a course from course_rating table
+     * @param {number} id course_id
+     * @param {string} excluded_username the username that excluded from the result
+     * @param {number} offset
+     */
+    async getCourseRatingWithExcludedUsername(id, excluded_username, offset){
+        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username `
+            + `WHERE course_id = ? AND username <> ?`
+            + `ORDER BY feedback_date DESC LIMIT ${paginate.comment_limit} OFFSET ${offset};`;        
+        
+        const [rows, fields] = await db.query(sql, [id, excluded_username]).catch((error, rows, fields) => {
+            console.log(error.message);
+            return null;
+        });
+
+        if (rows && rows.length !== 0) {
+            return rows[0];
+        }
+        return null;
+    },
+
+    async getCommentOfAStudent(id, username){
+        const sql = `SELECT * FROM course_rating WHERE course_id = ? AND username = ?`;    
+        const [rows, fields] = await db.query(sql, [id, username]).catch((error, rows, fields) => {
+            console.log(error.message);
+            return null;
+        });
+
+        if (rows && rows.length !== 0) {
+            return rows[0];
+        }
+        return null;
     },
     async getNumberStudent(id) {
         const sql = `SELECT Count(*) as numberStudent FROM course_student WHERE course_id = ${id}`;

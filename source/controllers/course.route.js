@@ -141,7 +141,7 @@ router.post('/add', async (req, res) => {
         price: parseInt(Number(req.body.course.full_price) * (1 - Number(req.body.course.discount) / 100)),
         image_sm: req.body.course.image,
         image: req.body.course.image,
-        short_description: req.body.course.full_description,
+        short_description: req.body.course.short_description,
         full_description: req.body.course.full_description,
         last_update: dateformat(req.body.course.last_update, "yyyy/mm/dd"),
         view_count: 0,
@@ -269,7 +269,8 @@ router.get('/:id', async (req, res, next) => {
     }
     // if (req.session.type === "student" || req.session.type === "adminstrator") {
     var [course, type] = await courseModel.getCourseDetail(req.params.id);
-    //var [course_content,type] = await courseModel
+    
+    
     if (course) {
         const id = req.params.id;
         const username = req.session.username;
@@ -280,12 +281,8 @@ router.get('/:id', async (req, res, next) => {
         var averageStar = await courseModel.getAverageStar(id);
         var countRating = await courseModel.getNumberRating(id);
         var [instructor, type] = await instructorModel.getInstructor(id);
-        var studentOfInstructor = await instructorModel.getNumberStudent(instructor.username);
-        var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
-        var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
-        var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
         var chapters = await lectureModel.getFullCourseContent(id);
-        const lecture = await lectureModel.getLectures(id);
+        // const lecture = await lectureModel.getLectures(id);
         var relateItem = await courseModel.get9RelateSort(course.sub_category, course.category, course.id)
         var isBuy = await courseModel.isBuy(course.id, username);
         var inCart = await cartModel.hasItemInCart(username, course.id);
@@ -300,20 +297,18 @@ router.get('/:id', async (req, res, next) => {
                     element.inCart = await cartModel.hasItemInCart(username, element.id);
             });
         }
-        // if (chapters) {
-        //     chapters.forEach(element => {
-        //         element.lectures = [];
-        //     });
-        //     if (lecture) {
-        //         lecture.forEach(element => {
-        //             chapters.forEach(element2 => {
-        //                 if (element2.chapter_id === element.chapter_id) {
-        //                     element2.lectures.push(element);
-        //                 }
-        //             })
-        //         });
-        //     }
-        // }
+        
+        const instructorRows = await instructorModel.instructorDetailsFromACourse(id).catch((err) => {
+            console.log(err.message); // logs "Something"
+        });
+
+        // console.log(instructorRows);
+        var instructorsStr = [];
+        for (const i of instructorRows) {
+            instructorsStr.push(i.fullname);
+        }
+        instructorsStr = instructorsStr.join(", ");
+        
         return res.render('vwCourse/courseDetail', {
             review: review,
             course: course,
@@ -322,13 +317,10 @@ router.get('/:id', async (req, res, next) => {
             numStudent: countStudent,
             avgStar: averageStar,
             numRating: countRating,
-            instructor: instructor,
-            instructorStudent: studentOfInstructor,
-            instructorReview: reviewOfInstructor,
-            instructorAvgStart: avgStartOfInstructor,
-            instructorCourse: countCourseOfInstructor,
             chapters: chapters,
-            relateItems: relateItem
+            relateItems: relateItem,
+            instructorRows,
+            instructorsStr
         });
     }
     res.render('home');
@@ -455,7 +447,7 @@ router.post('/:id/edit', async (req, res) => {
         price: parseInt(Number(req.body.course.full_price) * (1 - Number(req.body.course.discount) / 100)),
         image_sm: req.body.course.image,
         image: req.body.course.image,
-        short_description: req.body.course.full_description,
+        short_description: req.body.course.short_description,
         full_description: req.body.course.full_description,
         last_update: dateformat(Date.now(), "yyyy/mm/dd"),
         completion: 0

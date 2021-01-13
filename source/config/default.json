@@ -11,6 +11,7 @@
     }, 
     "paginate": {
         "watchlist_limit": 10,
+        "comment_limit": 5,
         "course_limit": 10
     }
 }
