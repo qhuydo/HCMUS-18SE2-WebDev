@@ -519,5 +519,15 @@ module.exports = {
         });
 
         return rows[0].lecture_count;
+    },
+
+    async increaseCourseView(id){
+        const sql = `UPDATE course SET view_count = view_count + 1 WHERE id = ?`;
+        const _ = await db.query(sql, [id]).catch(err => {
+            console.log(`course.model.js: increaseCourseView ${err.message}`);
+            return false;
+        });
+
+        return true;
     }
 }

@@ -271,45 +271,49 @@ router.get('/:id', async (req, res, next) => {
     var [course, type] = await courseModel.getCourseDetail(req.params.id);
     //var [course_content,type] = await courseModel
     if (course) {
-        var [review, type] = await courseModel.getCourseRating(req.params.id);
-        var countStudent = await courseModel.getNumberStudent(req.params.id);
-        var averageStar = await courseModel.getAverageStar(req.params.id);
-        var countRating = await courseModel.getNumberRating(req.params.id);
-        var [instructor, type] = await instructorModel.getInstructor(req.params.id);
+        const id = req.params.id;
+        const username = req.session.username;
+
+        await courseModel.increaseCourseView(id);
+        var [review, type] = await courseModel.getCourseRating(id);
+        var countStudent = await courseModel.getNumberStudent(id);
+        var averageStar = await courseModel.getAverageStar(id);
+        var countRating = await courseModel.getNumberRating(id);
+        var [instructor, type] = await instructorModel.getInstructor(id);
         var studentOfInstructor = await instructorModel.getNumberStudent(instructor.username);
         var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
         var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
         var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
-        var chapters = await lectureModel.getFullCourseContent(req.params.id);
-        const lecture = await lectureModel.getLectures(req.params.id);
+        var chapters = await lectureModel.getFullCourseContent(id);
+        const lecture = await lectureModel.getLectures(id);
         var relateItem = await courseModel.get9RelateSort(course.sub_category, course.category, course.id)
-        var isBuy = await courseModel.isBuy(course.id, req.session.username);
-        var inCart = await cartModel.hasItemInCart(req.session.username, course.id);
+        var isBuy = await courseModel.isBuy(course.id, username);
+        var inCart = await cartModel.hasItemInCart(username, course.id);
         if (relateItem) {
             relateItem.forEach(async element => {
                 element.avgStar = await courseModel.getAverageStar(element.id);
-                if (req.session.username)
-                    element.isBuy = await courseModel.isBuy(element.id, req.session.username);
+                if (username)
+                    element.isBuy = await courseModel.isBuy(element.id, username);
                 else
                     element.isBuy = null;
-                if (req.session.username)
-                    element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
+                if (username)
+                    element.inCart = await cartModel.hasItemInCart(username, element.id);
             });
         }
-        if (chapters) {
-            chapters.forEach(element => {
-                element.lectures = [];
-            });
-            if (lecture) {
-                lecture.forEach(element => {
-                    chapters.forEach(element2 => {
-                        if (element2.chapter_id === element.chapter_id) {
-                            element2.lectures.push(element);
-                        }
-                    })
-                });
-            }
-        }
+        // if (chapters) {
+        //     chapters.forEach(element => {
+        //         element.lectures = [];
+        //     });
+        //     if (lecture) {
+        //         lecture.forEach(element => {
+        //             chapters.forEach(element2 => {
+        //                 if (element2.chapter_id === element.chapter_id) {
+        //                     element2.lectures.push(element);
+        //                 }
+        //             })
+        //         });
+        //     }
+        // }
         return res.render('vwCourse/courseDetail', {
             review: review,
             course: course,

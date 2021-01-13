@@ -1,23 +1,20 @@
-{{#section 'titleExtraText'}}| My profile {{/section}}
+{{#section 'titleExtraText'}}| {{course.title}} {{/section}}
 
 {{#section 'css'}}
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css" />
 <link rel="stylesheet" type="text/css" href="/css/vwCourse/courseDetail.css">
 {{/section}}
 
 {{#section 'js'}}
-<script type="text/javascript" src="/js/vwCourse/courseDetail.js"></script>
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
 <script>
-  $(function () {
-    $(".sticky").sticky({
-      topSpacing: 90,
-      zIndex: 2,
-      stopper: "footer"
+  $(() => {
+    $('.toast').toast('show');
+    const player = new Plyr('#player');
+    window.player = player;
   });
-  var navOffset = parseInt($('body').css('padding-top'));
-  $('body').scrollspy({ target: '#scrollspy', offset: 200  });
-
-});
 </script>
+<script type="text/javascript" src="/js/vwCourse/courseDetail.js"></script>
 {{/section}}
 
 <div class="container">
@@ -40,7 +37,7 @@
 
               <div class="col-lg-5 mr-3 text-center text-md-left">
                 <h5
-                  class="h5-responsive text-center text-md-left product-name font-weight-bold dark-grey-text mb-1 ml-xl-0 ml-4 mt-2">
+                  class="h5-responsive text-center text-uppercase text-md-left product-name font-weight-bold dark-grey-text mb-1 ml-xl-0 ml-4 mt-2">
                   <strong>{{course.title}}</strong>
                 </h5>
 
@@ -164,9 +161,9 @@
             <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx1"
               href="#collapseTwo{{this.chapter_id}}" aria-expanded="true"
               aria-controls="collapseTwo{{this.chapter_id}}">
-              <h5 class="mb-0">
+              <h5 class="mb-0 font-weight-normal">
                 {{this.chapter_name}} <i class="fas fa-angle-down rotate-icon"></i>
-              </h5>
+              </h6>
             </a>
           </div>
 
@@ -178,12 +175,13 @@
                 {{#each this.lectures}}
                 <!-- Material checked -->
                     {{#if this.preview}}
-                    <li><a href="" class="text-default lectureName ml-3">
-                      {{this.name}}
-                    </a></li>
+                    <li><a class="text-info lectureName ml-3 font-weight-normal" data-video="{{this.youtube_id}}" onclick="previewCourse(event)">
+                      {{this.name}}</a>
+                      <i class="fas fa-play text-info"></i>
+                    </li>
                     {{else}}
                     <li>
-                      <a class="lectureName ml-3">{{this.name}}</a>
+                      <a class="lectureName ml-3 font-weight-normal">{{this.name}}</a>
                     </li>
                     {{/if}}
                 {{/each}}
@@ -212,18 +210,18 @@
           <div class="row mb-5">
             <!-- Image column -->
             {{#if instructor.photo}}
-            <div class="col-sm-2 col-12 mb-3">
+            <div class="col col-2 mb-3 mx-3">
               <img src="{{instructor.photo}}" alt="sample image" class="imageInstructor">
             </div>
             {{else}}
-            <div class="col-sm-2 col-12 mb-3">
+            <div class="col col-2 mb-3 mx-3">
               <img src="http://placehold.it/150" alt="sample image" class="imageInstructor">
             </div>
             {{/if}}
             <!-- Image column -->
 
             <!-- Content column -->
-            <div class="col-sm-10 col-12 mt-2">
+            <div class="col col-9 mt-2 mx-3">
               <p>
                 <i class="fas fa-star orange-text"></i>
                 <span> &nbsp;&nbsp;{{instructorAvgStart}} Instructor rating</span>
@@ -524,4 +522,46 @@
   </div>
 </div>
 
-<!-- Main Container -->
+<!-- Button trigger modal-->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#previewModal" id="secretCourseReviewButton" hidden>Launch modal</button>
+
+<!--Modal: modalYT-->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-header">
+      <p class="heading text-center">Course preview</p>
+
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+    <!--Content-->
+    <div class="modal-content">
+
+      <!--Body-->
+      <div class="modal-body mb-0 p-0">
+
+       <h4 class="font-weight-normal text-center mt-3"  id="lectureTitle">
+
+       </h4>
+       <div class="card">
+         <div class="card-body">
+          <div class="plyr__video-embed" id="player">
+            <iframe
+              src="http://www.youtube.com/embed/dQw4w9WgXcQ?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+              allowfullscreen
+              allowtransparency
+              allow="autoplay"
+            ></iframe>
+          </div>
+         </div>
+
+       </div>
+      </div>
+    </div>
+    <!--/.Content-->
+
+  </div>
+</div>
+<!--Modal: modalYT-->
