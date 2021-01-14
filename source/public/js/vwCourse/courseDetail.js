@@ -26,7 +26,7 @@ function addToCartFunction(course_id) {
             course_id: course_id,
         },
         success: function (result) {
-            console.log(result);
+            // console.log(result);
             if (result) {
                 console.log(result);
                 toastr["success"]("", "Changes saved");

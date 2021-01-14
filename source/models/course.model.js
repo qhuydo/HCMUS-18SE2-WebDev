@@ -385,6 +385,18 @@ module.exports = {
                     rows.pop();
                 }
             }
+            for (const element of rows) {
+                const instructorRows = await instructorModel.instructorDetailsFromACourse(element.id).catch((err) => {
+                    console.log(err.message); // logs "Something"
+                });
+        
+                var instructorsStr = [];
+                for (const i of instructorRows) {
+                    instructorsStr.push(i.fullname);
+                }
+                element.instructorsStr = instructorsStr.join(", ");
+            }
+            
             return rows;
         }
         return null;
@@ -404,7 +416,7 @@ module.exports = {
     },
     async getLast() {
 
-        const sql = 'SELECT * FROM course ORDER BY id    desc LIMIT  10;';
+        const sql = 'SELECT * FROM course ORDER BY date_created desc LIMIT 10';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
@@ -415,9 +427,7 @@ module.exports = {
         return [null, null];
     },
     async getMostView() {
-        const sql = 'select * from course  right join watchlist on course.id=watchlist.course_id group  by course.id ORDER BY course.id desc limit 10;';
-
- 
+        const sql = 'SELECT * FROM course ORDER BY view_count DESC limit 10;';
 
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);

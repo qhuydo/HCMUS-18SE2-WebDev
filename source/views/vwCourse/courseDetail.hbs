@@ -356,15 +356,15 @@
             <h3 class="h3-responsive font-weight-bold blue-text mx-3">Related course</h3>
           </div>
           <!-- Carousel Wrapper -->
-          <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+          <div id="multi-course-items" class="carousel slide carousel-multi-item" data-ride="carousel">
 
             <!-- Controls -->
             <div class="controls-top">
-              <a class="btn-floating primary-color" href="#multi-item-example" data-slide="prev">
+              <a class="btn-floating primary-color" href="#multi-course-items" data-slide="prev">
                 <i class="fas fa-chevron-left"></i>
               </a>
 
-              <a class="btn-floating primary-color" href="#multi-item-example" data-slide="next">
+              <a class="btn-floating primary-color" href="#multi-course-items" data-slide="next">
                 <i class="fas fa-chevron-right"></i>
               </a>
 
@@ -373,9 +373,9 @@
 
             <!-- Indicators -->
             <ol class="carousel-indicators">
-              <li class="primary-color" data-target="#multi-item-example" data-slide-to="0" class="active"></li>
-              <li class="primary-color" data-target="#multi-item-example" data-slide-to="1"></li>
-              <li class="primary-color" data-target="#multi-item-example" data-slide-to="2"></li>
+              <li class="primary-color" data-target="#multi-course-items" data-slide-to="0" class="active"></li>
+              <li class="primary-color" data-target="#multi-course-items" data-slide-to="1"></li>
+              <li class="primary-color" data-target="#multi-course-items" data-slide-to="2"></li>
             </ol>
             <!-- Indicators -->
 
@@ -394,16 +394,19 @@
                 }
               </script>
 
-              <div class="col-md-4 clearfix d-none d-md-block mb-4">
-
+              <div class="col-4 clearfix d-none d-md-block mb-4">
                 <!-- Card -->
-                <div class="card card-ecommerce">
+                <div class="card">
 
                   <!-- Card image -->
-                  <div class="view overlay">
-                    <img src="{{image}}" class="imageSlide" alt="">
+                  <div class="card-img-top view overlay zoom">
+                    <img src="{{image}}" class="imageSlide" alt="{{title}}" width="135" height="240">
                     <a href="/course/{{id}}">
-                      <div class="mask rgba-white-slight"></div>
+                      <div class="mask flex-center waves-effect waves-light rgba-black-strong">
+                        <p class="white-text">
+                          {{title}}
+                        </p>
+                      </div>
                     </a>
                   </div>
                   <!-- Card image -->
@@ -411,12 +414,9 @@
                   <!-- Card content -->
                   <div class="card-body">
                     <!-- Category & Title -->
-                    <h5 class="card-title mb-1">
-                      <strong>
-                        <a href="/course/{{id}}" class="dark-grey-text">{{title}}</a>
-                      </strong>
-
-                    </h5>
+                      <div class="card-title mb-1">
+                          <a href="/course/{{id}}" class="dark-grey-text word-wrap-one-line" title="{{title}}">{{title}}</a>
+                      </div>
                     {{#each tag}}
                     <span class="badge badge-danger mb-2">{{name}}</span>
                     {{/each}}
@@ -439,19 +439,13 @@
                           point -= 1;
                         }
                       </script>
-                      <span class="mdb-color-text">total rating: {{total_rating}}</span>
+                      <span class="mdb-color-text"> {{total_rating}}</span>
                     </ul>
 
+                    <p class="mb-3 text-muted text-uppercase small word-wrap-one-line">By {{instructorsStr}}</p>
                     <!-- Card footer -->
-
-                  </div>
-                  <div class="card-footer pb-0">
-
-                    <div class="row mb-0">
-
-                      <span class="float-left">
-
-                        <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
+                    <hr>
+                        <h5 class="h5-responsive text-center text-md-left">
                           {{#is discount 0}}
                           <span class="red-text font-weight-bold">
                             <strong>{{this.full_price}} </strong>
@@ -460,7 +454,6 @@
                             </small>
                           </span>
                           {{else}}
-
                           <span class="grey-text">
                             <s>
                               <strong>{{this.full_price}} </strong>
@@ -476,7 +469,6 @@
                             </span>
                           </span>
                           {{/is}}
-
                       </span>
                       {{#if ../session/username}}
                       <span class="float-right">
@@ -500,13 +492,10 @@
                         {{/if}}
                         {{/if}}
                         {{/if}}
-
-                      </span>
-
-                    </div>
                   </div>
-
                 </div>
+
+
                 <!-- Card -->
 
               </div>
