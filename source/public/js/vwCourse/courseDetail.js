@@ -31,7 +31,7 @@ function addToCartFunction(course_id) {
                 console.log(result);
                 toastr["success"]("", "Changes saved");
                 // numberOfCartItems = 
-                document.getElementById('addToCard' + course_id).innerHTML = `<i class="fas fa-luggage-cart"></i> Check your cart`;
+                document.getElementById('addToCard' + course_id).innerHTML = `<i class="fas fa-luggage-cart"></i>`;
             }
             else {
                 alert("Add to card fail");

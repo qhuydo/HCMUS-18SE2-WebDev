@@ -400,7 +400,7 @@
 
                   <!-- Card image -->
                   <div class="card-img-top view overlay zoom">
-                    <img src="{{image}}" class="imageSlide" alt="{{title}}" width="135" height="240">
+                    <img src="{{image}}" class="img-fluid" alt="{{title}}">
                     <a href="/course/{{id}}">
                       <div class="mask flex-center waves-effect waves-light rgba-black-strong">
                         <p class="white-text">
@@ -469,10 +469,9 @@
                             </span>
                           </span>
                           {{/is}}
-                      </span>
                       {{#if ../session/username}}
-                      {{#if (eq session.type "student")}}
                       <span class="float-right">
+                      {{#if (eq ../session.type "student")}}
                         {{#if isBuy}}
                       <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
                         <i class="fas fa-check ml-3"></i>
@@ -484,7 +483,7 @@
                           </a>
                           {{else}}
                           <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="addToCartFunction({{id}});">
-                            <i class="fas fa-cart-plus ml-3"></i>
+                            <i class="fas fa-cart-plus"></i>
                           </a>
                           {{/if}}
                         {{/if}}
@@ -492,15 +491,16 @@
                       {{#if (eq ../session.type "administrator")}}
                         {{#if disable}}
                         <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
-                          <i class="fas fa fa-unlock ml-3"></i>
+                          <i class="fas fa fa-unlock"></i>
                         </a>
                         {{else}}
                         <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
-                          <i class="fas fa fa-ban ml-3"></i>
+                          <i class="fas fa fa-ban"></i>
                         </a>
                         {{/if}}
-                        {{/if}}
-                        {{/if}}
+                      {{/if}}
+                      {{/if}}
+                      </span>
                   </div>
                 </div>
 

@@ -77,7 +77,12 @@ router.get('/byCat', async (req, res) => {
         {
             for (let element of courses){
                 var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
+                var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryId(element.sub_category);
+                element.sub_category = sub_category;
                 element.category = category;
+                element.isHightlight = await courseModel.isHighlight(element.id);
+                element.isNew = await courseModel.isNew(element.id);
+                element.isSale = element.discount > 0;
                 element.isBuy = await courseModel.isBuy(element.id, req.session.username);
                 element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
             };
@@ -101,6 +106,8 @@ router.get('/byCat', async (req, res) => {
     if (courses) {
         for (let element of courses){
             var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
+            var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryId(category.id);
+            element.sub_category = sub_category;
             element.category = category;
             element.isBuy = await courseModel.isBuy(element.id, req.session.username);
             element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);

@@ -17,6 +17,8 @@ module.exports = {
         }
         return [null, null];
     },
+
+
     async getAllChapter(courseId) {
         const sql = `SELECT * FROM course_content WHERE course_id = ${courseId}`;
         var [rows, fields] = await db.select(sql).catch(error => {
@@ -413,6 +415,38 @@ module.exports = {
         }
         return false;
     },
+    async getNew(){
+
+        const sql = 'SELECT * FROM course WHERE date_created >= NOW() - INTERVAL 7 DAY';
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "courses"];
+        }        
+    },
+    async isNew(id){
+        const [rows, fields] = await this.getNew();
+        if (rows) {
+            for (const item of rows) {
+                if (item.id === id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+    async isHighlight(id) {
+        const [rows, fields] = await this.getSpecial();
+        if (rows) {
+            for (const item of rows) {
+                if (item.id === id) {
+                    return true;
+                }
+            }
+        }
+        return false;    },
     async getLast() {
 
         const sql = 'SELECT * FROM course ORDER BY date_created desc LIMIT 10';

@@ -1,4 +1,4 @@
-{{#section 'titleExtraText'}}| My profile {{/section}}
+{{#section 'titleExtraText'}}| Course list {{/section}}
 
 {{#section 'css'}}
 <link rel="stylesheet" type="text/css" href="/css/vwCourses/byCat.css">
@@ -11,297 +11,289 @@
 <div class="container mt-5 pt-3">
 
   <!-- Section: Product detail -->
-    <section id="productDetails" class="pb-5">
-  <!-- Navbar -->
-  <div class="row pt-lg-5">
+  <section id="productDetails" class="pb-5">
+    <!-- Navbar -->
+    <div class="row pt-lg-5">
 
-    <!-- Sidebar -->
-    <div class="col-lg-3">
-
-      <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
-
-        <!-- Accordion card -->
+      <!-- Sidebar -->
+      <div class="col-3">
         <div class="card">
+          <div class="card-body">
+            <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+              <!-- Accordion card -->
+              <div class="card">
 
-          <!-- Card header -->
-          <div class="card-header pb-0 pl-2" role="tab" id="headingOne1">
-            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="true"
-              aria-controls="collapseOne1">
-              <h5 class="font-weight-bold dark-grey-text"><strong>Order By</strong><i
-                  class="fas fa-angle-down rotate-icon"></i>
-              </h5>
-              <div class="divider"></div>
-            </a>
-          </div>
-
-          <!-- Card body -->
-          <div id="collapseOne1" class="collapse show" role="tabpanel" aria-labelledby="headingOne1"
-            data-parent="#accordionEx">
-            <div class="card-body pt-0 pl-2">
-              <p><a href="/course/byCat?orderBy=default">Default</a></p>
-              <p><a href="/course/byCat?orderBy=popularity">Popularity</a></p>
-              <p><a href="/course/byCat?orderBy=avgStart">Average rating</a></p>
-              <p><a href="/course/byCat?orderBy=lowCost">Price: low to high</a></p>
-              <p><a href="/course/byCat?orderBy=highCost">Price: high to low</a></p>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Accordion card -->
-        <div class="card">
-
-          <!-- Card header -->
-          <div class="card-header pb-0 pl-2" role="tab" id="headingOne2">
-            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne2" aria-expanded="true"
-              aria-controls="collapseOne2">
-              <h5 class="font-weight-bold dark-grey-text"><strong>Category</strong><i
-                  class="fas fa-angle-down rotate-icon"></i>
-              </h5>
-              <div class="divider"></div>
-            </a>
-          </div>
-
-          <!-- Card body -->
-          <div id="collapseOne2" class="collapse show" role="tabpanel" aria-labelledby="headingOne2"
-            data-parent="#accordionEx">
-            <div class="card-body pt-0 pl-2">
-              <!-- Radio group -->
-              <div class="card-body pt-0 pl-2">
-                {{#each categories}}
-                 <p><a href="/course/byCat/?category_id={{id}}">{{name}}</a></p>
-                {{/each}}
-              </div>
-              <!-- Radio group -->
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Accordion card -->
-        <div class="card">
-
-          <!-- Card header -->
-          <div class="card-header pb-0 pl-2" role="tab" id="headingOne3">
-            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne3" aria-expanded="true"
-              aria-controls="collapseOne2">
-              <h5 class="font-weight-bold dark-grey-text"><strong>Sub_category</strong><i
-                  class="fas fa-angle-down rotate-icon"></i>
-              </h5>
-              <div class="divider"></div>
-            </a>
-          </div>
-
-          <!-- Card body -->
-          <div id="collapseOne3" class="collapse show" role="tabpanel" aria-labelledby="headingOne3"
-            data-parent="#accordionEx">
-            <div class="card-body pt-0 pl-2">
-              <!-- Radio group -->
-              <div class="card-body pt-0 pl-2">
-                {{#each sub_categories}}
-                  <p><a href="/course/byCat/?sub_category_id={{id}}">{{name}}</a></p>
-                {{/each}}
-              </div>
-              <!-- Radio group -->
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-      <!-- Accordion card -->
-
-    </div>
-    <!-- Sidebar -->
-
-    <!-- Content -->
-    <div class="col-lg-9">
-
-      <!-- Products Grid -->
-      <section class="section pt-4">
-
-        <!-- Grid row -->
-        <div class="row">
-
-          <!-- Grid column -->
-          {{#each courses}}
-          <div class="col-lg-4 col-md-12 mb-4">
-
-            <!-- Card -->
-            <div class="card card-ecommerce">
-
-              <!-- Card image -->
-              <div class="view overlay">
-
-                <img src="{{image}}" class="imageSlide" alt="Not image">
-
-                <a href="/course/{{id}}">
-
-                  <div class="mask rgba-white-slight"></div>
-
-                </a>
-
-              </div>
-              <!-- Card image -->
-
-              <!-- Card content -->
-              <div class="card-body">
-
-                <!-- Category & Title -->
-                <h5 class="card-title mb-1"><strong>{{title}}</strong>
-                  <span>- {{category.name}}</span>
-                </h5>
-               
-                <span class="badge badge-danger mb-2">Best seller</span>
-            
-                
-                <script>
-                  if ({{ discount }} > 0)
-                  document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
-
-                </script>
-                {{#if instructor}}
-                <p class="dark-grey-text" style="font-size: small;">{{instructor.fullname}}</p>
-                {{/if}}
-                <!-- Rating -->
-                <ul class="rating">{{avgStar}}
-                  <script>
-                    var point = {{ avgStar }};
-                    for (var j = 1; j <= 5; j++) {
-                      if (point >= 1) {
-                        document.write('<i class="fas fa-star orange-text"></i>');
-                        point -= 1;
-                        continue;
-                      }
-                      if (point > 0) {
-                        document.write('<i class="fas fa-star-half orange-text"></i>');
-                        point -= 1;
-                        continue;
-                      }
-                      document.write('<i class="far fa-star orange-text"></i>');
-                      point -= 1;
-                    }
-                  </script>
-                  <span class="mdb-color-text"> {{total_rating}} rating</span>
-                </ul>
-
-                
-
-              </div>
-              <!-- Card content -->
-                             
-                <div class="card-footer pb-0">
-
-                  <div class="row mb-0">
-
-                    {{#is discount 0}}
-                    <span class="red-text font-weight-bold">
-                      <strong>{{full_price}} </strong>
-                      <small>
-                        $
-                      </small>
-                    </span>
-                    {{else}}
-
-                    <span class="grey-text">
-                      <s>
-                        <strong>{{full_price}} </strong>
-                        <small>
-                          $
-                        </small>
-                      </s>
-                      <span class="red-text font-weight-bold">
-                        <strong>{{price}} </strong>
-                        <small>
-                          $
-                        </small>
-                      </span>
-                    </span>
-                    {{/is}}
-
-                    {{#if ../session/username}}
-                      {{#if (eq session.type "student")}}
-                      <span class="float-right">
-                        {{#if isBuy}}
-                      <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
-                        <i class="fas fa-check ml-3"></i>
-                      </a>
-                        {{else}}
-                          {{#if inCart}}
-                          <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
-                            <i class="fas fa-luggage-cart"></i>
-                          </a>
-                          {{else}}
-                          <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="addToCartFunction({{id}});">
-                            <i class="fas fa-cart-plus ml-3"></i>
-                          </a>
-                          {{/if}}
-                        {{/if}}
-                      {{/if}}
-                      {{#if (eq ../session.type "administrator")}}
-                        {{#if disable}}
-                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
-                          <i class="fas fa fa-unlock ml-3"></i>
-                        </a>
-                        {{else}}
-                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
-                          <i class="fas fa fa-ban ml-3"></i>
-                        </a>
-                        {{/if}}
-                      {{/if}}
-                    {{/if}}
-
-                  </span>
-
-                  </div>
-
+                <!-- Card header -->
+                <div class="card-header pb-0 pl-2" role="tab" id="headingOne1">
+                  <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="true"
+                    aria-controls="collapseOne1">
+                    <h5 class="font-weight-bold dark-grey-text"><strong>Order By</strong><i
+                        class="fas fa-angle-down rotate-icon"></i>
+                    </h5>
+                    <!--div class="divider"></div-->
+                  </a>
                 </div>
 
+                <!-- Card body -->
+                <div id="collapseOne1" class="collapse show" role="tabpanel" aria-labelledby="headingOne1"
+                  data-parent="#accordionEx">
+                  <div class="card-body pt-0 pl-2">
+                    <p><a href="/course/byCat?orderBy=default">Default</a></p>
+                    <p><a href="/course/byCat?orderBy=popularity">Popularity</a></p>
+                    <p><a href="/course/byCat?orderBy=avgStart">Average rating</a></p>
+                    <p><a href="/course/byCat?orderBy=lowCost">Price: low to high</a></p>
+                    <p><a href="/course/byCat?orderBy=highCost">Price: high to low</a></p>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Accordion card -->
+              <div class="card">
+
+                <!-- Card header -->
+                <div class="card-header pb-0 pl-2" role="tab" id="headingOne2">
+                  <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne2" aria-expanded="true"
+                    aria-controls="collapseOne2">
+                    <h5 class="font-weight-bold dark-grey-text"><strong>Category</strong><i
+                        class="fas fa-angle-down rotate-icon"></i>
+                    </h5>
+                    <!--div class="divider"></div-->
+                  </a>
+                </div>
+
+                <!-- Card body -->
+                <div id="collapseOne2" class="collapse show" role="tabpanel" aria-labelledby="headingOne2"
+                  data-parent="#accordionEx">
+                  <div class="card-body pt-0 pl-2">
+                    <!-- Radio group -->
+                    <div class="card-body pt-0 pl-2">
+                      {{#each categories}}
+                      <p><a href="/course/byCat/?category_id={{id}}">{{name}}</a></p>
+                      {{/each}}
+                    </div>
+                    <!-- Radio group -->
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Accordion card -->
+              <div class="card">
+
+                <!-- Card header -->
+                <div class="card-header pb-0 pl-2" role="tab" id="headingOne3">
+                  <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne3" aria-expanded="true"
+                    aria-controls="collapseOne2">
+                    <h5 class="font-weight-bold dark-grey-text"><strong>Sub_category</strong><i
+                        class="fas fa-angle-down rotate-icon"></i>
+                    </h5>
+                    <!--div class="divider"></div-->
+                  </a>
+                </div>
+
+                <!-- Card body -->
+                <div id="collapseOne3" class="collapse show" role="tabpanel" aria-labelledby="headingOne3"
+                  data-parent="#accordionEx">
+                  <div class="card-body pt-0 pl-2">
+                    <!-- Radio group -->
+                    <div class="card-body pt-0 pl-2">
+                      {{#each sub_categories}}
+                      <p><a href="/course/byCat/?sub_category_id={{id}}">{{name}}</a></p>
+                      {{/each}}
+                    </div>
+                    <!-- Radio group -->
+                  </div>
+                </div>
+
+              </div>
+
             </div>
-            <!-- Card -->
+          </div>
+        </div>
+
+        <!-- Accordion card -->
+
+      </div>
+      <!-- Sidebar -->
+
+      <!-- Content -->
+      <div class="col-9">
+
+        <!-- Products Grid -->
+          <!-- Grid row -->
+          <div class ="card mb-4">
+            <div class="card-body">
+              <!-- Grid column -->
+              {{#each courses}}
+              <div class="row mb-4">
+                <div class="col-md-5 col-lg-3 col-xl-3">
+                  <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
+                    <img class="img-fluid" src={{this.image_sm}} alt="Sample">
+                    <a href="/course/{{this.id}}">
+                      <div class="mask waves-effect waves-light">
+                        <img class="img-fluid w-100" src="">
+                        <div class="mask rgba-black-slight waves-effect waves-light"></div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-md-7 col-lg-9 col-xl-9">
+                    <div class="mb-4 ml-0">
+                      <div>
+                        <p><a href="/course/{{this.id}}" class="text-dark word-wrap-one-line">{{this.title}}</a>
+                          {{#if this.isNew}}
+                          <span class="badge badge-primary text-small">NEW</span>
+                          {{/if}}
+
+                          {{#if this.isSale}}
+                          <span class="badge badge-danger text-small">SALE</span>
+                          {{/if}}
+                          {{#if this.isHightlight}}
+                          <span class="badge badge-default text-small">TOP</span>
+                          {{/if}}
+                        </p>
+                        <p class="mb-3 text-muted text-uppercase small word-wrap-one-line">By {{instructor.fullname}}
+                        </p>
+                        <p>
+                          <span>
+                            <small class="orange-text">{{this.avgStar}}</small>
+                            <span>
+                              <script>
+                                var point = {{ this.avgStar }};
+                                for (var j = 1; j <= 5; j++) {
+                                  if (point >= 1) {
+                                    document.write('<i class="fas fa-star orange-text"></i>');
+                                    point -= 1;
+                                    continue;
+                                  }
+                                  if (point > 0) {
+                                    document.write('<i class="fas fa-star-half orange-text"></i>');
+                                    point -= 1;
+                                    continue;
+                                  }
+                                  document.write('<i class="far fa-star orange-text"></i>');
+                                  point -= 1;
+                                }
+                              </script>
+                            </span>
+                            <span class="small">({{this.total_rating}} ratings) {{this.countStudent}} students</span>
+                          </span>
+                          <span>
+                            <span class="chip chip-sm small float-right">
+                                {{{category.icon}}} {{category.name}}
+                            </span>
+                            <span class="chip chip-sm small float-right">
+                                {{{sub_category.icon}}} {{sub_category.name}}
+                            </span>
+
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      {{#if ../session/username}}
+                      <span class="float-right text-primary">
+                      {{#if (eq ../session.type "student")}}
+                        {{#if isBuy}}
+                        <a class="card-link-secondary small text-uppercase" data-toggle="tooltip" data-placement="top" title="Was buy" type="button">
+                          <i class="fas fa-check"></i> Bought
+                        </a>
+                        {{else}}
+                        {{#if inCart}}
+                        <a class="card-link-secondary small text-uppercase" data-toggle="tooltip" data-placement="top" title="In Cart" type="button" href="/cart">&nbsp;&nbsp;
+                          <i class="fas fa-luggage-cart"></i> Check the cart
+                        </a>
+                        {{else}}
+                        <a class="card-link-secondary small text-uppercase" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"
+                          onclick="addToCartFunction({{id}});">
+                          <i class="fas fa-cart-plus"></i> Add to cart
+                        </a>
+                        {{/if}}
+                        {{/if}}
+                        {{/if}}
+                        {{#if (eq ../session.type "administrator")}}
+                        {{#if disable}}
+                        <a class="text-info" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable"
+                          onclick="undisable({{id}})">
+                          <i class="fas fa fa-unlock"></i> Enable this course
+                        </a>
+                        {{else}}
+                        <a class="text-danger" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable"
+                          onclick="disable({{id}})"><i class="fas fa fa-ban"></i> Disable this course
+                        </a>
+                        {{/if}}
+                        {{/if}}
+                        {{/if}}
+                      </span> 
+                      <p class="mb-0 mr-3">
+                        {{#is this.discount 0}}
+                        <span class="red-text font-weight-bold">
+                          <strong>{{this.full_price}} </strong>
+                          $
+                        </span>
+                        {{else}}
+                        <span>
+
+                        </span>
+                        <span class="grey-text">
+                          <s>
+                            <strong>{{this.full_price}} </strong>
+                            <small>
+                              $
+                            </small>
+                          </s>
+                          <span class="red-text font-weight-bold">
+                            <strong>{{this.price}} </strong>
+                            $
+                          </span>
+                        </span>
+                        {{/is}}
+                      </p>
+                    </div>
+                </div>
+
+              </div>
+            <hr class="mb-4">
+            {{/each}}
+            </div>
 
           </div>
-          {{/each}}
-          <!-- Grid column -->
 
-        </div>
-        <div class="row justify-content-center mb-4">
+          <div class="row justify-content-center mb-4">
 
-          <!-- Pagination -->
-          <hr class="mb-4">
-              <nav class="d-flex flex-row-reverse">
-                <ul class="pagination">
-                  <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
-                  </li>
-                  {{#each this.page_numbers}}
-                  {{#if isCurrentPage}}
-                  <li class="page-item active">
-                    <a class="page-link" href="javascript:;">{{value}}</a>
-                  </li>
-                  {{else}}
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{value}}">{{value}}</a>
-                  </li>
-                  {{/if}}
-                  {{/each}}
-                  <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                  </li>
-                </ul>
-              </nav>
-          <!-- Pagination -->
+            <!-- Pagination -->
+            <hr class="mb-4">
+            <nav class="d-flex flex-row-reverse">
+              <ul class="pagination">
+                <li class="page-item disabled">
+                  <span class="page-link">Previous</span>
+                </li>
+                {{#each this.page_numbers}}
+                {{#if isCurrentPage}}
+                <li class="page-item active">
+                  <a class="page-link" href="javascript:;">{{value}}</a>
+                </li>
+                {{else}}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{value}}">{{value}}</a>
+                </li>
+                {{/if}}
+                {{/each}}
+                <li class="page-item">
+                  <a class="page-link" href="#">Next</a>
+                </li>
+              </ul>
+            </nav>
+            <!-- Pagination -->
 
-        </div>
-        <!-- Grid row -->
+          </div>
+          <!-- Grid row -->
+        <!-- Products Grid -->
 
-      </section>
-      <!-- Products Grid -->
-      <!-- Products Grid -->
+      </div>
+      <!-- Content -->
 
     </div>
-    <!-- Content -->
-
-  </div>
   </section>
 </div>

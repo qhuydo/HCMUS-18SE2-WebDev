@@ -1,89 +1,54 @@
 {{#section "intro"}}
 {{> homeIntro}}
 {{/section}}
-
 {{#section 'css'}}
 <link rel="stylesheet" type="text/css" href="/css/vwCourses/byCat.css">
 {{/section}}
-
 {{#section 'js'}}
 <script type="text/javascript" src="/js/vwCourses/byCat.js"></script>
 <!--script type="text/javascript" src="/js/addons-pro/mdb-file-upload.min.js"></script-->
 {{/section}}
-
 {{> countdown}}
-
 <!-- Intro -->
-
 <!-- Main Container -->
 <div class="container">
-
-
-
-
       <section >
-
         <!-- Grid row -->
         <div class="row">
-
           <!-- Grid column -->
           <div class="col-12">
-
-
             <div class="divider-new">
-
               <h3 class="h3-responsive font-weight-bold dark-grey-text mx-3" style="font-size:1cm">Khóa học nổi bật</h3>
-
             </div>
-
-
             <br>
-
             <!-- Grid row -->
             <div class="row">
               {{#if special_courses}}
               {{#each special_courses}}
-
               <div class="col-lg-4 col-md-12 mb-4">
-
                 <!-- Card -->
                 <div class="card card-ecommerce4">
-
                   <!-- Card image -->
                   <div class="view overlay">
-
                     <img src="{{image}}" class="img-fluid" alt="Not image">
-
                     <a href="/course/{{id}}">
-
                       <div class="mask rgba-white-slight"></div>
-
                     </a>
-
                   </div>
                   <!-- Card image -->
-
                   <!-- Card content -->
                   <div class="card-body">
-
                     <!-- Category & Title -->
                     <h5 class="card-title mb-1">
-
                       <strong>
-
                         <a href="/course/{{id}}" class="dark-grey-text">{{title}}</a>
-
                       </strong>
-
                     </h5>
-
                     <span class="badge badge-danger mb-2">Best seller</span>
                     <script>
                       if ({{ discount }} > 0)
                       document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
-
                     </script>
-
                     <!-- Rating -->
                     <h5 class="h5-responsive text-center text-md-left ml-xl-0 ml-4">
                       <span>
@@ -108,12 +73,9 @@
                         </script>
                       </span>
                     </h5>
-
                     <!-- Card footer -->
                     <div class="card-footer pb-0">
-
                       <div class="row mb-0">
-
                         {{#is discount 0}}
                         <span class="red-text font-weight-bold">
                           <strong>{{full_price}} </strong>
@@ -122,7 +84,6 @@
                           </small>
                         </span>
                         {{else}}
-
                         <span class="grey-text">
                           <s>
                             <strong>{{full_price}} </strong>
@@ -138,7 +99,6 @@
                           </span>
                         </span>
                         {{/is}}
-
                         {{#if ../session/username}}
                         <span class="float-right">
                           {{#if isBuy}}
@@ -159,113 +119,69 @@
                           {{/if}}
                           {{/if}}
                           {{/if}}
-
                         </span>
-
                       </div>
-
                     </div>
-
                   </div>
                   <!-- Card content -->
-
                 </div>
                 <!-- Card -->
-
               </div>
               {{/each}}
               {{/if}}
-
-
-
             </div>
-
           </div>
-
           <!-- Grid row -->
       </section>
       <!-- Section: Bestsellers & offers -->
-
       <!-- Section: Advertising -->
       <section>
-
         <!-- Grid row -->
         <div class="row">
-
           <!-- Grid column -->
           <div class="col-12">
-
             <!-- Image -->
             <div class="view  z-depth-1">
-
               <img style="width: 480px;height: 270px;" src="https://img-a.udemycdn.com/course/240x135/293814_7732_4.jpg"
                 class="img-fluid" alt="sample image">
-
               <div class="mask rgba-stylish-slight">
-
                 <div class="dark-grey-text text-right pt-lg-5 pt-md-1 mr-5 pr-md-4 pr-0">
-
                   <div>
-
                     <a>
-
                       <span class="badge badge-primary">SALE</span>
-
                     </a>
-
                     <h2 class="card-title font-weight-bold pt-md-3 pt-1">
-
                       <strong>Title quảng cáo !
-
                       </strong>
-
                     </h2>
-
                     <p class="pb-lg-3 pb-md-1 clearfix d-none d-md-block">Giảm 20% cho tất cả khóa học </p>
-
-
-
                   </div>
-
                 </div>
-
               </div>
-
             </div>
             <!-- Image -->
-
           </div>
           <!-- Grid column -->
-
         </div>
         <!-- Grid row -->
-
       </section>
-
-
       <!-- Section: 10 khóa học được xem nhiều nhất -->
       <section id="relatedCourses">
         <div class="divider-new">
-
           <h3 class="h3-responsive font-weight-bold dark-grey-text mx-3" style="font-size:1cm">Course most view</h3>
-
         </div>
         <!-- Carousel Wrapper -->
         <div id="multi-item-example1" class="carousel slide carousel-multi-item" data-ride="carousel">
-
           <!-- Controls -->
           <div class="controls-top">
             <a class="btn-floating primary-color" href="#multi-item-example1" data-slide="prev">
               <i class="fas fa-chevron-left"></i>
             </a>
-
             <a class="btn-floating primary-color" href="#multi-item-example1" data-slide="next">
               <i class="fas fa-chevron-right"></i>
             </a>
-
           </div>
           <!-- Controls -->
-
           <!-- Indicators -->
           <ol class="carousel-indicators">
             <li class="primary-color" data-target="#multi-item-example1" data-slide-to="0" class="active"></li>
@@ -273,7 +189,6 @@
             <li class="primary-color" data-target="#multi-item-example1" data-slide-to="2"></li>
           </ol>
           <!-- Indicators -->
-
           <!-- Slides -->
           <div class="carousel-inner" role="listbox">
             <script>
@@ -288,12 +203,9 @@
                   document.write(`<div class="carousel-item">`);
               }
             </script>
-
             <div class="col-md-3 clearfix d-none d-md-block mb-4">
-
               <!-- Card -->
               <div class="card card-ecommerce">
-
                 <!-- Card image -->
                 <div class="view overlay">
                   <img src="{{image}}" class="img-fluid" alt="">
@@ -302,7 +214,6 @@
                   </a>
                 </div>
                 <!-- Card image -->
-
                 <!-- Card content -->
                 <div class="card-body">
                   <!-- Category & Title -->
@@ -315,7 +226,6 @@
                   <script>
                     if ({{ discount }} > 0)
                     document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
-
                   </script>
                   <!-- Rating -->
                   <ul class="rating"> {{avgStar}}
@@ -338,16 +248,11 @@
                     </script>
                     <span class="mdb-color-text">total rating: {{total_rating}}</span>
                   </ul>
-
-
                 </div>
                 <!-- Card footer -->
                 <div class="card-footer pb-0">
-
                   <div class="row mb-0">
-
                     <span class="float-left">
-
                       <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
                         {{#is discount 0}}
                         <span class="red-text font-weight-bold">
@@ -357,7 +262,6 @@
                           </small>
                         </span>
                         {{else}}
-
                         <span class="grey-text">
                           <s>
                             <strong>{{full_price}} </strong>
@@ -373,15 +277,12 @@
                           </span>
                         </span>
                         {{/is}}
-
                     </span>
                     {{#if ../session/username}}
                     <span class="float-right">
                       {{#if isBuy}}
                       <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
-
                         <i class="fas fa-check ml-3"></i>
-
                       </a>
                       {{else}}
                       {{#if inCart}}
@@ -396,17 +297,12 @@
                       {{/if}}
                       {{/if}}
                       {{/if}}
-
                     </span>
-
                   </div>
                 </div>
-
               </div>
               <!-- Card -->
-
             </div>
-
             <script>
               if (num % 4 === 3)
                 document.write('</div>');
@@ -415,36 +311,26 @@
             {{/each}}
           </div>
           <!-- Slides -->
-
         </div>
         <!-- Carousel Wrapper -->
-
       </section>
-
-
       <!--Section: 10 khóa học được đăng gần nhất -->
       <section id="relatedCourses">
         <div class="divider-new">
-
           <h3 class="h3-responsive font-weight-bold dark-grey-text mx-3" style="font-size:1cm">Course newest</h3>
-
         </div>
         <!-- Carousel Wrapper -->
         <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
-
           <!-- Controls -->
           <div class="controls-top">
             <a class="btn-floating primary-color" href="#multi-item-example" data-slide="prev">
               <i class="fas fa-chevron-left"></i>
             </a>
-
             <a class="btn-floating primary-color" href="#multi-item-example" data-slide="next">
               <i class="fas fa-chevron-right"></i>
             </a>
-
           </div>
           <!-- Controls -->
-
           <!-- Indicators -->
           <ol class="carousel-indicators">
             <li class="primary-color" data-target="#multi-item-example" data-slide-to="0" class="active"></li>
@@ -452,7 +338,6 @@
             <li class="primary-color" data-target="#multi-item-example" data-slide-to="2"></li>
           </ol>
           <!-- Indicators -->
-
           <!-- Slides -->
           <div class="carousel-inner" role="listbox">
             <script>
@@ -467,12 +352,9 @@
                   document.write(`<div class="carousel-item">`);
               }
             </script>
-
             <div class="col-md-3 clearfix d-none d-md-block mb-4">
-
               <!-- Card -->
               <div class="card card-ecommerce">
-
                 <!-- Card image -->
                 <div class="view overlay">
                   <img src="{{image}}" class="img-fluid" alt="">
@@ -481,7 +363,6 @@
                   </a>
                 </div>
                 <!-- Card image -->
-
                 <!-- Card content -->
                 <div class="card-body">
                   <!-- Category & Title -->
@@ -494,7 +375,6 @@
                   <script>
                     if ({{ discount }} > 0)
                     document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
-
                   </script>
                   <!-- Rating -->
                   <ul class="rating"> {{avgStar}}
@@ -517,16 +397,11 @@
                     </script>
                     <span class="mdb-color-text">total rating: {{total_rating}}</span>
                   </ul>
-
-
                 </div>
                 <!-- Card footer -->
                 <div class="card-footer pb-0">
-
                   <div class="row mb-0">
-
                     <span class="float-left">
-
                       <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
                         {{#is discount 0}}
                         <span class="red-text font-weight-bold">
@@ -536,7 +411,6 @@
                           </small>
                         </span>
                         {{else}}
-
                         <span class="grey-text">
                           <s>
                             <strong>{{full_price}} </strong>
@@ -552,15 +426,12 @@
                           </span>
                         </span>
                         {{/is}}
-
                     </span>
                     {{#if ../session/username}}
                     <span class="float-right">
                       {{#if isBuy}}
                       <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
-
                         <i class="fas fa-check ml-3"></i>
-
                       </a>
                       {{else}}
                       {{#if inCart}}
@@ -575,17 +446,12 @@
                       {{/if}}
                       {{/if}}
                       {{/if}}
-
                     </span>
-
                   </div>
                 </div>
-
               </div>
               <!-- Card -->
-
             </div>
-
             <script>
               if (num % 4 === 3)
                 document.write('</div>');
@@ -594,23 +460,9 @@
             {{/each}}
           </div>
           <!-- Slides -->
-
         </div>
         <!-- Carousel Wrapper -->
-
       </section>
-
-
  
-
   
-
-
 </div>
-
-
-
-
-
-
-
