@@ -72,12 +72,12 @@ router.get('/byCat', async (req, res) => {
         }
         if (courses)
         {
-            courses.forEach(async element => {
+            for (let element of courses){
                 var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
                 element.category = category;
                 element.isBuy = await courseModel.isBuy(element.id, req.session.username);
                 element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
-            });
+            };
         }
         return res.render('vwCourses/byCat', {
             categories: allCategory,
@@ -96,12 +96,12 @@ router.get('/byCat', async (req, res) => {
             courses = await courseModel.courseSort(null, searchBefore, null,offset);
     }
     if (courses) {
-        courses.forEach(async element => {
+        for (let element of courses){
             var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
             element.category = category;
             element.isBuy = await courseModel.isBuy(element.id, req.session.username);
             element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
-        });
+        };
     }
     req.session.searchBefore = searchBefore;
     res.render('vwCourses/byCat', {
@@ -328,6 +328,13 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.get('/:id/edit', async (req, res) => {
+    if (! await courseModel.isCourseIdExist(req.params.id)) {
+        return res.status(404).send('Course not found');
+    }
+
+    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
+        return res.status(404).send('Lecture not found');
+    }
     var [course, type] = await courseModel.getCourseDetail(req.params.id)
     var [sub_categories, type] = await categoryModel.getAllSubCategory();
     res.render('vwCourse/editCourse', {
@@ -517,17 +524,16 @@ router.route('/:id/lecture')
                 }
             }
         }
-
-        chapters.forEach(async element => {
-            element.lectures.forEach(async subElements => {
+        for (let element of chapters){
+            for (let subElements of element){
                 // console.log(`element.chapter_id ${element.chapter_id}`);
                 const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, element.chapter_id, subElements.lecture_id);
 
                 if (progress_data !== null && progress_data.length > 0) {
                     subElements.completion = progress_data[0].completion;
                 }
-            });
-        });
+            };
+        };
 
         let lecture = null;
         if (lecture_id) {

@@ -427,11 +427,11 @@ module.exports = {
                 return null;
             });
             if (rows) {
-                rows.forEach(async element => {
+                for (let element of rows){
                     element.avgStar = await this.getAverageStar(element.id);
                     var [instructor, type] = await instructorModel.getInstructor(element.id);
                     element.instructor = instructor;
-                });
+                };
                 return rows;
             }
             else {
@@ -445,11 +445,11 @@ module.exports = {
                 return null;
             });
             if (rows) {
-                rows.forEach(async element => {
+                for (let element of rows){
                     element.avgStar = await this.getAverageStar(element.id);
                     var [instructor, type] = await instructorModel.getInstructor(element.id);
                     element.instructor = instructor;
-                });
+                };
                 return rows;
             }
             else {
@@ -463,11 +463,11 @@ module.exports = {
                 return [null, null];
             });
             if (rows) {
-                rows.forEach(async element => {
+                for (let element of rows){
                     element.avgStar = await this.getAverageStar(element.id);
                     var [instructor, type] = await instructorModel.getInstructor(element.id);
                     element.instructor = instructor;
-                });
+                };
                 return rows;
             }
             else {
@@ -482,11 +482,11 @@ module.exports = {
             return [null, null];
         });
         if (rows) {
-            rows.forEach(async element => {
+            for (let element of rows){
                 element.avgStar = await this.getAverageStar(element.id)
                 var [instructor, type] = await instructorModel.getInstructor(element.id);
                 element.instructor = instructor;
-            });
+            };
             if (orderBy === "popularity") {
                 return rows;
             }
