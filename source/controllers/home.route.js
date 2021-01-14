@@ -28,6 +28,7 @@ router.get('/', async (req, res) => {
     res.render('home', {
         special_courses: list,
         last_courses: list2,
+        mostView_course: list3,
 
         empty: list.length === 0
     });

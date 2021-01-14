@@ -340,23 +340,7 @@ module.exports = {
         }
         return [null, null];
     },
-    async getMoreView()
-    {
-        const sql = 'SELECT * FROM course ORDER BY view_count LIMIT 10';
-        var [rows, fields] = await db.select(sql).catch(error => {
-            console.log(error.message);
-            return [null, null];
-        });
-        if (rows !== null && rows.length !== 0) {
-            for (let element of rows){
-                element.avgStar = await this.getAverageStar(element.id)
-                var [instructor, type] = await instructorModel.getInstructor(element.id);
-                element.instructor = instructor;
-            };
-            return [rows,"Course"];
-        }
-        return [null, null];
-    },
+
     async numberOfCourseOfInstructor(username) {
         const sql = `SELECT COUNT(*) as count FROM course_instructor WHERE username = ? `;
 
@@ -439,8 +423,14 @@ module.exports = {
             console.log(error.message);
             return [null, null];
         });
+     
         if (rows !== null && rows.length !== 0) {
-            return [rows, "courses"];
+            for (let element of rows){
+                element.avgStar = await this.getAverageStar(element.id)
+                var [instructor, type] = await instructorModel.getInstructor(element.id);
+                element.instructor = instructor;
+            };
+            return [rows,"Course"];
         }
         return [null, null];
     },
