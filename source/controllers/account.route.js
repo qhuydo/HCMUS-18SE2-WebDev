@@ -3,6 +3,7 @@ const router = express.Router();
 
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
+const nodemailer = require("nodemailer");
 const account = require('../models/account.model');
 const { auth } = require('../middlewares/auth.mdw');
 const missingKeys = require("../utils/otherFunction").missingKeys;
@@ -264,6 +265,52 @@ router.post('/register', async (req, res) => {
             });
         }
     }
+});
+
+router.post('/sendOTP', async (req, res) => {
+    let missing = await missingKeys(req.body, [
+        "email",
+    ])
+    if (missing)
+        return res.send(false);
+    var OTP = await account.generateOTP(6);
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        port: 2525,
+        auth: {
+                   user: "hathehien12a2@gmail.com",
+                   pass: "hien2000la"
+        }
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: 'nodejs project', // sender address
+        to: req.body.email, // list of receivers
+        subject: "Vertify your email register", // Subject line
+        text: OTP, // plain text body
+    });
+    req.session.OTP = OTP;
+    await req.session.save()
+    res.send(true);
+});
+
+router.post('/compareOTP', async (req, res) => {
+    let missing = await missingKeys(req.body, [
+        "OTP",
+    ]);
+    if (missing)
+        return res.send(false);
+    if (req.session.OTP)
+    {
+        if (req.session.OTP === req.body.OTP)
+        {
+            res.send(true);
+        }
+    }
+    res.send(false)
 });
 
 // app.post('/', (req, res) => {
