@@ -478,7 +478,7 @@
                           {{/is}}
 
                       </span>
-
+                      {{#if ../session/username}}
                       <span class="float-right">
                         {{#if isBuy}}
                         <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
@@ -497,6 +497,7 @@
                           title="Add to Cart" onclick="addToCartFunction({{id}});">
                           <i class="fas fa-cart-plus ml-3"></i>
                         </a>
+                        {{/if}}
                         {{/if}}
                         {{/if}}
 

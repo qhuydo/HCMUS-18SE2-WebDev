@@ -71,30 +71,45 @@ router.post('/profile/password', auth, async (req, res, next) => {
     const reqUser = req.body.user;
     var result = await login(req.session.username, reqUser.curPass)
     if (result === null) {
-        const [user, usertype] = await account.getUserInfo(req.session.username);
+        var [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
             user: user,
-            fail_edit_pass: "Check your password"
+            fail_edit_pass: "Check your current password"
         });
     }
-    const sql = `UPDATE ${req.session.type} `
-        + `SET password = ? WHERE username = ?`;
+    let sql = "";
+    let data = [];
+    if (reqUser.newPass && reqUser.newPass.length !== 0)
+    {
+        sql = `UPDATE ${req.session.type} `
+            + `SET password = ?,email = ? WHERE username = ?`;
 
-    const data = [
-        bcrypt.hashSync(reqUser.newPass, 10),
-        req.session.username,
-    ];
+        data = [
+            bcrypt.hashSync(reqUser.newPass, 10),
+            reqUser.email,
+            req.session.username,
+        ];
+    }
+    else
+    {
+        sql = `UPDATE ${req.session.type} `
+            + `SET email = ? WHERE username = ?`;
+        data = [
+            reqUser.email,
+            req.session.username,
+        ];
+    }
     await db.query(sql, data).catch(async (error) => {
         console.log(error);
-        const [user, usertype] = await account.getUserInfo(req.session.username);
+        var [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
             user: user,
             fail_edit_pass: "Error"
         });
     });
 
-    const [user, usertype] = await account.getUserInfo(req.session.username);
-    res.render('uploads/', {
+    var [user, usertype] = await account.getUserInfo(req.session.username);
+    res.render('vwUser/edit-profile', {
         user: user,
         successfull_edit_pass: true
     });

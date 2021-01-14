@@ -93,6 +93,17 @@ module.exports = {
         }
         return [null, null];
     },
+    async getSubCategoryBySubCategoryId(sub_category_id) {
+        const sql = `SELECT * FROM sub_category WHERE id = ${sub_category_id}`;
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows && rows.length !== 0) {
+            return [rows[0], "sub_category"];
+        }
+        return [null, null];
+    },
     async getSubCategoryBySubCategoryName(sub_category_name) {
         const sql = `SELECT * FROM sub_category WHERE name = "${sub_category_name}"`;
         var [rows, fields] = await db.select(sql).catch(error => {
