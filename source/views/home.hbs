@@ -32,7 +32,7 @@
 
             <div class="divider-new">
 
-              <h3 class="h3-responsive font-weight-bold dark-grey-text mx-3" style="font-size:1cm">Khóa học nổi bật</h3>
+              <h3 class="h3-responsive font-weight-bold dark-grey-text mx-3" style="font-size:1cm">Highlight courses</h3>
 
             </div>
 
@@ -215,13 +215,13 @@
 
                     <h2 class="card-title font-weight-bold pt-md-3 pt-1">
 
-                      <strong>Title quảng cáo !
+                      <strong style="font-size: 2cm;">Deal sock
 
                       </strong>
 
                     </h2>
 
-                    <p class="pb-lg-3 pb-md-1 clearfix d-none d-md-block">Giảm 20% cho tất cả khóa học </p>
+                    <p class="pb-lg-3 pb-md-1 clearfix d-none d-md-block">Sale upto 20%  </p>
 
 
 
@@ -344,11 +344,8 @@
                 <!-- Card footer -->
                 <div class="card-footer pb-0">
 
-                  <div class="row mb-0">
+                      <div class="row mb-0">
 
-                    <span class="float-left">
-
-                      <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
                         {{#is discount 0}}
                         <span class="red-text font-weight-bold">
                           <strong>{{full_price}} </strong>
@@ -366,7 +363,7 @@
                             </small>
                           </s>
                           <span class="red-text font-weight-bold">
-                            <strong>{{this.price}} </strong>
+                            <strong>{{price}} </strong>
                             <small>
                               $
                             </small>
@@ -374,33 +371,32 @@
                         </span>
                         {{/is}}
 
-                    </span>
-                    {{#if ../session/username}}
-                    <span class="float-right">
-                      {{#if isBuy}}
-                      <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+                        {{#if ../session/username}}
+                        <span class="float-right">
+                          {{#if isBuy}}
+                          <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+                            <i class="fas fa-check ml-3"></i>
+                          </a>
+                          {{else}}
+                          {{#if inCart}}
+                          <a class="" data-toggle="tooltip" data-placement="top" title="In Cart"
+                            href="/cart">&nbsp;&nbsp;
+                            <i class="fas fa-luggage-cart"></i>
+                          </a>
+                          {{else}}
+                          <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top"
+                            title="Add to Cart" onclick="addToCartFunction({{id}});">
+                            <i class="fas fa-cart-plus ml-3"></i>
+                          </a>
+                          {{/if}}
+                          {{/if}}
+                          {{/if}}
 
-                        <i class="fas fa-check ml-3"></i>
+                        </span>
 
-                      </a>
-                      {{else}}
-                      {{#if inCart}}
-                      <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
-                        <i class="fas fa-luggage-cart"></i>
-                      </a>
-                      {{else}}
-                      <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"
-                        onclick="addToCartFunction({{id}});">
-                        <i class="fas fa-cart-plus ml-3"></i>
-                      </a>
-                      {{/if}}
-                      {{/if}}
-                      {{/if}}
+                      </div>
 
-                    </span>
-
-                  </div>
-                </div>
+                    </div>
 
               </div>
               <!-- Card -->
@@ -523,11 +519,8 @@
                 <!-- Card footer -->
                 <div class="card-footer pb-0">
 
-                  <div class="row mb-0">
+                      <div class="row mb-0">
 
-                    <span class="float-left">
-
-                      <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
                         {{#is discount 0}}
                         <span class="red-text font-weight-bold">
                           <strong>{{full_price}} </strong>
@@ -545,7 +538,7 @@
                             </small>
                           </s>
                           <span class="red-text font-weight-bold">
-                            <strong>{{this.price}} </strong>
+                            <strong>{{price}} </strong>
                             <small>
                               $
                             </small>
@@ -553,33 +546,32 @@
                         </span>
                         {{/is}}
 
-                    </span>
-                    {{#if ../session/username}}
-                    <span class="float-right">
-                      {{#if isBuy}}
-                      <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+                        {{#if ../session/username}}
+                        <span class="float-right">
+                          {{#if isBuy}}
+                          <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+                            <i class="fas fa-check ml-3"></i>
+                          </a>
+                          {{else}}
+                          {{#if inCart}}
+                          <a class="" data-toggle="tooltip" data-placement="top" title="In Cart"
+                            href="/cart">&nbsp;&nbsp;
+                            <i class="fas fa-luggage-cart"></i>
+                          </a>
+                          {{else}}
+                          <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top"
+                            title="Add to Cart" onclick="addToCartFunction({{id}});">
+                            <i class="fas fa-cart-plus ml-3"></i>
+                          </a>
+                          {{/if}}
+                          {{/if}}
+                          {{/if}}
 
-                        <i class="fas fa-check ml-3"></i>
+                        </span>
 
-                      </a>
-                      {{else}}
-                      {{#if inCart}}
-                      <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
-                        <i class="fas fa-luggage-cart"></i>
-                      </a>
-                      {{else}}
-                      <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"
-                        onclick="addToCartFunction({{id}});">
-                        <i class="fas fa-cart-plus ml-3"></i>
-                      </a>
-                      {{/if}}
-                      {{/if}}
-                      {{/if}}
+                      </div>
 
-                    </span>
-
-                  </div>
-                </div>
+                    </div>
 
               </div>
               <!-- Card -->
