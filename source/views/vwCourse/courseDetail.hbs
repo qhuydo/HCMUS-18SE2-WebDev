@@ -471,23 +471,32 @@
                           {{/is}}
                       </span>
                       {{#if ../session/username}}
+                      {{#if (eq session.type "student")}}
                       <span class="float-right">
                         {{#if isBuy}}
-                        <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
-
-                          <i class="fas fa-check ml-3"></i>
-
+                      <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+                        <i class="fas fa-check ml-3"></i>
+                      </a>
+                        {{else}}
+                          {{#if inCart}}
+                          <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
+                            <i class="fas fa-luggage-cart"></i>
+                          </a>
+                          {{else}}
+                          <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="addToCartFunction({{id}});">
+                            <i class="fas fa-cart-plus ml-3"></i>
+                          </a>
+                          {{/if}}
+                        {{/if}}
+                      {{/if}}
+                      {{#if (eq ../session.type "administrator")}}
+                        {{#if disable}}
+                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
+                          <i class="fas fa fa-unlock ml-3"></i>
                         </a>
                         {{else}}
-                        {{#if inCart}}
-                        <a class="" data-toggle="tooltip" data-placement="top" title="In Cart"
-                          href="/cart">&nbsp;&nbsp;
-                          <i class="fas fa-luggage-cart"></i>
-                        </a>
-                        {{else}}
-                        <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top"
-                          title="Add to Cart" onclick="addToCartFunction({{id}});">
-                          <i class="fas fa-cart-plus ml-3"></i>
+                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
+                          <i class="fas fa fa-ban ml-3"></i>
                         </a>
                         {{/if}}
                         {{/if}}

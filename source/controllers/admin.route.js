@@ -314,14 +314,32 @@ router.delete('/category/:id', async function (req, res) {
     res.send(result);
 });
 
-/*router.get('/delete/course/:id', async function (req, res) {
-    //if (req.session.type !== "administrator")
-        //throw Error("Only administrator can use admin router");
-    if (! await courseModel.isCourseIdExist(req.params.id)) {
-        return res.status(404).send('Course not found');
-    }
-    await adminModel.removeCourse(req.params.id);
-    res.redirect('/');
-})*/
+router.put('/courseDisable/:id', async function (req, res) {
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
+    var result = await admin.disableCourse(req.params.id)
+    res.send(result);
+})
+
+router.put('/courseUndisable/:id', async function (req, res) {
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
+    var result = await admin.undisableCourse(req.params.id)
+    res.send(result);
+})
+
+router.put('/accountDisable/:id', async function (req, res) {
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
+    var result = await admin.disableAccount(req.params.id)
+    res.send(result);
+})
+
+router.put('/accountUndisable/:id', async function (req, res) {
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
+    var result = await admin.undisableAccount(req.params.id)
+    res.send(result);
+})
 
 module.exports = router;
