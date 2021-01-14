@@ -1,23 +1,20 @@
-{{#section 'titleExtraText'}}| My profile {{/section}}
+{{#section 'titleExtraText'}}| {{course.title}} {{/section}}
 
 {{#section 'css'}}
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css" />
 <link rel="stylesheet" type="text/css" href="/css/vwCourse/courseDetail.css">
 {{/section}}
 
 {{#section 'js'}}
-<script type="text/javascript" src="/js/vwCourse/courseDetail.js"></script>
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
 <script>
-  $(function () {
-    $(".sticky").sticky({
-      topSpacing: 90,
-      zIndex: 2,
-      stopper: "footer"
+  $(() => {
+    $('.toast').toast('show');
+    const player = new Plyr('#player');
+    window.player = player;
   });
-  var navOffset = parseInt($('body').css('padding-top'));
-  $('body').scrollspy({ target: '#scrollspy', offset: 200  });
-
-});
 </script>
+<script type="text/javascript" src="/js/vwCourse/courseDetail.js"></script>
 {{/section}}
 
 <div class="container">
@@ -25,116 +22,106 @@
 
     <!-- Main Container -->
     <div class="col-lg-10 col-md-12 scrollspy-container" data-offset="0">
+
       <div class="container">
+
         <!-- Section: Product detail -->
         <section id="productDetails" class="pb-5">
-
-          <!-- News card -->
-          <div class="card mt-5 hoverable">
-
-            <div class="row">
-
-              <div class="col-lg-6">
-                <img class="img-fluid" style="width: 480px;height: 270px;" src="{{course.image}}" alt="First slide">
-              </div>
-
-              <div class="col-lg-5 mr-3 text-center text-md-left">
-                <h5
-                  class="h5-responsive text-center text-md-left product-name font-weight-bold dark-grey-text mb-1 ml-xl-0 ml-4 mt-2">
-                  <strong>{{course.title}}</strong>
-                </h5>
-
-                <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
-                  {{#is course.discount 0}}
-                  <span class="red-text font-weight-bold">
-                    <strong>{{course.full_price}} </strong>
-                    <small>
-                      $
-                    </small>
-                  </span>
-                  {{else}}
-
-                  <span class="grey-text">
-                    <s>
-                      <strong>{{course.full_price}} </strong>
-                      <small>
-                        $
-                      </small>
-                    </s>
-                    <span class="red-text font-weight-bold">
-                      <strong>{{course.price}} </strong>
-                      <small>
-                        $
-                      </small>
-                    </span>
-                  </span>
-                  {{/is}}
-                </h5>
-
-                <h5 class="h5-responsive text-center text-md-left ml-xl-0 ml-4">
+          <!--Card-->
+          <div class="card">
+          
+            <!--Card image-->
+            <div class="view overlay">
+              <img src="{{course.image}}" class="card-img-top" alt="">
+              <a href="#">
+                <div class="mask rgba-white-slight"></div>
+              </a>
+            </div>
+          
+            <!--Card content-->
+            <div class="card-body">
+              <!--Title-->
+              <h4 class="card-title text-center font-weight-bold text-uppercase product-name"><strong>{{course.title}}</strong></h4>
+              <!--Text-->
+              <hr>
+              
+              <h5 class="text-md">
+                {{course.short_description}}
+              </h5>
+              <div class="d-flex justify-content-between my-2">
+                <h5>
+                  <span class="orange-text">{{avgStar}}</span>
                   <span>
-                    <small class="orange-text">{{avgStar}}</small>
-                    <span>
-                      <script>
-                        var point = {{ avgStar }};
-                        for (var j = 1; j <= 5; j++) {
-                          if (point >= 1) {
-                            document.write('<i class="fas fa-star orange-text"></i>');
-                            point -= 1;
-                            continue;
-                          }
-                          if (point > 0) {
-                            document.write('<i class="fas fa-star-half orange-text"></i>');
-                            point -= 1;
-                            continue;
-                          }
-                          document.write('<i class="far fa-star orange-text"></i>');
+                    <script>
+                      var point = {{ avgStar }};
+                      for (var j = 1; j <= 5; j++) {
+                        if (point >= 1) {
+                          document.write('<i class="fas fa-star orange-text"></i>');
                           point -= 1;
+                          continue;
                         }
-                      </script>
-                    </span>
-                    <span>({{numRating}} ratings) {{numStudent}} students</span>
+                        if (point > 0) {
+                          document.write('<i class="fas fa-star-half orange-text"></i>');
+                          point -= 1;
+                          continue;
+                        }
+                        document.write('<i class="far fa-star orange-text"></i>');
+                        point -= 1;
+                      }
+                    </script>
                   </span>
+
+                  <span class="card-text">({{numRating}} ratings) {{numStudent}} students</span>
                 </h5>
 
-                <h5 class="h4-responsive text-center text-md-left ml-xl-0 ml-4">
-                  <span>Create by</span>
-                  <span><a href="#instructorInfo">{{instructor.fullname}}</a></span>
-                </h5>
-
-                <h5 class="h4-responsive text-center text-md-left ml-xl-0 ml-4">
+                <p>
+                  <span>
                   Last update:
                   <script>
                     var d = new Date("{{course.last_update}}");
                     var last_update = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
                     document.write(last_update)
                   </script>
-                </h5>
+                  </span>
+                </p>      
 
-                {{#if isBuy}}
-                <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
-                  <i class="fas fa-check ml-3"></i>
-                </a>
+                <h3>
+                {{#is course.discount 0}}
+                  <span class="red-text font-weight-bold">
+                    <strong>{{course.full_price}} </strong>
+                    <small>
+                      $
+                    </small> 
+                  </span>
                 {{else}}
-                {{#if inCart}}
-                <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
-                  <i class="fas fa-luggage-cart"></i>
-                </a>
-                {{else}}
-                <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"
-                  onclick="addToCartFunction({{id}});">
-                  <i class="fas fa-cart-plus ml-3"></i>
-                </a>
-                {{/if}}
-                {{/if}}
+
+                  <span class="grey-text">
+                    <s>
+                      <small>
+                        $
+                      </small>
+                      <strong>{{course.full_price}} </strong>
+                    </s>
+                    <span class="red-text font-weight-bold">
+                      <small>
+                        $
+                      </small>
+                      <strong>{{course.price}} </strong>
+                    </span>
+                  </span>
+                  {{/is}}
+                </h3>
               </div>
-
+              <h5>
+                <p class="mb-3 text-muted text-uppercase small">By {{instructorsStr}}
+                </p>
+              </h5>
+              <a href="#productDetail" class="btn btn-primary">Button</a>
             </div>
 
           </div>
-
         </section>
-      
+
         <section id="description">
           <div class="divider-new">
             <h3 class="h3-responsive font-weight-bold blue-text mx-3">Description</h3>
@@ -146,7 +133,7 @@
         </section>
 
         <!--Course content-->
-      <div class="divider-new">
+      <div class="divider-new" id="courseOutline">
         <h3 class="h3-responsive font-weight-bold blue-text mx-3">Course outline</h3>
       </div>
 
@@ -164,9 +151,9 @@
             <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx1"
               href="#collapseTwo{{this.chapter_id}}" aria-expanded="true"
               aria-controls="collapseTwo{{this.chapter_id}}">
-              <h5 class="mb-0">
+              <h5 class="mb-0 font-weight-normal">
                 {{this.chapter_name}} <i class="fas fa-angle-down rotate-icon"></i>
-              </h5>
+              </h6>
             </a>
           </div>
 
@@ -178,12 +165,13 @@
                 {{#each this.lectures}}
                 <!-- Material checked -->
                     {{#if this.preview}}
-                    <li><a href="" class="text-default lectureName ml-3">
-                      {{this.name}}
-                    </a></li>
+                    <li><a class="text-info lectureName ml-3 font-weight-normal" data-video="{{this.youtube_id}}" onclick="previewCourse(event)">
+                      {{this.name}}</a>
+                      <i class="fas fa-play text-info"></i>
+                    </li>
                     {{else}}
                     <li>
-                      <a class="lectureName ml-3">{{this.name}}</a>
+                      <a class="lectureName ml-3 font-weight-normal">{{this.name}}</a>
                     </li>
                     {{/if}}
                 {{/each}}
@@ -207,44 +195,46 @@
             <a class="h3-responsive font-weight-bold blue-text mx-3" id="instructorInfo">Instructor information</a>
 
           </div>
-          <h3 class="blue-text">{{instructor.fullname}}</h3>
-          <p>{{instructor.bio}}</p>
+          {{#each instructorRows}}
+          <h3 class="blue-text">{{this.fullname}}</h3>
+          <p>{{this.bio}}</p>
           <div class="row mb-5">
             <!-- Image column -->
-            {{#if instructor.photo}}
-            <div class="col-sm-2 col-12 mb-3">
-              <img src="{{instructor.photo}}" alt="sample image" class="imageInstructor">
+            {{#if this.photo}}
+            <div class="col col-2 mb-3 mx-3">
+              <img src="{{this.photo}}" alt="sample image" class="imageInstructor">
             </div>
             {{else}}
-            <div class="col-sm-2 col-12 mb-3">
+            <div class="col col-2 mb-3 mx-3">
               <img src="http://placehold.it/150" alt="sample image" class="imageInstructor">
             </div>
             {{/if}}
             <!-- Image column -->
 
             <!-- Content column -->
-            <div class="col-sm-10 col-12 mt-2">
+            <div class="col col-9 mt-2 mx-3">
               <p>
                 <i class="fas fa-star orange-text"></i>
-                <span> &nbsp;&nbsp;{{instructorAvgStart}} Instructor rating</span>
+                <span> &nbsp;&nbsp;{{this.avgStarOfInstructor}} Instructor rating</span>
               </p>
               <p>
                 <i class="fas fa-eye orange-text"></i>
-                <span> &nbsp;&nbsp;{{instructorReview}} Review</span>
+                <span> &nbsp;&nbsp;{{this.reviewOfInstructor}} Review</span>
               </p>
               <p>
                 <i class="fas fa-user-friends orange-text"></i>
-                <span> &nbsp;&nbsp;{{instructorStudent}} Student</span>
+                <span> &nbsp;&nbsp;{{this.studentOfInstructor}} Student</span>
               </p>
               <p>
                 <i class="fab fa-youtube orange-text"></i>
-                <span> &nbsp;&nbsp;{{instructorCourse}} Course</span>
+                <span> &nbsp;&nbsp;{{this.countCourseOfInstructor}} Course</span>
               </p>
             </div>
             <!-- Content column -->
-
           </div>
-          <p>{{instructor.about_me}}</p>
+          <p>{{this.about_me}}</p>
+          <hr>
+          {{/each}}
         </section>
 
         <!-- Reviews -->
@@ -259,65 +249,83 @@
           <div class="comments-list text-center text-md-left">
             {{#if review}}
             {{#each review}}
-            <div class="row mb-5">
+              {{#if (not (eq username ../session.username))}}
+              <div class="row mb-3">
+                <!-- Image column -->
+                {{#if photo}}
+                <div class="col-sm-2 col-3 mb-3">
+                  <img src="{{photo}}" alt="sample image" class="imagePreview">
+                </div>
+                {{else}}
+                <div class="col-sm-2 col-3 mb-3">
+                  <img src="http://placehold.it/100" alt="sample image" class="imagePreview">
+                </div>
+                {{/if}}
 
-              <!-- Image column -->
-              {{#if photo}}
-              <div class="col-sm-2 col-12 mb-3">
-                <img src="{{photo}}" alt="sample image" class="imagePreview">
-              </div>
-              {{else}}
-              <div class="col-sm-2 col-12 mb-3">
-                <img src="http://placehold.it/100" alt="sample image" class="imagePreview">
+                <!-- Image column -->
+                <div class="col-sm-10 col-9">
+                  <!-- Content -->
+                  <p class="user-name font-weight-bold"><span>{{username}}</span></p>
+
+                  <div class="d-flex justify-content-between my-2">
+                    
+                    <ul class="rating">
+                    <span>
+                      <script>
+                        for (var j = 1; j <= {{ point }}; j++) {
+                          document.write('<i class="fas fa-star blue-text"></i>')
+                        }
+                      </script>
+                    </span>
+                    </ul>
+                    <p>
+                      <span> 
+                        <script>
+                          var d = new Date("{{feedback_date}}");
+                          document.write('<i class="far fa-clock-o"></i>' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear())
+                          </script>
+                        </span>
+                    </p>
+                    <!-- Rating -->
+
+                  </div>
+
+                  <p class="dark-grey-text article">{{comment}}</p>
+                </div>
               </div>
               {{/if}}
-              <!-- Image column -->
-
-              <!-- Content column -->
-              <div class="col-sm-10 col-12">
-
-                <a>
-                  <h5 class="user-name font-weight-bold">{{username}}</h5>
-                </a>
-
-                <!-- Rating -->
-                <ul class="rating">
-                  <script>
-                    for (var j = 1; j <= {{ point }}; j++) {
-                      document.write('<i class="fas fa-star blue-text"></i>')
-                    }
-                  </script>
-                </ul>
-
-                <div class="card-data">
-
-                  <ul class="list-unstyled mb-1">
-
-                    <li class="comment-date font-small grey-text">
-                      <script>
-                        var d = new Date("{{feedback_date}}");
-                        document.write('<i class="far fa-clock-o"></i>' + d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear())
-                      </script>
-                    </li>
-                  </ul>
-
-                </div>
-
-                <p class="dark-grey-text article">{{comment}}</p>
-
-              </div>
-              <!-- Content column -->
-
-            </div>
+              <!-- Content -->
             {{/each}}
             {{/if}}
+
+            <div class="row">
+              <div class="col-12">
+                <hr>
+                <h3 class="font-weight-normal">
+                  Your comment
+                </h3>
+                <span id="rateMe2" class="empty-stars mdb-rating"></span>
+              </div>
+              <div class="col-12">
+                <div class="form-group shadow-textarea">
+                  <label for="commentArea"></label>
+                  <textarea class="form-control z-depth-1" id="commentArea" rows="5"
+                    placeholder="Write something here..."></textarea>
+                </div>
+              </div>
+              <div class="col-12">
+                <form class="md-form" action="/course/{{course.id}}/postComment" method="POST">
+                  <button type="button" class="btn btn-info float-right">Save your comment</button>
+                </form>
+              </div>
+            </div>
           </div>
           <!-- Main wrapper -->
 
         </section>
 
         <!-- Section -->
-        <section id="products">
+        <section id="relatedCourses">
           <div class="divider-new">
             <h3 class="h3-responsive font-weight-bold blue-text mx-3">Related course</h3>
           </div>
@@ -444,7 +452,7 @@
                           {{/is}}
 
                       </span>
-
+                      {{#if ../session/username}}
                       <span class="float-right">
                         {{#if isBuy}}
                         <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
@@ -463,6 +471,7 @@
                           title="Add to Cart" onclick="addToCartFunction({{id}});">
                           <i class="fas fa-cart-plus ml-3"></i>
                         </a>
+                        {{/if}}
                         {{/if}}
                         {{/if}}
 
@@ -499,13 +508,13 @@
         <div id="scrollspy">
           <ul class="nav nav-pills default-pills smooth-scroll navbar-scrollspy" >
             <li class="nav-item">
-              <a class="nav-link active" href="#productDetails">Product details</a>
+              <a class="nav-link active" href="#productDetails">Course details</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#description">Description</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#accordionEx1">Course outline</a>
+              <a class="nav-link" href="#courseOutline">Course outline</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#instructor">Instructor</a>
@@ -514,7 +523,7 @@
               <a class="nav-link" href="#reviews">Review</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#products">Related courses</a>
+              <a class="nav-link" href="#relatedCourses">Related courses</a>
             </li>
 
           </ul>
@@ -524,4 +533,46 @@
   </div>
 </div>
 
-<!-- Main Container -->
+<!-- Button trigger modal-->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#previewModal" id="secretCourseReviewButton" hidden>Launch modal</button>
+
+<!--Modal: modalYT-->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-header">
+      <p class="heading text-center">Course preview</p>
+
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+    <!--Content-->
+    <div class="modal-content">
+
+      <!--Body-->
+      <div class="modal-body mb-0 p-0">
+
+       <h4 class="font-weight-normal text-center mt-3"  id="lectureTitle">
+
+       </h4>
+       <div class="card">
+         <div class="card-body">
+          <div class="plyr__video-embed" id="player">
+            <iframe
+              src="http://www.youtube.com/embed/dQw4w9WgXcQ?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+              allowfullscreen
+              allowtransparency
+              allow="autoplay"
+            ></iframe>
+          </div>
+         </div>
+
+       </div>
+      </div>
+    </div>
+    <!--/.Content-->
+
+  </div>
+</div>
+<!--Modal: modalYT-->

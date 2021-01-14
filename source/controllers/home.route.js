@@ -14,6 +14,7 @@ const { paginate } = require('../config/default.json');
 
 router.get('/', async (req, res) => {
 
+
     const [list, fields] = await courseModel.getSpecial();
 
     const [list1, fields1] = await courseModel.getLast();
@@ -21,10 +22,13 @@ router.get('/', async (req, res) => {
     const [list2, fields2] = await courseModel.getMostView();
 
 
+
+
+
     res.render('home', {
-        special_courses:list,
-        last_courses:list1,
-        mostView_courses:list2,
+        special_courses: list,
+        last_courses: list2,
+
         empty: list.length === 0
     });
     // console.log(req);

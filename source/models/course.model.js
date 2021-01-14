@@ -114,7 +114,7 @@ module.exports = {
         return [null, null];
     },
     async getCourseRating(id) {
-        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id} ORDER BY RAND() LIMIT 3;`;
+        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username WHERE course_id = ${id} ORDER BY feedback_date DESC LIMIT 3;`;
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
@@ -123,6 +123,40 @@ module.exports = {
             return [rows, "courses"];
         }
         return [null, null];
+    },
+    /**
+     * Get comment of a course from course_rating table
+     * @param {number} id course_id
+     * @param {string} excluded_username the username that excluded from the result
+     * @param {number} offset
+     */
+    async getCourseRatingWithExcludedUsername(id, excluded_username, offset){
+        const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username `
+            + `WHERE course_id = ? AND username <> ?`
+            + `ORDER BY feedback_date DESC LIMIT ${paginate.comment_limit} OFFSET ${offset};`;        
+        
+        const [rows, fields] = await db.query(sql, [id, excluded_username]).catch((error, rows, fields) => {
+            console.log(error.message);
+            return null;
+        });
+
+        if (rows && rows.length !== 0) {
+            return rows[0];
+        }
+        return null;
+    },
+
+    async getCommentOfAStudent(id, username){
+        const sql = `SELECT * FROM course_rating WHERE course_id = ? AND username = ?`;    
+        const [rows, fields] = await db.query(sql, [id, username]).catch((error, rows, fields) => {
+            console.log(error.message);
+            return null;
+        });
+
+        if (rows && rows.length !== 0) {
+            return rows[0];
+        }
+        return null;
     },
     async getNumberStudent(id) {
         const sql = `SELECT Count(*) as numberStudent FROM course_student WHERE course_id = ${id}`;
@@ -167,6 +201,13 @@ module.exports = {
         else {
             return { "success": 'Create success' };
         }
+    },
+    async addInstructorToNewCourse(id, username){
+        const sql = `INSERT IGNORE course_instructor SET course_id = ?, username = ?`;
+        const [rows, fields] = await db.query(sql, [id, username]).catch((err, rows, fields)=>{
+            return false;
+        });
+        return true;
     },
     async createChapter(chapter) {
         let res = null;
@@ -266,17 +307,47 @@ module.exports = {
         return [null, null];
     },
     async getSpecial() {
-        const sql = 'SELECT * FROM course LIMIT 3;';
+        const sql = 'SELECT * FROM course;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
         });
         if (rows !== null && rows.length !== 0) {
-            return [rows, "courses"];
+            for (let element of rows){
+                element.avgStar = await this.getAverageStar(element.id)
+                var [instructor, type] = await instructorModel.getInstructor(element.id);
+                element.instructor = instructor;
+            };
+            rows.sort((a, b) => (b.avgStar - a.avgStar));
+            console.log(rows);
+            var count = 0;
+            var array = [];
+            for (var i = 0; i < rows.length; i++) {
+                if (count >= 3) return [array,"Course"];
+                array.push(rows[i]);
+                count++;
+            }
+            return [array,"Course"];
         }
         return [null, null];
     },
-
+    async getMoreView()
+    {
+        const sql = 'SELECT * FROM course ORDER BY view_count LIMIT 10';
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            for (let element of rows){
+                element.avgStar = await this.getAverageStar(element.id)
+                var [instructor, type] = await instructorModel.getInstructor(element.id);
+                element.instructor = instructor;
+            };
+            return [rows,"Course"];
+        }
+        return [null, null];
+    },
     async numberOfCourseOfInstructor(username) {
         const sql = `SELECT COUNT(*) as count FROM course_instructor WHERE username = ? `;
 
@@ -339,6 +410,7 @@ module.exports = {
         return false;
     },
     async getLast() {
+
         const sql = 'SELECT * FROM course ORDER BY id    desc LIMIT  10;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
@@ -351,6 +423,9 @@ module.exports = {
     },
     async getMostView() {
         const sql = 'select * from course  right join watchlist on course.id=watchlist.course_id group  by course.id ORDER BY course.id desc limit 10;';
+
+ 
+
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
@@ -404,11 +479,11 @@ module.exports = {
                 return null;
             });
             if (rows) {
-                rows.forEach(async element => {
+                for (let element of rows){
                     element.avgStar = await this.getAverageStar(element.id);
                     var [instructor, type] = await instructorModel.getInstructor(element.id);
                     element.instructor = instructor;
-                });
+                };
                 return rows;
             }
             else {
@@ -422,11 +497,11 @@ module.exports = {
                 return null;
             });
             if (rows) {
-                rows.forEach(async element => {
+                for (let element of rows){
                     element.avgStar = await this.getAverageStar(element.id);
                     var [instructor, type] = await instructorModel.getInstructor(element.id);
                     element.instructor = instructor;
-                });
+                };
                 return rows;
             }
             else {
@@ -440,11 +515,11 @@ module.exports = {
                 return [null, null];
             });
             if (rows) {
-                rows.forEach(async element => {
+                for (let element of rows){
                     element.avgStar = await this.getAverageStar(element.id);
                     var [instructor, type] = await instructorModel.getInstructor(element.id);
                     element.instructor = instructor;
-                });
+                };
                 return rows;
             }
             else {
@@ -459,11 +534,11 @@ module.exports = {
             return [null, null];
         });
         if (rows) {
-            rows.forEach(async element => {
+            for (let element of rows){
                 element.avgStar = await this.getAverageStar(element.id)
                 var [instructor, type] = await instructorModel.getInstructor(element.id);
                 element.instructor = instructor;
-            });
+            };
             if (orderBy === "popularity") {
                 return rows;
             }
@@ -530,5 +605,15 @@ module.exports = {
         });
 
         return rows[0].lecture_count;
+    },
+
+    async increaseCourseView(id){
+        const sql = `UPDATE course SET view_count = view_count + 1 WHERE id = ?`;
+        const _ = await db.query(sql, [id]).catch(err => {
+            console.log(`course.model.js: increaseCourseView ${err.message}`);
+            return false;
+        });
+
+        return true;
     }
 }

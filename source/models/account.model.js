@@ -1,7 +1,10 @@
 const db = require('../utils/db');
 const bcrypt = require('bcryptjs');
 
-
+function rand (min, max) {
+    const random = Math.random()
+    return Math.floor(random * (max - min) + min)
+}
 async function selectAccountTable(table, username, email) {
     const sql = `SELECT * FROM ${table} WHERE username = ? OR email = ?`;
     console.log(sql);
@@ -153,5 +156,17 @@ module.exports = {
         }
 
         return [null, null];
+    },
+    async generateOTP(length){
+        const digits = '0123456789'
+        const alphabets = 'abcdefghijklmnopqrstuvwxyz'
+        const upperCase = alphabets.toUpperCase()
+        const allowsChars = digits + alphabets + upperCase
+        let OTP = ''
+        while (OTP.length < length) {
+            const charIndex = rand(0, allowsChars.length - 1)
+            OTP += allowsChars[charIndex]
+        }
+        return OTP
     }
 }

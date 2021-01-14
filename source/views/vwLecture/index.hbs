@@ -3,7 +3,6 @@
   body {
     padding-top: 55px;
   }
-
   .word-wrap-one-line {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -55,7 +54,14 @@ $(() => {
           <div class="card mb-4">
             <div class="card-body">
               {{#if lecture.youtube_id}}
-              <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="{{lecture.youtube_id}}"></div>
+              <div class="plyr__video-embed" id="player">
+                <iframe
+                  src="https://www.youtube.com/embed/{{lecture.youtube_id}}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+                  allowfullscreen
+                  allowtransparency
+                  allow="autoplay"
+                ></iframe>
+              </div>
               {{else}}
               <div class="container card-img-top">
                 <video id="player" controls crossorigin playsinline poster="">
@@ -168,7 +174,7 @@ $(() => {
 
                   <!-- Card header -->
                   <script>
-                    console.log("{{../chapter_id}} {{this.chapter_id}}");
+                    // console.log("{{../chapter_id}} {{this.chapter_id}}");
                   </script>
                   <div class="card-header" role="tab" id="headingTwo{{this.chapter_id}}">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx1"

@@ -16,6 +16,7 @@ module.exports = {
 
     query(sql, values) {
         return promisePool.query(sql, values).catch(function (err) {
+            console.log(err);
             return { "error": err.message };
         });
     },
@@ -23,6 +24,7 @@ module.exports = {
     insert(entity, table_name) {
         const sql = `insert into ${table_name} set ?`;
         return promisePool.query(sql, entity).catch(function (err) {
+            console.log(err);
             return { "error": err.message };
         });
     },
@@ -30,6 +32,7 @@ module.exports = {
     delete(condition, table_name) {
         const sql = `delete from ${table_name} where ?`;
         return promisePool.query(sql, condition).catch(function (err) {
+            console.log(err);
             return { "error": err.message };
         });
     },
@@ -37,6 +40,7 @@ module.exports = {
     update(new_data, condition, table_name) {
         const sql = `update ${table_name} set ? where ?`;
         return promisePool.query(sql, [new_data, condition]).catch(function (err) {
+            console.log(err);
             return { "error": err.message };
         });
     }

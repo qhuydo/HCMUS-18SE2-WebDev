@@ -251,5 +251,20 @@ module.exports = {
             id++;
         }
         return id;
+    },
+    async removeCourse(course_id){
+        let condition = {
+            course_id:course_id
+        }
+        await db.update({last_review_course_id:null,last_review_lecture_id:null,last_review_chapter_id:null},{last_review_course_id:course_id},"student")
+        await db.delete(condition,"cart");
+        await db.delete(condition,"course_rating");
+        await db.delete(condition,"watchlist");
+        await db.delete(condition,"course_student");
+        await db.delete(condition,"course_instructor");
+        await db.delete(condition,"student_lecture");
+        await db.delete(condition,"lecture");
+        await db.delete(condition,"course_content");
+        await db.delete({id:course_id},"course");
     }
 }

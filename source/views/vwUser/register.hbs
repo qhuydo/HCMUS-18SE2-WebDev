@@ -13,11 +13,35 @@
 
 <!--Intro Section-->
 <section class="view intro-2">
-  <div class="mask rgba-gradient wow fadeIn" data-wow-delay="0.2s">
-    <form onsubmit="checkKeyPress(event)"
-      class=" container h-100 d-flex justify-content-center align-items-center needs-validation" method="post"
+    <form onsubmit="checkOTP(event)" class=" container h-100 d-flex justify-content-center align-items-center needs-validation" method="post"
       novalidate>
+        <div id="ModalVertify" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 class="modal-title">Input verify</h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body mx-3">
+                      <div class="form-row">
+                          <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text" id="basic-addon1">Key from mail</span>
+                              </div>
+                              <input type="text" class="form-control" name="name" id="OTP"
+                                  aria-describedby="basic-addon1">
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="submit" class="btn btn-default">Register</button>
+                      </div>
+                  </div>
 
+              </div>
+          </div>
+      </div>
       <!--Grid row-->
       <div class="row pt-5 mt-3">
 
@@ -168,7 +192,7 @@
                   </div>
 
                   <div class="text-center">
-                    <button class="btn btn-indigo btn-rounded mt-5" type="submit">Sign up</button>
+                    <a class="btn btn-indigo btn-rounded mt-5" onclick="sendAndShowModal()" >Verify</a>
                   </div>
 
                 </div>
@@ -187,7 +211,6 @@
       <!--Grid row-->
 
     </form>
-  </div>
 
 </section>
 

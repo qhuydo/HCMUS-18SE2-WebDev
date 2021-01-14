@@ -3,6 +3,7 @@ const router = express.Router();
 
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
+const nodemailer = require("nodemailer");
 const account = require('../models/account.model');
 const { auth } = require('../middlewares/auth.mdw');
 const missingKeys = require("../utils/otherFunction").missingKeys;
@@ -70,30 +71,45 @@ router.post('/profile/password', auth, async (req, res, next) => {
     const reqUser = req.body.user;
     var result = await login(req.session.username, reqUser.curPass)
     if (result === null) {
-        const [user, usertype] = await account.getUserInfo(req.session.username);
+        var [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
             user: user,
-            fail_edit_pass: "Check your password"
+            fail_edit_pass: "Check your current password"
         });
     }
-    const sql = `UPDATE ${req.session.type} `
-        + `SET password = ? WHERE username = ?`;
+    let sql = "";
+    let data = [];
+    if (reqUser.newPass && reqUser.newPass.length !== 0)
+    {
+        sql = `UPDATE ${req.session.type} `
+            + `SET password = ?,email = ? WHERE username = ?`;
 
-    const data = [
-        bcrypt.hashSync(reqUser.newPass, 10),
-        req.session.username,
-    ];
+        data = [
+            bcrypt.hashSync(reqUser.newPass, 10),
+            reqUser.email,
+            req.session.username,
+        ];
+    }
+    else
+    {
+        sql = `UPDATE ${req.session.type} `
+            + `SET email = ? WHERE username = ?`;
+        data = [
+            reqUser.email,
+            req.session.username,
+        ];
+    }
     await db.query(sql, data).catch(async (error) => {
         console.log(error);
-        const [user, usertype] = await account.getUserInfo(req.session.username);
+        var [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
             user: user,
             fail_edit_pass: "Error"
         });
     });
 
-    const [user, usertype] = await account.getUserInfo(req.session.username);
-    res.render('uploads/', {
+    var [user, usertype] = await account.getUserInfo(req.session.username);
+    res.render('vwUser/edit-profile', {
         user: user,
         successfull_edit_pass: true
     });
@@ -264,6 +280,52 @@ router.post('/register', async (req, res) => {
             });
         }
     }
+});
+
+router.post('/sendOTP', async (req, res) => {
+    let missing = await missingKeys(req.body, [
+        "email",
+    ])
+    if (missing)
+        return res.send(false);
+    var OTP = await account.generateOTP(6);
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        port: 2525,
+        auth: {
+                   user: "hathehien12a2@gmail.com",
+                   pass: "hien2000la"
+        }
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: 'nodejs project', // sender address
+        to: req.body.email, // list of receivers
+        subject: "Vertify your email register", // Subject line
+        text: OTP, // plain text body
+    });
+    req.session.OTP = OTP;
+    await req.session.save()
+    res.send(true);
+});
+
+router.post('/compareOTP', async (req, res) => {
+    let missing = await missingKeys(req.body, [
+        "OTP",
+    ]);
+    if (missing)
+        return res.send(false);
+    if (req.session.OTP)
+    {
+        if (req.session.OTP === req.body.OTP)
+        {
+            res.send(true);
+        }
+    }
+    res.send(false)
 });
 
 // app.post('/', (req, res) => {

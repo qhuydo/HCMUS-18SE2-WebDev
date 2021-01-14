@@ -1,14 +1,7 @@
 {{#section "intro"}}
 {{> homeIntro}}
 {{/section}}
-{{#section 'css'}}
-<link rel="stylesheet" type="text/css" href="/css/vwCourses/byCat.css">
-{{/section}}
 
-{{#section 'js'}}
-<script type="text/javascript" src="/js/vwCourses/byCat.js"></script>
-<!--script type="text/javascript" src="/js/addons-pro/mdb-file-upload.min.js"></script-->
-{{/section}}
 
 
 {{> countdown}}
@@ -19,7 +12,7 @@
 <div class="container">
 
   <!-- Grid row -->
-  <div class="row">
+  <div class="row pt-4">
 
     <!-- Content -->
     <div class="col-lg-12">
@@ -48,7 +41,7 @@
               {{#if special_courses}}
               {{#each special_courses}}
 
-              <div class="col-lg-4 col-md-12 mb-4">
+              <div class="col-lg-4 col-md-6 mb-4">
 
                 <!-- Card -->
                 <div class="card card-ecommerce">
@@ -56,13 +49,12 @@
                   <!-- Card image -->
                   <div class="view overlay">
 
-                    <img class="img-fluid" src="{{image}}" alt="sample image">
+                    <img src="{{image}}" class="imageSlide" alt="sample image">
 
-                    <a href="/course/{{this.id}}">
-                      <div class="mask waves-effect waves-light">
-                        <img class="img-fluid w-100" width="341" height="135" src="">
-                        <div class="mask rgba-black-slight waves-effect waves-light"></div>
-                      </div>
+                    <a>
+
+                      <div class="mask rgba-white-slight"></div>
+
                     </a>
 
                   </div>
@@ -76,21 +68,43 @@
 
                       <strong>
 
-                        <a href="/course/{{this.id}}" class="dark-grey-text">{{title}}</a>
+                        <a href="" class="dark-grey-text">{{title}}</a>
 
                       </strong>
 
                     </h5>
 
-                    <span class="badge badge-danger mb-2">Bestseller</span>
+                    <span class="badge badge-danger mb-2">bestseller</span>
                     <script>
-                      if ({{ discount }} > 0)
+                    if ({{discount}} > 0)
                       document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
 
                     </script>
 
                     <!-- Rating -->
-                    
+                    <h5 class="h5-responsive text-center text-md-left ml-xl-0 ml-4">
+                    <span>
+                      <script>
+                        const courseModel = require('../models/course.model');
+                        var point = await courseModel.getAverageStar({{id}});
+                        console.log(point);
+                        for (var j = 1; j <= 5; j++) {
+                          if (point >= 1) {
+                            document.write('<i class="fas fa-star orange-text"></i>');
+                            point -= 1;
+                            continue;
+                          }
+                          if (point > 0) {
+                            document.write('<i class="fas fa-star-half orange-text"></i>');
+                            point -= 1;
+                            continue;
+                          }
+                          document.write('<i class="far fa-star orange-text"></i>');
+                          point -= 1;
+                        }
+                      </script>
+                    </span>
+                    </h5>
 
                     <!-- Card footer -->
                     <div class="card-footer pb-0">
@@ -105,9 +119,9 @@
 
                           </span>
                           <script>
-                            if ({{ discount }}> 0)
+                            if({{discount}}>0)
                             document.write(' <span class="grey-text"> <small> <s>${{full_price}}</s> </small> </span>');
-
+                           
                           </script>
 
                         </h5>
@@ -183,7 +197,7 @@
 
                     <p class="pb-lg-3 pb-md-1 clearfix d-none d-md-block">Giảm 20% cho tất cả khóa học </p>
 
-
+                 
 
                   </div>
 
@@ -204,249 +218,481 @@
 
 
       <!-- Section: 10 khóa học được xem nhiều nhất -->
-      <section>
+        <section id="relatedCourses">
+          <div class="divider-new">
+            <h3 class="h3-responsive font-weight-bold blue-text mx-3">Course more view</h3>
+          </div>
+          <!-- Carousel Wrapper -->
+          <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
 
-        <!-- Grid row -->
-        <div class="row">
+            <!-- Controls -->
+            <div class="controls-top">
+              <a class="btn-floating primary-color" href="#multi-item-example" data-slide="prev">
+                <i class="fas fa-chevron-left"></i>
+              </a>
 
-          <!-- Grid column -->
-          <div class="col-12">
-
-
-            <div class="divider-new">
-
-              <h3 class="h3-responsive font-weight-bold dark-grey-text mx-3" style="font-size:1cm">10 Khóa học được xem nhiều nhất</h3>
+              <a class="btn-floating primary-color" href="#multi-item-example" data-slide="next">
+                <i class="fas fa-chevron-right"></i>
+              </a>
 
             </div>
+            <!-- Controls -->
 
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+              <li class="primary-color" data-target="#multi-item-example" data-slide-to="0" class="active"></li>
+              <li class="primary-color" data-target="#multi-item-example" data-slide-to="1"></li>
+              <li class="primary-color" data-target="#multi-item-example" data-slide-to="2"></li>
+            </ol>
+            <!-- Indicators -->
 
-            <br>
+            <!-- Slides -->
+            <div class="carousel-inner" role="listbox">
+              <script>
+                var num = 0;
+              </script>
+              {{#each view_courses}}
+              <script>
+                if (num % 4 === 0) {
+                  if (num === 0)
+                    document.write(`<div class="carousel-item active">`);
+                  else
+                    document.write(`<div class="carousel-item">`);
+                }
+              </script>
 
-            <!-- Grid row -->
-            <div class="row">
-              {{#if mostView_courses}}
-              {{#each mostView_courses}}
-
-              <div class="col-lg-4 col-md-12 mb-4">
+              <div class="col-md-3 clearfix d-none d-md-block mb-4">
 
                 <!-- Card -->
-                <div class="card card-ecommerce">
+                <div class="card card-ecommerce4">
 
                   <!-- Card image -->
                   <div class="view overlay">
-
-                    <img class="img-fluid" src="{{image}}" alt="sample image">
-
-                    <a href="/course/{{this.id}}">
-                      <div class="mask waves-effect waves-light">
-                        <img class="img-fluid w-100" width="341" height="135" src="">
-                        <div class="mask rgba-black-slight waves-effect waves-light"></div>
-                      </div>
+                    <img src="{{image}}" class="imageSlide" alt="">
+                    <a href="/course/{{id}}">
+                      <div class="mask rgba-white-slight"></div>
                     </a>
-
                   </div>
                   <!-- Card image -->
 
                   <!-- Card content -->
                   <div class="card-body">
-
                     <!-- Category & Title -->
                     <h5 class="card-title mb-1">
-
                       <strong>
-
-                        <a href="/course/{{this.id}}" class="dark-grey-text">{{title}}</a>
-
+                        <a href="/course/{{id}}" class="dark-grey-text">{{title}}</a>
                       </strong>
-
                     </h5>
-
-                    <span class="badge badge-danger mb-2">Bestseller</span>
-                    <script>
-                      if ({{ discount }} > 0)
-                      document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
-
-                    </script>
-
                     <!-- Rating -->
-                   
+                    <ul class="rating"> {{avgStar}}
+                      <script>
+                        var point = {{ avgStar }};
+                        for (var j = 1; j <= 5; j++) {
+                          if (point >= 1) {
+                            document.write(`<i class="fas fa-star orange-text"></i>`);
+                            point -= 1;
+                            continue;
+                          }
+                          if (point > 0) {
+                            document.write('<i class="fas fa-star-half orange-text"></i>');
+                            point -= 1;
+                            continue;
+                          }
+                          document.write('<i class="far fa-star orange-text"></i>');
+                          point -= 1;
+                        }
+                      </script>
+                      <span class="mdb-color-text">total rating: {{total_rating}}</span>
+                    </ul>
 
                     <!-- Card footer -->
-                    <div class="card-footer pb-0">
-
-                      <div class="row mb-0">
-
-                        <h5 class="mb-0 pb-0 mt-1 font-weight-bold">
-
-                          <span class="red-text">
-
-                            <strong>${{price}}</strong>
-
-                          </span>
-                          <script>
-                            if ({{ discount }}> 0)
-                            document.write(' <span class="grey-text"> <small> <s>${{full_price}}</s> </small> </span>');
-
-                          </script>
-
-                        </h5>
-
-                        <span class="float-right">
-
-                          <a class="" data-toggle="tooltip" data-placement="top" title="Add to Cart">
-
-                            <i class="fas fa-shopping-cart ml-3"></i>
-
-                          </a>
-
-                        </span>
-
-                      </div>
-
-                    </div>
 
                   </div>
-                  <!-- Card content -->
+                  <div class="card-footer pb-0">
+
+                    <div class="row mb-0">
+
+                      <span class="float-left">
+
+                        <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
+                          {{#is discount 0}}
+                          <span class="red-text font-weight-bold">
+                            <strong>{{this.full_price}} </strong>
+                            <small>
+                              $
+                            </small>
+                          </span>
+                          {{else}}
+
+                          <span class="grey-text">
+                            <s>
+                              <strong>{{this.full_price}} </strong>
+                              <small>
+                                $
+                              </small>
+                            </s>
+                            <span class="red-text font-weight-bold">
+                              <strong>{{this.price}} </strong>
+                              <small>
+                                $
+                              </small>
+                            </span>
+                          </span>
+                          {{/is}}
+
+                      </span>
+                      {{#if ../session/username}}
+                      <span class="float-right">
+                        {{#if isBuy}}
+                        <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+
+                          <i class="fas fa-check ml-3"></i>
+
+                        </a>
+                        {{else}}
+                        {{#if inCart}}
+                        <a class="" data-toggle="tooltip" data-placement="top" title="In Cart"
+                          href="/cart">&nbsp;&nbsp;
+                          <i class="fas fa-luggage-cart"></i>
+                        </a>
+                        {{else}}
+                        <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top"
+                          title="Add to Cart" onclick="addToCartFunction({{id}});">
+                          <i class="fas fa-cart-plus ml-3"></i>
+                        </a>
+                        {{/if}}
+                        {{/if}}
+                        {{/if}}
+
+                      </span>
+
+                    </div>
+                  </div>
 
                 </div>
                 <!-- Card -->
 
               </div>
+
+              <script>
+                if (num % 4 === 3)
+                  document.write('</div>');
+                num++;
+              </script>
               {{/each}}
-              {{/if}}
-
-
-
             </div>
+            <!-- Slides -->
 
           </div>
+          <!-- Carousel Wrapper -->
 
-          <!-- Grid row -->
-      </section>
-      <!-- Section: 10 khóa học được xem nhiều nhất -->
+        </section>
 
       <!--Section: 10 khóa học được đăng gần nhất -->
-      <section>
+      <section id="relatedCourses">
+          <div class="divider-new">
+            <h3 class="h3-responsive font-weight-bold blue-text mx-3">Course newest</h3>
+          </div>
+          <!-- Carousel Wrapper -->
+          <div id="multi-item-example1" class="carousel slide carousel-multi-item" data-ride="carousel">
 
-        <!-- Grid row -->
-        <div class="row">
+            <!-- Controls -->
+            <div class="controls-top">
+              <a class="btn-floating primary-color" href="#multi-item-example1" data-slide="prev">
+                <i class="fas fa-chevron-left"></i>
+              </a>
 
-          <!-- Grid column -->
-          <div class="col-12">
-
-
-            <div class="divider-new">
-
-              <h3 class="h3-responsive font-weight-bold dark-grey-text mx-3" style="font-size:1cm">10 Khóa học mới đăng</h3>
+              <a class="btn-floating primary-color" href="#multi-item-example1" data-slide="next">
+                <i class="fas fa-chevron-right"></i>
+              </a>
 
             </div>
+            <!-- Controls -->
 
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+              <li class="primary-color" data-target="#multi-item-example" data-slide-to="0" class="active"></li>
+              <li class="primary-color" data-target="#multi-item-example" data-slide-to="1"></li>
+              <li class="primary-color" data-target="#multi-item-example" data-slide-to="2"></li>
+            </ol>
+            <!-- Indicators -->
 
-            <br>
-
-            <!-- Grid row -->
-            <div class="row">
-              {{#if last_courses}}
+            <!-- Slides -->
+            <div class="carousel-inner" role="listbox">
+              <script>
+                var num = 0;
+              </script>
               {{#each last_courses}}
+              <script>
+                if (num % 4 === 0) {
+                  if (num === 0)
+                    document.write(`<div class="carousel-item active">`);
+                  else
+                    document.write(`<div class="carousel-item">`);
+                }
+              </script>
 
-              <div class="col-lg-4 col-md-12 mb-4">
+              <div class="col-md-3 clearfix d-none d-md-block mb-4">
 
                 <!-- Card -->
-                <div class="card card-ecommerce">
+                <div class="card card-ecommerce4">
 
                   <!-- Card image -->
                   <div class="view overlay">
-
-                    <img class="img-fluid" src="{{image}}" alt="sample image">
-
-                    <a href="/course/{{this.id}}">
-                      <div class="mask waves-effect waves-light">
-                        <img class="img-fluid w-100" width="341" height="135" src="">
-                        <div class="mask rgba-black-slight waves-effect waves-light"></div>
-                      </div>
+                    <img src="{{image}}" class="imageSlide4" alt="">
+                    <a href="/course/{{id}}">
+                      <div class="mask rgba-white-slight"></div>
                     </a>
-
                   </div>
                   <!-- Card image -->
 
                   <!-- Card content -->
                   <div class="card-body">
-
                     <!-- Category & Title -->
                     <h5 class="card-title mb-1">
-
                       <strong>
-
-                        <a href="/course/{{this.id}}" class="dark-grey-text">{{title}}</a>
-
+                        <a href="/course/{{id}}" class="dark-grey-text">{{title}}</a>
                       </strong>
-
                     </h5>
-
-                    <span class="badge badge-danger mb-2">New</span>
-                    <script>
-                      if ({{ discount }} > 0)
-                      document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
-
-                    </script>
-
                     <!-- Rating -->
-                    
+                    <ul class="rating"> {{avgStar}}
+                      <script>
+                        var point = {{ avgStar }};
+                        for (var j = 1; j <= 5; j++) {
+                          if (point >= 1) {
+                            document.write(`<i class="fas fa-star orange-text"></i>`);
+                            point -= 1;
+                            continue;
+                          }
+                          if (point > 0) {
+                            document.write('<i class="fas fa-star-half orange-text"></i>');
+                            point -= 1;
+                            continue;
+                          }
+                          document.write('<i class="far fa-star orange-text"></i>');
+                          point -= 1;
+                        }
+                      </script>
+                      <span class="mdb-color-text">total rating: {{total_rating}}</span>
+                    </ul>
 
                     <!-- Card footer -->
+
+                  </div>
+                  <div class="card-footer pb-0">
+
+                    <div class="row mb-0">
+
+                      <span class="float-left">
+
+                        <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
+                          {{#is discount 0}}
+                          <span class="red-text font-weight-bold">
+                            <strong>{{this.full_price}} </strong>
+                            <small>
+                              $
+                            </small>
+                          </span>
+                          {{else}}
+
+                          <span class="grey-text">
+                            <s>
+                              <strong>{{this.full_price}} </strong>
+                              <small>
+                                $
+                              </small>
+                            </s>
+                            <span class="red-text font-weight-bold">
+                              <strong>{{this.price}} </strong>
+                              <small>
+                                $
+                              </small>
+                            </span>
+                          </span>
+                          {{/is}}
+
+                      </span>
+                      {{#if ../session/username}}
+                      <span class="float-right">
+                        {{#if isBuy}}
+                        <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+
+                          <i class="fas fa-check ml-3"></i>
+
+                        </a>
+                        {{else}}
+                        {{#if inCart}}
+                        <a class="" data-toggle="tooltip" data-placement="top" title="In Cart"
+                          href="/cart">&nbsp;&nbsp;
+                          <i class="fas fa-luggage-cart"></i>
+                        </a>
+                        {{else}}
+                        <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top"
+                          title="Add to Cart" onclick="addToCartFunction({{id}});">
+                          <i class="fas fa-cart-plus ml-3"></i>
+                        </a>
+                        {{/if}}
+                        {{/if}}
+                        {{/if}}
+
+                      </span>
+
+                    </div>
+                  </div>
+
+                </div>
+                <!-- Card -->
+
+              </div>
+
+              <script>
+                if (num % 4 === 3)
+                  document.write('</div>');
+                num++;
+              </script>
+              {{/each}}
+            </div>
+            <!-- Slides -->
+
+          </div>
+          <!-- Carousel Wrapper -->
+
+        </section>
+      
+            
+                <!-- Card content -->
+            
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row">
+                {{#each last_courses}}
+                <div class="col-lg-3 col-md-6 mb-4">
+                  <div class="card card-ecommerce">
+                
+                    <!-- Card image -->
+                    <div class="view overlay">
+                
+                      <img src="{{image}}" class="img-fluid"
+                        alt="sample image">
+                
+                      <a>
+                
+                        <div class="mask rgba-white-slight"></div>
+                
+                      </a>
+                
+                    </div>
+                    <!-- Card image -->
+                
+                    <!-- Card content -->
+                    <div class="card-body">
+                
+                      <!-- Category & Title -->
+                      <h5 class="card-title mb-1">
+                
+                        <strong>
+                
+                          <a href="" class="dark-grey-text">{{Title}}</a>
+                
+                        </strong>
+                
+                      </h5>
+                
+                      <span class="badge badge-danger mb-2">New</span>
+                    
+                
+                      <!-- Rating -->
+                      <ul class="rating">
+                
+                        <li>
+                
+                          <i class="fas fa-star blue-text"></i>
+                
+                        </li>
+                
+                        <li>
+                
+                          <i class="fas fa-star blue-text"></i>
+                
+                        </li>
+                
+                        <li>
+                
+                          <i class="fas fa-star blue-text"></i>
+                
+                        </li>
+                
+                        <li>
+                
+                          <i class="fas fa-star blue-text"></i>
+                
+                        </li>
+                
+                        <li>
+                
+                          <i class="fas fa-star blue-text"></i>
+                
+                        </li>
+                
+                      </ul>
+                      <p>Số lượng đánh giá</p>
+                
+                      <!-- Card footer -->
                     <div class="card-footer pb-0">
-
+                    
                       <div class="row mb-0">
-
+                    
                         <h5 class="mb-0 pb-0 mt-1 font-weight-bold">
-
+                    
                           <span class="red-text">
-
+                    
                             <strong>${{price}}</strong>
-
+                    
                           </span>
                           <script>
                             if ({{ discount }}> 0)
                             document.write(' <span class="grey-text"> <small> <s>${{full_price}}</s> </small> </span>');
 
                           </script>
-
+                    
                         </h5>
-
+                    
                         <span class="float-right">
-
+                    
                           <a class="" data-toggle="tooltip" data-placement="top" title="Add to Cart">
-
+                    
                             <i class="fas fa-shopping-cart ml-3"></i>
-
+                    
                           </a>
-
+                    
                         </span>
-
+                    
                       </div>
-
+                    
                     </div>
-
+                    </div>
                   </div>
-                  <!-- Card content -->
-
                 </div>
-                <!-- Card -->
-
-              </div>
-              {{/each}}
-              {{/if}}
-
-
-
+                {{/each}}
             </div>
-
+           
           </div>
-
-          <!-- Grid row -->
-      </section>
+          <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+        
       
 
+      </section>
+      <!--10 khóa học mới đăng-->
+    
       <!-- Content -->
 
     </div>

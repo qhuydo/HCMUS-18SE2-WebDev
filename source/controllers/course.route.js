@@ -72,12 +72,12 @@ router.get('/byCat', async (req, res) => {
         }
         if (courses)
         {
-            courses.forEach(async element => {
+            for (let element of courses){
                 var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
                 element.category = category;
                 element.isBuy = await courseModel.isBuy(element.id, req.session.username);
                 element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
-            });
+            };
         }
         return res.render('vwCourses/byCat', {
             categories: allCategory,
@@ -96,12 +96,12 @@ router.get('/byCat', async (req, res) => {
             courses = await courseModel.courseSort(null, searchBefore, null,offset);
     }
     if (courses) {
-        courses.forEach(async element => {
+        for (let element of courses){
             var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
             element.category = category;
             element.isBuy = await courseModel.isBuy(element.id, req.session.username);
             element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
-        });
+        };
     }
     req.session.searchBefore = searchBefore;
     res.render('vwCourses/byCat', {
@@ -132,7 +132,7 @@ router.post('/add', async (req, res) => {
     }
     var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category);
     const course_new = {
-        // id: await courseModel.getCourseNewId(), // the id field is auto-increment, thus no need to get new ie
+        id: await courseModel.getCourseNewId(), // the id field is auto-increment, thus no need to get new ie
         title: req.body.course.title,
         category: sub_category.category_id,
         sub_category: sub_category.id,
@@ -141,7 +141,7 @@ router.post('/add', async (req, res) => {
         price: parseInt(Number(req.body.course.full_price) * (1 - Number(req.body.course.discount) / 100)),
         image_sm: req.body.course.image,
         image: req.body.course.image,
-        short_description: req.body.course.full_description,
+        short_description: req.body.course.short_description,
         full_description: req.body.course.full_description,
         last_update: dateformat(req.body.course.last_update, "yyyy/mm/dd"),
         view_count: 0,
@@ -151,6 +151,9 @@ router.post('/add', async (req, res) => {
         completion: 0
     };
     var result = await courseModel.createCourse(course_new);
+    if (!result.error) {
+        await courseModel.addInstructorToNewCourse(course_new.id, req.session.username);
+    }
     if (result.error) {
         req.fail = "Create with this query not success";
         return res.redirect('/course/add');
@@ -269,47 +272,46 @@ router.get('/:id', async (req, res, next) => {
     }
     // if (req.session.type === "student" || req.session.type === "adminstrator") {
     var [course, type] = await courseModel.getCourseDetail(req.params.id);
-    //var [course_content,type] = await courseModel
+    
+    
     if (course) {
-        var [review, type] = await courseModel.getCourseRating(req.params.id);
-        var countStudent = await courseModel.getNumberStudent(req.params.id);
-        var averageStar = await courseModel.getAverageStar(req.params.id);
-        var countRating = await courseModel.getNumberRating(req.params.id);
-        var [instructor, type] = await instructorModel.getInstructor(req.params.id);
-        var studentOfInstructor = await instructorModel.getNumberStudent(instructor.username);
-        var reviewOfInstructor = await instructorModel.getNumberReview(instructor.username);
-        var avgStartOfInstructor = await instructorModel.getAverageStar(instructor.username);
-        var countCourseOfInstructor = await instructorModel.getNumberCourse(instructor.username);
-        var chapters = await lectureModel.getFullCourseContent(req.params.id);
-        const lecture = await lectureModel.getLectures(req.params.id);
+        const id = req.params.id;
+        const username = req.session.username;
+
+        await courseModel.increaseCourseView(id);
+        var [review, type] = await courseModel.getCourseRating(id);
+        var countStudent = await courseModel.getNumberStudent(id);
+        var averageStar = await courseModel.getAverageStar(id);
+        var countRating = await courseModel.getNumberRating(id);
+        var [instructor, type] = await instructorModel.getInstructor(id);
+        var chapters = await lectureModel.getFullCourseContent(id);
+        // const lecture = await lectureModel.getLectures(id);
         var relateItem = await courseModel.get9RelateSort(course.sub_category, course.category, course.id)
-        var isBuy = await courseModel.isBuy(course.id, req.session.username);
-        var inCart = await cartModel.hasItemInCart(req.session.username, course.id);
+        var isBuy = await courseModel.isBuy(course.id, username);
+        var inCart = await cartModel.hasItemInCart(username, course.id);
         if (relateItem) {
             relateItem.forEach(async element => {
                 element.avgStar = await courseModel.getAverageStar(element.id);
-                if (req.session.username)
-                    element.isBuy = await courseModel.isBuy(element.id, req.session.username);
+                if (username)
+                    element.isBuy = await courseModel.isBuy(element.id, username);
                 else
                     element.isBuy = null;
-                if (req.session.username)
-                    element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
+                if (username)
+                    element.inCart = await cartModel.hasItemInCart(username, element.id);
             });
         }
-        if (chapters) {
-            chapters.forEach(element => {
-                element.lectures = [];
-            });
-            if (lecture) {
-                lecture.forEach(element => {
-                    chapters.forEach(element2 => {
-                        if (element2.chapter_id === element.chapter_id) {
-                            element2.lectures.push(element);
-                        }
-                    })
-                });
-            }
+        
+        const instructorRows = await instructorModel.instructorDetailsFromACourse(id).catch((err) => {
+            console.log(err.message); // logs "Something"
+        });
+
+        // console.log(instructorRows);
+        var instructorsStr = [];
+        for (const i of instructorRows) {
+            instructorsStr.push(i.fullname);
         }
+        instructorsStr = instructorsStr.join(", ");
+        
         return res.render('vwCourse/courseDetail', {
             review: review,
             course: course,
@@ -318,13 +320,10 @@ router.get('/:id', async (req, res, next) => {
             numStudent: countStudent,
             avgStar: averageStar,
             numRating: countRating,
-            instructor: instructor,
-            instructorStudent: studentOfInstructor,
-            instructorReview: reviewOfInstructor,
-            instructorAvgStart: avgStartOfInstructor,
-            instructorCourse: countCourseOfInstructor,
             chapters: chapters,
-            relateItems: relateItem
+            relateItems: relateItem,
+            instructorRows,
+            instructorsStr
         });
     }
     res.render('home');
@@ -332,6 +331,13 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.get('/:id/edit', async (req, res) => {
+    if (! await courseModel.isCourseIdExist(req.params.id)) {
+        return res.status(404).send('Course not found');
+    }
+
+    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
+        return res.status(404).send('Lecture not found');
+    }
     var [course, type] = await courseModel.getCourseDetail(req.params.id)
     var [sub_categories, type] = await categoryModel.getAllSubCategory();
     res.render('vwCourse/editCourse', {
@@ -345,9 +351,9 @@ router.get('/:id/editVideo', async (req, res) => {
         return res.status(404).send('Course not found');
     }
 
-    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
-        return res.status(404).send('Lecture not found');
-    }
+    // if (! await lectureModel.isLectureIdExist(req.params.id, req.session.username)) {
+    //     return res.status(404).send('Lecture not found');
+    // }
     var chapters = await lectureModel.getFullCourseContent(req.params.id);
     const lecture = await lectureModel.getLectures(req.params.id);
     const c = await courseModel.getCourseDetail(req.params.id);
@@ -451,7 +457,7 @@ router.post('/:id/edit', async (req, res) => {
         price: parseInt(Number(req.body.course.full_price) * (1 - Number(req.body.course.discount) / 100)),
         image_sm: req.body.course.image,
         image: req.body.course.image,
-        short_description: req.body.course.full_description,
+        short_description: req.body.course.short_description,
         full_description: req.body.course.full_description,
         last_update: dateformat(Date.now(), "yyyy/mm/dd"),
         completion: 0
@@ -521,17 +527,16 @@ router.route('/:id/lecture')
                 }
             }
         }
-
-        chapters.forEach(async element => {
-            element.lectures.forEach(async subElements => {
+        for (let element of chapters){
+            for (let subElements of element){
                 // console.log(`element.chapter_id ${element.chapter_id}`);
                 const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, element.chapter_id, subElements.lecture_id);
 
                 if (progress_data !== null && progress_data.length > 0) {
                     subElements.completion = progress_data[0].completion;
                 }
-            });
-        });
+            };
+        };
 
         let lecture = null;
         if (lecture_id) {
