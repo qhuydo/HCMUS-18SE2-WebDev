@@ -41,7 +41,7 @@
                 <div class="form-row">
                   <div class="col-md-12">
                     <div class="md-form form-group">
-                      <input type="text" id="change-email" class="form-control validate" name="user[email]"
+                      <input type="text" id="change-email" class="form-control validate " name="user[email]"
                         value="{{user.email}}">
                       <label for="change-email">Email</label>
                     </div>
@@ -65,6 +65,33 @@
                 </div>
               </form>
 
+            </div>
+            <!-- Card content -->
+
+          </div>
+          <!-- Card -->
+
+          <!-- Card -->
+          <div class="card card-cascade narrower mt-5" style="height:330px;">
+            <!-- Card image -->
+            <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
+              <h5 class="mb-0 font-weight-bold"><strong>Account</strong></h5>
+            </div>
+            <!-- Card image -->
+
+            <!-- Card content -->
+            <div class="card-body card-body-cascade text-center mt-5">
+              {{#if (eq session.type "administrator")}}
+                {{#if user.disable}}
+                <a class="" id="admin{{user.username}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisableAccount('{{user.username}}')">
+                  <i class="fas fa fa-unlock ml-10 fa-5x"></i>
+                </a>
+                {{else}}
+                <a class="" id="admin{{user.username}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disableAccount('{{user.username}}')">
+                  <i class="fas fa fa-ban ml-10 fa-5x"></i>
+                </a>
+                {{/if}}
+              {{/if}}
             </div>
             <!-- Card content -->
 

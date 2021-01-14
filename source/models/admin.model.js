@@ -266,5 +266,39 @@ module.exports = {
         await db.delete(condition,"lecture");
         await db.delete(condition,"course_content");
         await db.delete({id:course_id},"course");
+    },
+    async disableCourse(course_id)
+    {
+        var result = await db.update({disable:1},{id:course_id},"course");
+        if (result.error)
+            return false;
+        return true;
+    },
+    async undisableCourse(course_id)
+    {
+        var result = await db.update({disable:0},{id:course_id},"course");
+        if (result.error)
+            return false;
+        return true;
+    },
+    async disableAccount(username)
+    {
+        var result = await db.update({disable:1},{username:username},"student");
+        if (result.error)
+            return false;
+        result = await db.update({disable:1},{username:username},"instructor");
+        if (result.error)
+            return false;
+        return true;
+    },
+    async undisableAccount(username)
+    {
+        var result = await db.update({disable:0},{username:username},"student");
+        if (result.error)
+            return false;
+        result = await db.update({disable:0},{username:username},"instructor");
+        if (result.error)
+            return false;
+        return true;
     }
 }

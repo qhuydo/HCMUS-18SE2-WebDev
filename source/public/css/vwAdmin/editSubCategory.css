@@ -2,3 +2,9 @@ body { padding-top: 110px; }
 img{
     max-width:250px;
 }
+
+@media (min-width: 1400px) {
+    .SubCategoryPass{
+        height: 529px;
+    }
+}
