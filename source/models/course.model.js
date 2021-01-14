@@ -328,7 +328,6 @@ module.exports = {
                 element.instructor = instructor;
             };
             rows.sort((a, b) => (b.avgStar - a.avgStar));
-            console.log(rows);
             var count = 0;
             var array = [];
             for (var i = 0; i < rows.length; i++) {
@@ -417,7 +416,6 @@ module.exports = {
     async getMostView() {
         const sql = 'select * from course  right join watchlist on course.id=watchlist.course_id group  by course.id ORDER BY course.id desc limit 10;';
 
- 
 
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
@@ -434,9 +432,13 @@ module.exports = {
         }
         return [null, null];
     },
-    async countCourseSort(orderBy, categoryFilter, sub_categoryFilter) {
+    async countCourseSort(orderBy, categoryFilter, sub_categoryFilter,SeeDisable) {
         var sql = `SELECT * FROM course`;
         if (orderBy) {
+            if (SeeDisable === false)
+            {
+                sql += ` WHERE disable = 0`;
+            }
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return [null, null];
@@ -447,6 +449,10 @@ module.exports = {
         }
         if (categoryFilter) {
             sql += ` WHERE category = ${categoryFilter}`;
+            if (SeeDisable === false)
+            {
+                sql += ` and disable = 0`;
+            }
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return [null, null];
@@ -458,6 +464,10 @@ module.exports = {
         }
         if (sub_categoryFilter) {
             sql += ` WHERE sub_category = ${sub_categoryFilter}`;
+            if (SeeDisable === false)
+            {
+                sql += ` and disable = 0`;
+            }
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return [null, null];
@@ -469,10 +479,13 @@ module.exports = {
         }
         return 0;
     },
-    async courseSort(orderBy, categoryFilter,sub_categoryFilter, offset) {
+    async courseSort(orderBy, categoryFilter,sub_categoryFilter, offset,SeeDisable) {
         var sql = `SELECT * FROM course`;
         if (categoryFilter) {
-            sql += ` WHERE category = ${categoryFilter} LIMIT 6 OFFSET ${offset}`;
+            if (SeeDisable === false)
+                sql += ` WHERE category = ${categoryFilter} and disable = 0 LIMIT 6 OFFSET ${offset}`;
+            else
+                sql += ` WHERE category = ${categoryFilter} LIMIT 6 OFFSET ${offset}`;
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return null;
@@ -490,7 +503,10 @@ module.exports = {
             }
         }
         if (sub_categoryFilter) {
-            sql += ` WHERE sub_category = ${sub_categoryFilter} LIMIT 6 OFFSET ${offset}`;
+            if (SeeDisable === false)
+                sql += ` WHERE sub_category = ${sub_categoryFilter} and disable = 0 LIMIT 6 OFFSET ${offset}`;
+            else
+                sql += ` WHERE sub_category = ${sub_categoryFilter} LIMIT 6 OFFSET ${offset}`;
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return null;
@@ -508,6 +524,10 @@ module.exports = {
             }
         }
         if (orderBy === "default") {
+            if (SeeDisable === false)
+            {
+                sql += ` WHERE disable = 0`;
+            }
             sql += ` LIMIT 6 OFFSET ${offset}`;
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
@@ -524,6 +544,10 @@ module.exports = {
             else {
                 return 0;
             }
+        }
+        if (SeeDisable === false)
+        {
+            sql += ` WHERE disable = 0`;
         }
         if (orderBy === "popularity") {
             sql += ` ORDER BY student_count DESC LIMIT 6 OFFSET ${offset}`;

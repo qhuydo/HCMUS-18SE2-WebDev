@@ -16,6 +16,9 @@ router.get('/byCat', async (req, res) => {
     var searchBefore = "default";
     var [allCategory, type] = await categoryModel.getAllCategory();
     var [allSubcategory, type] = await categoryModel.getAllSubCategory();
+    var SeeDisable = false;
+    if (req.session.type === "administrator" && req.session.username)
+        SeeDisable = true;
     let page = req.query.page || 1;
     page = page < 1 ? 1 : page;
     if (req.session.searchBefore) {
@@ -35,15 +38,15 @@ router.get('/byCat', async (req, res) => {
     }
     var total = 0;
     if (isNaN(searchBefore))
-        total = await courseModel.countCourseSort(searchBefore, null, null) || 0;
+        total = await courseModel.countCourseSort(searchBefore, null, null,SeeDisable) || 0;
     else
     {
         console.log(searchBefore);
         console.log(1);
         if (req.session.sub_category_id)
-            total = await courseModel.countCourseSort(null, null, req.session.sub_category_id) || 0;
+            total = await courseModel.countCourseSort(null, null, req.session.sub_category_id,SeeDisable) || 0;
         else
-            total = await courseModel.countCourseSort(null, searchBefore, null) || 0;
+            total = await courseModel.countCourseSort(null, searchBefore, null,SeeDisable) || 0;
     }
     console.log(total)
     let nPages = Math.floor(total / 6);
@@ -62,13 +65,13 @@ router.get('/byCat', async (req, res) => {
     const offset = (page - 1) * 6;
     if (req.session.searchBefore === searchBefore) {
         if (isNaN(searchBefore))
-            courses = await courseModel.courseSort(searchBefore, null, null,offset);
+            courses = await courseModel.courseSort(searchBefore, null, null,offset,SeeDisable);
         else
         {
             if (req.session.sub_category_id)
-                courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset);
+                courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset,SeeDisable);
             else
-                courses = await courseModel.courseSort(null, searchBefore, null,offset);
+                courses = await courseModel.courseSort(null, searchBefore, null,offset,SeeDisable);
         }
         if (courses)
         {
@@ -87,13 +90,13 @@ router.get('/byCat', async (req, res) => {
         });
     }
     if (isNaN(searchBefore))
-        courses = await courseModel.courseSort(searchBefore, null, null,offset);
+        courses = await courseModel.courseSort(searchBefore, null, null,offset,SeeDisable);
     else
     {
         if (req.session.sub_category_id)
-            courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset);
+            courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset,SeeDisable);
         else
-            courses = await courseModel.courseSort(null, searchBefore, null,offset);
+            courses = await courseModel.courseSort(null, searchBefore, null,offset,SeeDisable);
     }
     if (courses) {
         for (let element of courses){
