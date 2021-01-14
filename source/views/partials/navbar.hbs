@@ -100,10 +100,20 @@
       
         <!-- button for instructor-->
         {{#eq session.type "instructor"}}
-        <li class="nav-item">
-          <a class="nav-link waves-effect waves-light dark-grey-text font-weight-bold" href="/course/myCourse">
-            <i class="fas fa-chalkboard"></i> My course</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle waves-effect waves-light dark-grey-text font-weight-bold"
+            id="navbarInstructorDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <i class="fas fa-chalkboard-teacher"></i> 
+            Instructor </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-cyan" aria-labelledby="navbarInstructorDropdownMenuLink">
+            <a class="dropdown-item waves-effect waves-light dark-grey-text" href="/course/myCourse"><i
+                class="fas fa-chalkboard"></i> My Course</a>
+            <hr class="dropdown-divider" />
+            <a class="dropdown-item waves-effect waves-light dark-grey-text" href="/course/add">
+           <i class="fas fa-plus"></i> Create a new course</a>
+          </div>
         </li>
+
         {{/eq}}
 
         {{#eq session.type "administrator"}}

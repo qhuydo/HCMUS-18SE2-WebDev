@@ -132,7 +132,7 @@ router.post('/add', async (req, res) => {
     }
     var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category);
     const course_new = {
-        // id: await courseModel.getCourseNewId(), // the id field is auto-increment, thus no need to get new ie
+        id: await courseModel.getCourseNewId(), // the id field is auto-increment, thus no need to get new ie
         title: req.body.course.title,
         category: sub_category.category_id,
         sub_category: sub_category.id,
@@ -151,6 +151,9 @@ router.post('/add', async (req, res) => {
         completion: 0
     };
     var result = await courseModel.createCourse(course_new);
+    if (!result.error) {
+        await courseModel.addInstructorToNewCourse(course_new.id, req.session.username);
+    }
     if (result.error) {
         req.fail = "Create with this query not success";
         return res.redirect('/course/add');
@@ -341,9 +344,9 @@ router.get('/:id/editVideo', async (req, res) => {
         return res.status(404).send('Course not found');
     }
 
-    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
-        return res.status(404).send('Lecture not found');
-    }
+    // if (! await lectureModel.isLectureIdExist(req.params.id, req.session.username)) {
+    //     return res.status(404).send('Lecture not found');
+    // }
     var chapters = await lectureModel.getFullCourseContent(req.params.id);
     const lecture = await lectureModel.getLectures(req.params.id);
     const c = await courseModel.getCourseDetail(req.params.id);

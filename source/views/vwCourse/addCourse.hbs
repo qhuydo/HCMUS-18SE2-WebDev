@@ -24,7 +24,7 @@
 <main>
     <div class="container">
 
-        <!-- Section: Public Profile -->
+        <!-- Section: Course -->
         <section class="section">
             {{#if fail}}
               <div class="alert alert-danger js-error-alert">
@@ -32,6 +32,14 @@
               </div>
               {{/if}}
             <form onsubmit="checkSubmit(event)" method="POST" action="#">
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <button class="btn btn-info waves-effect" type="submit">
+                            <i class="fas fa-save"></i>
+                            Save
+                        </button>
+                    </div>
+                </div>
                 <!-- First row -->
                 <div class="row">
                     <!-- First column -->
@@ -46,16 +54,18 @@
 
                             <!-- Card content -->
                             <div class="card-body card-body-cascade text-center">
-                                <div class="input-group mb-3">
-                                    <div class="form-group">
-                                    <label for="sel2">Select sub-category:</label>
-                                    <select class="form-control" id="sel2" name="course[sub_category]">
-                                        {{#each sub_categorys}}
+                                 <div class="row">
+                                    <div class="input-group mb-3">
+                                        <div class="form-group col-12">
+                                        <label for="sel2">Select category:</label>
+                                        <select class="form-control" id="sel2" name="course[sub_category]">
+                                        {{#each sub_categories}}
                                             <script>
                                                 document.write('<option>{{name}}</option>')
                                             </script>
                                         {{/each}}
                                     </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -155,9 +165,9 @@
                             <div class="card-body card-body-cascade text-center">
                                 <div class="form-row flex-center">
                                     <img class="img-fluid mb-1" height="270px" width="480px" id="coursePhoto" src="https://via.placeholder.com/480x270.png" alt="your image">
-                                    <div class="input-group mb-3">
+                                    <div class="input-group mt-3">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">Link internet</span>
+                                            <span class="input-group-text" id="basic-addon1">Image URL</span>
                                         </div>
                                         <input type="text" class="form-control" name="course[image]" id="URLImage" onfocusout="ReadURL()"
                                             aria-describedby="basic-addon1">
@@ -170,7 +180,7 @@
                         <!-- Card -->
 
                         <!-- Card -->
-                        <div class="card card-cascade narrower" style="margin-top: 70px;">
+                        <div class="card card-cascade narrower" style="margin-top: 50px;">
                             <!-- Card image -->
                             <div class="view view-cascade gradient-card-header mdb-color blue darken-2">
                                 <h5 class="mb-0 font-weight-bold"><strong>Description</strong></h5>
@@ -179,17 +189,31 @@
 
                             <!-- Card content -->
                             <div class="card-body card-body-cascade text-center">
-                                <textarea id="mytextarea" name="course[full_description]">
-                                    Hello, World!
-                                </textarea>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class=" md-form">
+                                            <input class="form-control" id="shortDescription" type="text" name="course[short_description]">
+                                            </input>
+                                            <label for="shortDescription" class="">
+                                                Short description
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                    <textarea id="mytextarea" name="course[full_description]">
+                                        Hello, World!
+                                    </textarea>
+                                    </div>
+                                </div>
                             </div>
                             <!-- Card content -->
 
                         </div>
                         <!-- Card -->
-                        <div class="text-center">
-                            <input class="btn btn-success text-center" type="submit"></button>
-                        </div>
+                        
                     </div>
                     <!-- Second column -->
 

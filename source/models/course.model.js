@@ -202,6 +202,13 @@ module.exports = {
             return { "success": 'Create success' };
         }
     },
+    async addInstructorToNewCourse(id, username){
+        const sql = `INSERT IGNORE course_instructor SET course_id = ?, username = ?`;
+        const [rows, fields] = await db.query(sql, [id, username]).catch((err, rows, fields)=>{
+            return false;
+        });
+        return true;
+    },
     async createChapter(chapter) {
         let res = null;
         res = await db.insert(chapter, 'course_content');
