@@ -272,8 +272,7 @@ router.get('/:id', async (req, res, next) => {
     }
     // if (req.session.type === "student" || req.session.type === "adminstrator") {
     var [course, type] = await courseModel.getCourseDetail(req.params.id);
-    
-    
+
     if (course) {
         const id = req.params.id;
         const username = req.session.username;
@@ -289,6 +288,7 @@ router.get('/:id', async (req, res, next) => {
         var relateItem = await courseModel.get9RelateSort(course.sub_category, course.category, course.id)
         var isBuy = await courseModel.isBuy(course.id, username);
         var inCart = await cartModel.hasItemInCart(username, course.id);
+        const comment = await courseModel.getCommentOfAStudent(course.id, username);
         if (relateItem) {
             relateItem.forEach(async element => {
                 element.avgStar = await courseModel.getAverageStar(element.id);
@@ -323,7 +323,8 @@ router.get('/:id', async (req, res, next) => {
             chapters: chapters,
             relateItems: relateItem,
             instructorRows,
-            instructorsStr
+            instructorsStr,
+            comment
         });
     }
     res.render('home');
@@ -472,11 +473,24 @@ router.post('/:id/edit', async (req, res) => {
         return res.redirect('/course/' + req.params.id + '/edit');
     }
     res.redirect('/course/' + req.params.id + '/edit');
-})
+});
+
+router.post('/:id/comment', async (req, res) => {
+
+    // var missing = await missingKeys(req.body, [
+    //     "comment"
+    // ]);
+
+    const comment = req.body.comment;
+    const point = req.body.star; 
+    await courseModel.updateCommentOfAStudent(req.params.id, req.session.username, point, comment);
+    res.redirect(`/course/${req.params.id}#reviews`);
+
+});
 
 router.route('/:id/lecture')
     .get(auth.authStudent, async (req, res) => {
-        var missing = await missingKeys(req.query, [
+        var missing = await missingKeys(req.body, [
             "lecture_id",
             "chapter_id"
         ]);
@@ -528,7 +542,7 @@ router.route('/:id/lecture')
             }
         }
         for (let element of chapters){
-            for (let subElements of element){
+            for (let subElements of element.lectures){
                 // console.log(`element.chapter_id ${element.chapter_id}`);
                 const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, element.chapter_id, subElements.lecture_id);
 
