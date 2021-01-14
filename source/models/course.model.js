@@ -132,7 +132,7 @@ module.exports = {
      */
     async getCourseRatingWithExcludedUsername(id, excluded_username, offset){
         const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username `
-            + `WHERE course_id = ? AND username <> ?`
+            + `WHERE course_id = ? AND course_rating.username <> ?`
             + `ORDER BY feedback_date DESC LIMIT ${paginate.comment_limit} OFFSET ${offset};`;        
         
         const [rows, fields] = await db.query(sql, [id, excluded_username]).catch((error, rows, fields) => {
@@ -157,6 +157,15 @@ module.exports = {
             return rows[0];
         }
         return null;
+    },
+    async updateCommentOfAStudent(id, username, point, comment) {
+        const sql = `INSERT INTO course_rating (course_id, username, point, comment) VALUES (?, ?, ?, ?) `
+            + `ON DUPLICATE KEY UPDATE point = ?, comment = ?`;
+        
+        const [rows, fields] = await db.query(sql, [id, username, point, comment, point, comment]).catch((err, rows, fields)=>{
+            return false;
+        });
+        return true;
     },
     async getNumberStudent(id) {
         const sql = `SELECT Count(*) as numberStudent FROM course_student WHERE course_id = ${id}`;

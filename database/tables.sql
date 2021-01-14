@@ -102,7 +102,7 @@ CREATE TABLE `course` (
   FULLTEXT KEY `fullText` (`title`),
   CONSTRAINT `fk_course_category_table` FOREIGN KEY (`category`) REFERENCES `category` (`id`),
   CONSTRAINT `fk_course_sub_category_table` FOREIGN KEY (`sub_category`) REFERENCES `sub_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -508,13 +508,7 @@ CREATE TABLE `student` (
   `last_review_chapter_id` int unsigned DEFAULT NULL,
   `last_review_lecture_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`username`),
-  UNIQUE KEY `email_UNIQUE` (`email`),
-  KEY `fk_student_1_idx` (`last_review_course_id`),
-  KEY `fk_student_2_idx` (`last_review_chapter_id`),
-  KEY `fk_student_3_idx` (`last_review_lecture_id`),
-  CONSTRAINT `fk_student_1` FOREIGN KEY (`last_review_course_id`) REFERENCES `course` (`id`),
-  CONSTRAINT `fk_student_2` FOREIGN KEY (`last_review_chapter_id`) REFERENCES `course_content` (`chapter_id`),
-  CONSTRAINT `fk_student_3` FOREIGN KEY (`last_review_lecture_id`) REFERENCES `lecture` (`lecture_id`)
+  UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -596,4 +590,4 @@ CREATE TABLE `watchlist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-13  0:54:13
+-- Dump completed on 2021-01-14 14:53:14
