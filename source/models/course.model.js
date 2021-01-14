@@ -339,7 +339,18 @@ module.exports = {
         return false;
     },
     async getLast() {
-        const sql = 'SELECT id FROM course ORDER BY id    desc LIMIT  10;';
+        const sql = 'SELECT * FROM course ORDER BY id    desc LIMIT  10;';
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "courses"];
+        }
+        return [null, null];
+    },
+    async getMostView() {
+        const sql = 'select * from course  right join watchlist on course.id=watchlist.course_id group  by course.id ORDER BY course.id desc limit 10;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
