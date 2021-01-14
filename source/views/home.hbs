@@ -18,14 +18,10 @@
 <!-- Main Container -->
 <div class="container">
 
-  <!-- Grid row -->
-  <div class="row">
-
-    <!-- Content -->
-    <div class="col">
 
 
-      <section class="section pt-4">
+
+      <section >
 
         <!-- Grid row -->
         <div class="row">
@@ -255,15 +251,15 @@
 
         </div>
         <!-- Carousel Wrapper -->
-        <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+        <div id="multi-item-example1" class="carousel slide carousel-multi-item" data-ride="carousel">
 
           <!-- Controls -->
           <div class="controls-top">
-            <a class="btn-floating primary-color" href="#multi-item-example" data-slide="prev">
+            <a class="btn-floating primary-color" href="#multi-item-example1" data-slide="prev">
               <i class="fas fa-chevron-left"></i>
             </a>
 
-            <a class="btn-floating primary-color" href="#multi-item-example" data-slide="next">
+            <a class="btn-floating primary-color" href="#multi-item-example1" data-slide="next">
               <i class="fas fa-chevron-right"></i>
             </a>
 
@@ -272,9 +268,9 @@
 
           <!-- Indicators -->
           <ol class="carousel-indicators">
-            <li class="primary-color" data-target="#multi-item-example" data-slide-to="0" class="active"></li>
-            <li class="primary-color" data-target="#multi-item-example" data-slide-to="1"></li>
-            <li class="primary-color" data-target="#multi-item-example" data-slide-to="2"></li>
+            <li class="primary-color" data-target="#multi-item-example1" data-slide-to="0" class="active"></li>
+            <li class="primary-color" data-target="#multi-item-example1" data-slide-to="1"></li>
+            <li class="primary-color" data-target="#multi-item-example1" data-slide-to="2"></li>
           </ol>
           <!-- Indicators -->
 
@@ -315,6 +311,12 @@
                       <a href="/course/{{id}}" class="dark-grey-text">{{title}}</a>
                     </strong>
                   </h5>
+                  <span class="badge badge-danger mb-2">Most view</span>
+                  <script>
+                    if ({{ discount }} > 0)
+                    document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
+
+                  </script>
                   <!-- Rating -->
                   <ul class="rating"> {{avgStar}}
                     <script>
@@ -418,6 +420,7 @@
         <!-- Carousel Wrapper -->
 
       </section>
+
 
       <!--Section: 10 khóa học được đăng gần nhất -->
       <section id="relatedCourses">
@@ -487,6 +490,12 @@
                       <a href="/course/{{id}}" class="dark-grey-text">{{title}}</a>
                     </strong>
                   </h5>
+                  <span class="badge badge-danger mb-2">New</span>
+                  <script>
+                    if ({{ discount }} > 0)
+                    document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
+
+                  </script>
                   <!-- Rating -->
                   <ul class="rating"> {{avgStar}}
                     <script>
@@ -592,22 +601,16 @@
       </section>
 
 
-      <!-- Card content -->
+ 
 
-    </div>
-  </div>
-
-
-</div>
-
-
-
-</section>
-
+  
 
 
 </div>
-<!-- Grid row -->
 
-</div>
-<!--main container-->
+
+
+
+
+
+

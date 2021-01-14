@@ -404,7 +404,7 @@ module.exports = {
     },
     async getLast() {
 
-        const sql = 'SELECT * FROM course ORDER BY id    desc LIMIT  10;';
+        const sql = 'SELECT * FROM course ORDER BY date_created  desc LIMIT  10;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
@@ -415,22 +415,13 @@ module.exports = {
         return [null, null];
     },
     async getMostView() {
-        const sql = 'select * from course  right join watchlist on course.id=watchlist.course_id group  by course.id ORDER BY course.id desc limit 10;';
-
- 
-
+        const sql = 'SELECT * FROM course ORDER BY view_count  desc LIMIT  10;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
         });
-     
         if (rows !== null && rows.length !== 0) {
-            for (let element of rows){
-                element.avgStar = await this.getAverageStar(element.id)
-                var [instructor, type] = await instructorModel.getInstructor(element.id);
-                element.instructor = instructor;
-            };
-            return [rows,"Course"];
+            return [rows, "courses"];
         }
         return [null, null];
     },
