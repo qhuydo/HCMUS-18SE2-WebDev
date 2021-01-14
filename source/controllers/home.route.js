@@ -6,11 +6,13 @@ const searchCatergory = require('../models/category.model').searchCategory;
 const courseModel = require('../models/course.model');
 
 router.get('/', async (req, res) => {
-    const [list, fields] = await courseModel.getSpecial();
-    const [list1, _] = await courseModel.getLast();
+    var [list, _] = await courseModel.getSpecial();
+    var [list1, _] = await courseModel.getMoreView();
+    var [list2, _] = await courseModel.getLast();
     res.render('home', {
         special_courses: list,
-        last_courses: list1,
+        last_courses: list2,
+        view_courses:list1,
         empty: list.length === 0
     });
     // console.log(req);

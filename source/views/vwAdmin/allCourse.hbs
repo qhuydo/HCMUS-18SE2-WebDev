@@ -1,0 +1,82 @@
+{{#section 'js'}}
+<script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+
+<script>
+  // Material Design example
+  $(document).ready(function () {
+    $('#accountTable').DataTable();
+
+    $('#accountTable_wrapper').find('label').each(function () {
+      $(this).parent().append($(this).children());
+    });
+    $('#accountTable_wrapper .dataTables_filter').find('input').each(function () {
+      const $this = $(this);
+      $this.attr("placeholder", "Search");
+      $this.removeClass('form-control-sm');
+    });
+    $('#accountTable_wrapper .dataTables_length').addClass('d-flex flex-row');
+    $('#accountTable_wrapper .dataTables_filter').addClass('md-form');
+    $('#accountTable_wrapper select').removeClass(
+      'custom-select custom-select-sm form-control form-control-sm');
+    $('#accountTable_wrapper select').addClass('mdb-select');
+    $('#accountTable_wrapper .mdb-select').materialSelect();
+    $('#accountTable_wrapper .dataTables_filter').find('label').remove();
+  });
+</script>
+{{/section}}
+
+{{#section 'css'}}
+<link href="/css/addons/datatables.min.css" rel="stylesheet">
+
+<style>
+  body {
+    padding-top: 95px;
+  }
+</style>
+{{/section}}
+
+<main>
+  <div class="container">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <h3 class="mt-2">Course</h3>
+      </div>
+      <div class="card-body">
+        <section class="view intro-2">
+          <script type="text/javascript">
+            var typeAccount = "{{{typeAccount}}}";
+          </script>        
+          {{#if this.courses}}
+          <table class="table table-hover" cellspacing="0" width="100%" id="accountTable">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="category">Category</th>
+                <th scope="sucategory">Sub-category</th>
+                <th scope="col">Title</th>
+                <th scope="col">Instructor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each this.courses}}
+              <tr>
+                <th scope="row">{{id}}</th>
+                <td>{{category.name}}</td>
+                <td>{{sub_category.name}}</td>
+                <td>{{title}}</td>
+                <td>{{instructor.fullname}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          {{else}}
+            <h5 class="card-title">No data!</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          {{/if}}
+        </section>
+      </div>
+    </div>
+  </div>
+</main>

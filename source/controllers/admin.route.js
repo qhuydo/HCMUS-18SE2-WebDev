@@ -6,14 +6,16 @@ const missingKeys = require("../utils/otherFunction").missingKeys;
 const courseModel = require('../models/course.model');
 const validator = require('validator');
 const adminModel = require('../models/admin.model');
+const categoryModel = require('../models/category.model');
+const instructorModel = require('../models/instructor.model');
 
 function isUsername(username) {
     return validator.matches(username, "^[a-zA-Z0-9_\.\-]*$");
 }
 
 router.get('/account', async (req, res) => { // Tạo một danh sách xem tất cả instructor, tất cả học sinh
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     if (req.query.typeAccount && req.query.page) {
         var [rowsAll, colsAll] = await admin.getAll(req.query.typeAccount);
         return res.render('vwAdmin/allAccount', {
@@ -29,14 +31,14 @@ router.get('/account', async (req, res) => { // Tạo một danh sách xem tất
 });
 
 router.get('/account/instructor', async (req, res) => { // Tạo tài khoản cho instructor
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     res.render('vwAdmin/addInstructor');
 });
 
 router.post('/account/instructor', async (req, res) => { // Tạo tài khoản cho instructor
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     let missing = await missingKeys(req.body, [
         "username",
         "password",
@@ -90,14 +92,24 @@ router.post('/account/instructor', async (req, res) => { // Tạo tài khoản c
 });
 
 router.get('/course', async (req, res) => {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
-    res.status(501).send('Not implemented');
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
+    var [courses, cols] = await admin.getAll("course");
+    if (courses) {
+        for (let element of courses){
+            [element.category,cols] = await categoryModel.getCategoryByCategoryId(element.category);
+            [element.sub_category,cols] = await categoryModel.getSubCategoryBySubCategoryId(element.sub_category);
+            [element.instructor,cols] = await instructorModel.getInstructor(element.id);
+        };
+    };
+    res.render('vwAdmin/allCourse', {
+        courses:courses
+    });
 });
 
 router.get('/category', async (req, res) => {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var [rowsAll, colsAll] = await admin.getAll("category");
     res.render('vwAdmin/allCategory', {
         rows: rowsAll,
@@ -105,8 +117,8 @@ router.get('/category', async (req, res) => {
 });
 
 router.get('/sub_category', async (req, res) => {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var [rowsAll, colsAll] = await admin.getAll("sub_category");
     res.render('vwAdmin/allSubCategory', {
         rows: rowsAll,
@@ -114,8 +126,8 @@ router.get('/sub_category', async (req, res) => {
 });
 
 router.post('/category/add', async (req, res) => {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     let missing = await missingKeys(req.body, [
         "name",
     ]);
@@ -138,8 +150,8 @@ router.post('/category/add', async (req, res) => {
 });
 
 router.post('/sub_category/add', async (req, res) => {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     let missing = await missingKeys(req.body, [
         "name",
         "category_id"
@@ -164,8 +176,8 @@ router.post('/sub_category/add', async (req, res) => {
 });
 
 router.get('/account/:username', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var missing = await missingKeys(req.query, [
         "type",
     ]);
@@ -183,8 +195,8 @@ router.get('/account/:username', async function (req, res) {
 })
 
 router.post('/account/:username', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var missing1 = await missingKeys(req.body, [
         "user",
     ]);
@@ -214,15 +226,15 @@ router.post('/account/:username', async function (req, res) {
 })
 
 router.delete('/account/:username', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var result = await admin.deleteAccount(req.body.typeAccount, req.params.id)
     res.send(result);
 });
 
 router.get('/sub_category/:id', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var [sub_category, table] = await admin.getSubCategory(req.params.id);
     res.render('vwAdmin/editSubCategory', {
         sub_category: sub_category
@@ -230,8 +242,8 @@ router.get('/sub_category/:id', async function (req, res) {
 });
 
 router.post('/sub_category/:id', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     let missing = await missingKeys(req.body, [
         "sub_category",
     ]);
@@ -255,15 +267,15 @@ router.post('/sub_category/:id', async function (req, res) {
 });
 
 router.delete('/sub_category/:id', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var result = await admin.deleteSubCategory(req.params.id)
     res.send(result);
 });
 
 router.get('/category/:id', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var [category, table] = await admin.getCategory(req.params.id);
     res.render('vwAdmin/editCategory', {
         category: category
@@ -271,8 +283,8 @@ router.get('/category/:id', async function (req, res) {
 });
 
 router.post('/category/:id', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     let missing = await missingKeys(req.body, [
         "category",
     ]);
@@ -296,15 +308,15 @@ router.post('/category/:id', async function (req, res) {
 });
 
 router.delete('/category/:id', async function (req, res) {
-    if (req.session.type !== "adminstrator")
-        throw Error("Only adminstrator can use admin router");
+    if (req.session.type !== "administrator")
+        throw Error("Only administrator can use admin router");
     var result = await admin.deleteCategory(req.params.id)
     res.send(result);
 });
 
 /*router.get('/delete/course/:id', async function (req, res) {
-    //if (req.session.type !== "adminstrator")
-        //throw Error("Only adminstrator can use admin router");
+    //if (req.session.type !== "administrator")
+        //throw Error("Only administrator can use admin router");
     if (! await courseModel.isCourseIdExist(req.params.id)) {
         return res.status(404).send('Course not found');
     }

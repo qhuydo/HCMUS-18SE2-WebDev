@@ -307,17 +307,47 @@ module.exports = {
         return [null, null];
     },
     async getSpecial() {
-        const sql = 'SELECT * FROM course LIMIT 3;';
+        const sql = 'SELECT * FROM course;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
         });
         if (rows !== null && rows.length !== 0) {
-            return [rows, "courses"];
+            for (let element of rows){
+                element.avgStar = await this.getAverageStar(element.id)
+                var [instructor, type] = await instructorModel.getInstructor(element.id);
+                element.instructor = instructor;
+            };
+            rows.sort((a, b) => (b.avgStar - a.avgStar));
+            console.log(rows);
+            var count = 0;
+            var array = [];
+            for (var i = 0; i < rows.length; i++) {
+                if (count >= 3) return [array,"Course"];
+                array.push(rows[i]);
+                count++;
+            }
+            return [array,"Course"];
         }
         return [null, null];
     },
-
+    async getMoreView()
+    {
+        const sql = 'SELECT * FROM course ORDER BY view_count LIMIT 10';
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            for (let element of rows){
+                element.avgStar = await this.getAverageStar(element.id)
+                var [instructor, type] = await instructorModel.getInstructor(element.id);
+                element.instructor = instructor;
+            };
+            return [rows,"Course"];
+        }
+        return [null, null];
+    },
     async numberOfCourseOfInstructor(username) {
         const sql = `SELECT COUNT(*) as count FROM course_instructor WHERE username = ? `;
 
@@ -380,7 +410,7 @@ module.exports = {
         return false;
     },
     async getLast() {
-        const sql = 'SELECT id FROM course ORDER BY id    desc LIMIT  10;';
+        const sql = 'SELECT * FROM course ORDER BY date_created  desc LIMIT  10;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];

@@ -53,7 +53,7 @@ function searchFunction() {
             //   </div>
             var resultSearch = document.getElementById('resultSearch');
             resultSearch.innerHTML = "";
-            var inner = `<div class="dropdown-menu ml-5 dropdown-cyan show" aria-labelledby="resultSearch">`;
+            var inner = `<div class="dropdown-menu ml-5 dropdown-cyan show align-center dropdown-menu-center"  aria-labelledby="resultSearch">`;
             //var inner = `<ul class="search-dropdown z-depth-3">`;
             if (result && result !== undefined && result.length !== 0) {
                 if (result[0]) {
@@ -72,7 +72,7 @@ function searchFunction() {
                 // inner += `</ul>`;
             }
             else {
-                inner += `<p>No result<p>`;
+                inner += `<p class="text-left">No result<p>`;
             }
             resultSearch.innerHTML = inner;
         }
