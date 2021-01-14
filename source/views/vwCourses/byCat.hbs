@@ -151,8 +151,15 @@
                 <h5 class="card-title mb-1"><strong>{{title}}</strong>
                   <span>- {{category.name}}</span>
                 </h5>
+               
+                <span class="badge badge-danger mb-2">Best seller</span>
+            
                 
-                <span class="badge badge-danger mb-2">tag bestseller/new</span>
+                <script>
+                  if ({{ discount }} > 0)
+                  document.write('<span class="badge badge-success mb-2 ml-2">SALE</span>');
+
+                </script>
                 {{#if instructor}}
                 <p class="dark-grey-text" style="font-size: small;">{{instructor.fullname}}</p>
                 {{/if}}
@@ -182,7 +189,7 @@
 
               </div>
               <!-- Card content -->
-                              <!-- Card footer -->
+                             
                 <div class="card-footer pb-0">
 
                   <div class="row mb-0">
