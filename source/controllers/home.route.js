@@ -80,7 +80,6 @@ router.get('/', async (req, res) => {
         special_courses: list,
         last_courses: list1,
         mostView_courses: list2,
-
         empty: list.length === 0
     });
 

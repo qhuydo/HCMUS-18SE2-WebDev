@@ -82,7 +82,7 @@ router.post('/account/instructor', async (req, res) => { // Tạo tài khoản c
             });
         }
         else {
-            var [rowsAll, colsAll] = await admin.getAllAccount("instructor");
+            var [rowsAll, colsAll] = await admin.getAll("instructor");
             res.render('vwAdmin/allAccount', {
                 typeAccount: "instructor",
                 rows: rowsAll,

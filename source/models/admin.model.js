@@ -205,17 +205,17 @@ module.exports = {
     async createInstructor(account) {
 
         var [rows, fields] = await selectAccountTable("student", account.username, account.email);
-        if (rows.length !== 0) {
+        if (rows && rows.length !== 0) {
             return { "error": 'Username or email is exist' };
         }
 
         var [rows, fields] = await selectAccountTable("administrator", account.username, account.email);
-        if (rows.length !== 0) {
+        if (rows && rows.length !== 0) {
             return { "error": 'Username or email is exist' };
         }
 
         var [rows, fields] = await selectAccountTable("instructor", account.username, account.email);
-        if (rows.length !== 0) {
+        if (rows && rows.length !== 0) {
             return { "error": 'Username or email is exist' };
         }
 

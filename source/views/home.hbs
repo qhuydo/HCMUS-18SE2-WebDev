@@ -31,10 +31,14 @@
                 <!-- Card -->
                 <div class="card card-ecommerce">
                   <!-- Card image -->
-                  <div class="view overlay zoom">
-                    <img src="{{image}}" class="img-fluid" alt="Not image">
+                  <div class="card-img-top view overlay zoom">
+                    <img src="{{image}}" class="img-fluid" alt="{{title}}">
                     <a href="/course/{{id}}">
-                      <div class="mask rgba-white-slight"></div>
+                      <div class="mask flex-center waves-effect waves-light rgba-black-strong">
+                        <p class="white-text">
+                          {{title}}
+                        </p>
+                      </div>
                     </a>
                   </div>
                   <!-- Card image -->
@@ -249,9 +253,10 @@
                       <div class="card-title mb-1">
                           <a href="/course/{{id}}" class="dark-grey-text word-wrap-one-line" title="{{title}}">{{title}}</a>
                       </div>
-                    {{#each tag}}
-                    <span class="badge badge-danger mb-2">{{name}}</span>
-                    {{/each}}
+                    <script>
+                      if ({{ discount }} > 0)
+                      document.write('<span class="badge badge-danger mb-2 ml-2">SALE</span>');
+                    </script>
                     <!-- Rating -->
                     <ul class="rating"> {{avgStar}}
                       <script>
@@ -414,9 +419,11 @@
                       <div class="card-title mb-1">
                           <a href="/course/{{id}}" class="dark-grey-text word-wrap-one-line" title="{{title}}">{{title}}</a>
                       </div>
-                    {{#each tag}}
-                    <span class="badge badge-danger mb-2">{{name}}</span>
-                    {{/each}}
+                     <span class="badge badge-info mb-2">NEW</span>
+                    <script>
+                      if ({{ discount }} > 0)
+                      document.write('<span class="badge badge-danger mb-2 ml-2">SALE</span>');
+                    </script>
                     <!-- Rating -->
                     <ul class="rating"> {{avgStar}}
                       <script>

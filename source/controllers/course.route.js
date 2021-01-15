@@ -346,9 +346,6 @@ router.get('/:id/edit', async (req, res) => {
         return res.status(404).send('Course not found');
     }
 
-    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
-        return res.status(404).send('Lecture not found');
-    }
     var [course, type] = await courseModel.getCourseDetail(req.params.id)
     var [sub_categories, type] = await categoryModel.getAllSubCategory();
     res.render('vwCourse/editCourse', {
