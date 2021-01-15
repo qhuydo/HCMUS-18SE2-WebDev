@@ -7,6 +7,7 @@
 
 {{#section 'js'}}
 <!--script type="text/javascript" src="/js/addons-pro/mdb-file-upload.min.js"></script-->
+<script type="text/javascript" src="/js/home.js"></script>
 {{/section}}
 
 {{> countdown}}
@@ -129,12 +130,12 @@
                           {{/if}}
                           {{#if (eq ../session.type "administrator")}}
                           {{#if disable}}
-                          <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable"
+                          <a class="" id="admin1{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable"
                             onclick="undisable({{id}})">
                             <i class="fas fa fa-unlock"></i>
                           </a>
                           {{else}}
-                          <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
+                          <a class="" id="admin1{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
                             <i class="fas fa fa-ban"></i>
                           </a>
                           {{/if}}
@@ -321,11 +322,11 @@
                       {{/if}}
                       {{#if (eq ../session.type "administrator")}}
                         {{#if disable}}
-                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
+                        <a class="" id="admin2{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
                           <i class="fas fa fa-unlock"></i>
                         </a>
                         {{else}}
-                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
+                        <a class="" id="admin2{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
                           <i class="fas fa fa-ban"></i>
                         </a>
                         {{/if}}
@@ -486,11 +487,11 @@
                       {{/if}}
                       {{#if (eq ../session.type "administrator")}}
                         {{#if disable}}
-                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
+                        <a class="" id="admin3{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
                           <i class="fas fa fa-unlock"></i>
                         </a>
                         {{else}}
-                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
+                        <a class="" id="admin3{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
                           <i class="fas fa fa-ban"></i>
                         </a>
                         {{/if}}
