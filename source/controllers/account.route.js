@@ -71,15 +71,20 @@ router.post('/profile/password', auth, async (req, res, next) => {
     const reqUser = req.body.user;
     var result = await login(req.session.username, reqUser.curPass)
     if (result === null) {
-        const [user, usertype] = await account.getUserInfo(req.session.username);
+        var [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
             user: user,
-            fail_edit_pass: "Check your password"
+            fail_edit_pass: "Check your current password"
         });
     }
     let sql = "";
     let data = [];
+<<<<<<< HEAD
     if (reqUser.newPass && reqUser.newPass.length !== 0) {
+=======
+    if (reqUser.newPass && reqUser.newPass.length !== 0)
+    {
+>>>>>>> be0308c071eaf1515f9edfa39cdf47291d70f006
         sql = `UPDATE ${req.session.type} `
             + `SET password = ?,email = ? WHERE username = ?`;
 
@@ -89,7 +94,12 @@ router.post('/profile/password', auth, async (req, res, next) => {
             req.session.username,
         ];
     }
+<<<<<<< HEAD
     else {
+=======
+    else
+    {
+>>>>>>> be0308c071eaf1515f9edfa39cdf47291d70f006
         sql = `UPDATE ${req.session.type} `
             + `SET email = ? WHERE username = ?`;
         data = [
@@ -99,15 +109,15 @@ router.post('/profile/password', auth, async (req, res, next) => {
     }
     await db.query(sql, data).catch(async (error) => {
         console.log(error);
-        const [user, usertype] = await account.getUserInfo(req.session.username);
+        var [user, usertype] = await account.getUserInfo(req.session.username);
         return res.render('vwUser/edit-profile', {
             user: user,
             fail_edit_pass: "Error"
         });
     });
 
-    const [user, usertype] = await account.getUserInfo(req.session.username);
-    res.render('uploads/', {
+    var [user, usertype] = await account.getUserInfo(req.session.username);
+    res.render('vwUser/edit-profile', {
         user: user,
         successfull_edit_pass: true
     });

@@ -21,7 +21,7 @@ module.exports = {
             console.log(`instructorFromACourse ${err.message}`); // logs "Something"
         });
 
-        console.log(rows);
+        // console.log(rows);
         if (rows !== null && rows.length !== 0) {
             return rows;
         }

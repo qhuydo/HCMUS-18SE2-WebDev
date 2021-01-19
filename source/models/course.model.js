@@ -17,6 +17,8 @@ module.exports = {
         }
         return [null, null];
     },
+
+
     async getAllChapter(courseId) {
         const sql = `SELECT * FROM course_content WHERE course_id = ${courseId}`;
         var [rows, fields] = await db.select(sql).catch(error => {
@@ -132,7 +134,7 @@ module.exports = {
      */
     async getCourseRatingWithExcludedUsername(id, excluded_username, offset){
         const sql = `SELECT * FROM course_rating LEFT JOIN student ON course_rating.username = student.username `
-            + `WHERE course_id = ? AND username <> ?`
+            + `WHERE course_id = ? AND course_rating.username <> ?`
             + `ORDER BY feedback_date DESC LIMIT ${paginate.comment_limit} OFFSET ${offset};`;        
         
         const [rows, fields] = await db.query(sql, [id, excluded_username]).catch((error, rows, fields) => {
@@ -157,6 +159,15 @@ module.exports = {
             return rows[0];
         }
         return null;
+    },
+    async updateCommentOfAStudent(id, username, point, comment) {
+        const sql = `INSERT INTO course_rating (course_id, username, point, comment) VALUES (?, ?, ?, ?) `
+            + `ON DUPLICATE KEY UPDATE point = ?, comment = ?`;
+        
+        const [rows, fields] = await db.query(sql, [id, username, point, comment, point, comment]).catch((err, rows, fields)=>{
+            return false;
+        });
+        return true;
     },
     async getNumberStudent(id) {
         const sql = `SELECT Count(*) as numberStudent FROM course_student WHERE course_id = ${id}`;
@@ -201,6 +212,13 @@ module.exports = {
         else {
             return { "success": 'Create success' };
         }
+    },
+    async addInstructorToNewCourse(id, username){
+        const sql = `INSERT IGNORE course_instructor SET course_id = ?, username = ?`;
+        const [rows, fields] = await db.query(sql, [id, username]).catch((err, rows, fields)=>{
+            return false;
+        });
+        return true;
     },
     async createChapter(chapter) {
         let res = null;
@@ -300,13 +318,26 @@ module.exports = {
         return [null, null];
     },
     async getSpecial() {
-        const sql = 'SELECT * FROM course LIMIT 3;';
+        const sql = 'SELECT * FROM course;';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
         });
         if (rows !== null && rows.length !== 0) {
-            return [rows, "courses"];
+            for (let element of rows){
+                element.avgStar = await this.getAverageStar(element.id)
+                var [instructor, type] = await instructorModel.getInstructor(element.id);
+                element.instructor = instructor;
+            };
+            rows.sort((a, b) => (b.avgStar - a.avgStar));
+            var count = 0;
+            var array = [];
+            for (var i = 0; i < rows.length; i++) {
+                if (count >= 3) return [array,"Course"];
+                array.push(rows[i]);
+                count++;
+            }
+            return [array,"Course"];
         }
         return [null, null];
     },
@@ -355,6 +386,18 @@ module.exports = {
                     rows.pop();
                 }
             }
+            for (const element of rows) {
+                const instructorRows = await instructorModel.instructorDetailsFromACourse(element.id).catch((err) => {
+                    console.log(err.message); // logs "Something"
+                });
+        
+                var instructorsStr = [];
+                for (const i of instructorRows) {
+                    instructorsStr.push(i.fullname);
+                }
+                element.instructorsStr = instructorsStr.join(", ");
+            }
+            
             return rows;
         }
         return null;
@@ -372,8 +415,41 @@ module.exports = {
         }
         return false;
     },
+    async getNew(){
+
+        const sql = 'SELECT * FROM course WHERE date_created >= NOW() - INTERVAL 7 DAY';
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "courses"];
+        }        
+    },
+    async isNew(id){
+        const [rows, fields] = await this.getNew();
+        if (rows) {
+            for (const item of rows) {
+                if (item.id === id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+    async isHighlight(id) {
+        const [rows, fields] = await this.getSpecial();
+        if (rows) {
+            for (const item of rows) {
+                if (item.id === id) {
+                    return true;
+                }
+            }
+        }
+        return false;    },
     async getLast() {
-        const sql = 'SELECT id FROM course ORDER BY id    desc LIMIT  10;';
+
+        const sql = 'SELECT * FROM course ORDER BY date_created desc LIMIT 10';
         var [rows, fields] = await db.select(sql).catch(error => {
             console.log(error.message);
             return [null, null];
@@ -383,9 +459,25 @@ module.exports = {
         }
         return [null, null];
     },
-    async countCourseSort(orderBy, categoryFilter, sub_categoryFilter) {
+    async getMostView() {
+        const sql = 'SELECT * FROM course ORDER BY view_count DESC limit 10;';
+
+        var [rows, fields] = await db.select(sql).catch(error => {
+            console.log(error.message);
+            return [null, null];
+        });
+        if (rows !== null && rows.length !== 0) {
+            return [rows, "courses"];
+        }
+        return [null, null];
+    },
+    async countCourseSort(orderBy, categoryFilter, sub_categoryFilter,SeeDisable) {
         var sql = `SELECT * FROM course`;
         if (orderBy) {
+            if (SeeDisable === false)
+            {
+                sql += ` WHERE disable = 0`;
+            }
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return [null, null];
@@ -396,6 +488,10 @@ module.exports = {
         }
         if (categoryFilter) {
             sql += ` WHERE category = ${categoryFilter}`;
+            if (SeeDisable === false)
+            {
+                sql += ` and disable = 0`;
+            }
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return [null, null];
@@ -407,6 +503,10 @@ module.exports = {
         }
         if (sub_categoryFilter) {
             sql += ` WHERE sub_category = ${sub_categoryFilter}`;
+            if (SeeDisable === false)
+            {
+                sql += ` and disable = 0`;
+            }
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return [null, null];
@@ -418,10 +518,13 @@ module.exports = {
         }
         return 0;
     },
-    async courseSort(orderBy, categoryFilter,sub_categoryFilter, offset) {
+    async courseSort(orderBy, categoryFilter,sub_categoryFilter, offset,SeeDisable) {
         var sql = `SELECT * FROM course`;
         if (categoryFilter) {
-            sql += ` WHERE category = ${categoryFilter} LIMIT 6 OFFSET ${offset}`;
+            if (SeeDisable === false)
+                sql += ` WHERE category = ${categoryFilter} and disable = 0 LIMIT 6 OFFSET ${offset}`;
+            else
+                sql += ` WHERE category = ${categoryFilter} LIMIT 6 OFFSET ${offset}`;
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return null;
@@ -439,7 +542,10 @@ module.exports = {
             }
         }
         if (sub_categoryFilter) {
-            sql += ` WHERE sub_category = ${sub_categoryFilter} LIMIT 6 OFFSET ${offset}`;
+            if (SeeDisable === false)
+                sql += ` WHERE sub_category = ${sub_categoryFilter} and disable = 0 LIMIT 6 OFFSET ${offset}`;
+            else
+                sql += ` WHERE sub_category = ${sub_categoryFilter} LIMIT 6 OFFSET ${offset}`;
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
                 return null;
@@ -457,6 +563,10 @@ module.exports = {
             }
         }
         if (orderBy === "default") {
+            if (SeeDisable === false)
+            {
+                sql += ` WHERE disable = 0`;
+            }
             sql += ` LIMIT 6 OFFSET ${offset}`;
             var [rows, cols] = await db.select(sql).catch(error => {
                 console.log(error.message);
@@ -473,6 +583,10 @@ module.exports = {
             else {
                 return 0;
             }
+        }
+        if (SeeDisable === false)
+        {
+            sql += ` WHERE disable = 0`;
         }
         if (orderBy === "popularity") {
             sql += ` ORDER BY student_count DESC LIMIT 6 OFFSET ${offset}`;

@@ -6,9 +6,7 @@ function rand (min, max) {
     return Math.floor(random * (max - min) + min)
 }
 async function selectAccountTable(table, username, email) {
-    const sql = `SELECT * FROM ${table} WHERE username = ? OR email = ?`;
-    console.log(sql);
-
+    var sql = `SELECT * FROM ${table} WHERE username = ? OR email = ?`;
     return await db.query(sql, [username, email]).catch(err => {
         return [null, null];
     });
@@ -16,9 +14,9 @@ async function selectAccountTable(table, username, email) {
 }
 
 async function selectAccountWithUsername(table, username) {
-    const sql = `SELECT * FROM ${table} WHERE username = ?`;
-    console.log(sql);
-
+    var sql = `SELECT * FROM ${table} WHERE username = ? and disable = 0`;
+    if (table === "administrator")
+        sql = `SELECT * FROM ${table} WHERE username = ?`;
     return await db.query(sql, [username]).catch(err => {
         return [null, null];
     });
@@ -26,9 +24,10 @@ async function selectAccountWithUsername(table, username) {
 }
 
 async function selectAccountWithEmail(table, email) {
-    const sql = `SELECT * FROM ${table} WHERE email = ?`;
+    var sql = `SELECT * FROM ${table} WHERE email = ? and disable = 0`;
     console.log(sql);
-
+    if (table === "administrator")
+        sql = `SELECT * FROM ${table} WHERE username = ?`;
     return await db.query(sql, [email]).catch(err => {
         return [null, null];
     });

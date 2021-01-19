@@ -35,3 +35,12 @@ header,
         margin-bottom: 1.5rem !important;
     }
 }
+
+
+.word-wrap-one-line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+    -webkit-box-orient: vertical;
+  }

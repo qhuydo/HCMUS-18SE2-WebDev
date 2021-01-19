@@ -71,6 +71,14 @@ body {
     margin-top: -100px;
 }
 
+.word-wrap-one-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
 /*https://mdbootstrap.com/snippets/jquery/pjoter-2-0/929850#css-tab-view*/
 .mdb-rating .rate-popover {
     color: grey; }

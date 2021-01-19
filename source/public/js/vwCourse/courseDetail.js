@@ -1,3 +1,22 @@
+
+toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "md-toast-bottom-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": 300,
+    "hideDuration": 1000,
+    "timeOut": 5000,
+    "extendedTimeOut": 1000,
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+}
+
 function addToCartFunction(course_id) {
     $.ajax({
         url: "/cart/add",
@@ -7,8 +26,11 @@ function addToCartFunction(course_id) {
             course_id: course_id,
         },
         success: function (result) {
-            console.log(result);
+            // console.log(result);
             if (result) {
+                console.log(result);
+                toastr["success"]("", "Changes saved");
+                // numberOfCartItems = 
                 document.getElementById('addToCard' + course_id).innerHTML = `<i class="fas fa-luggage-cart"></i>`;
             }
             else {
@@ -37,7 +59,22 @@ $(() => {
         window.player.pause();
     });
 
+    $('#saveComment').on('click', (e) => {
+        console.log(numberOfStars());
+    });
+
+    $('#commentForm').on('submit', (e) => {
+        const star = numberOfStars();
+          if ( star === `0`) {
+              alert('Please choose the stars');
+              e.preventDefault();
+              return false;
+          }
+          $('#star')[0].value = numberOfStars();
+          return true;
+    });
 });
+
 
 function previewCourse(event) {
     // console.log( $('#lectureTitle')[0].innerHTML);
@@ -54,14 +91,44 @@ function previewCourse(event) {
     window.player.source = {
         type: 'video',
         sources: [
-          {
-            src: `${$(event.target).data("video")}`,
-            provider: 'youtube',
-          },
+            {
+                src: `${$(event.target).data("video")}`,
+                provider: 'youtube',
+            },
         ],
-      };
-      
+    };
+    
     $('#previewModal').modal('toggle');
+    $('#rateMe2').click();
+}
+
+function numberOfStars() {
+    // console.log($('#rateMe2').find('.oneStar'));
+    // console.log($('#rateMe2').find('.twoStars'));
+    // console.log($('#rateMe2').find('.threeStars'));
+    // console.log($('#rateMe2').find('.fourStars'));
+    // console.log($('#rateMe2').find('.fiveStars'));
+    if ($('#rateMe2').find('.oneStar').length > 0) {
+        return `1`;
+    }
+
+    if ($('#rateMe2').find('.twoStars').length > 0) {
+        return `2`;
+    }
+
+    if ($('#rateMe2').find('.threeStars').length > 0) {
+        return `3`;
+    }
+
+    if ($('#rateMe2').find('.fourStars').length > 0) {
+        return `4`;
+    }
+
+    if ($('#rateMe2').find('.fiveStars').length > 0) {
+        return `5`;
+    }
+
+    return `0`;
 }
 
 // https://mdbootstrap.com/snippets/jquery/pjoter-2-0/929850#js-tab-view
@@ -184,7 +251,48 @@ function previewCourse(event) {
         }
 
         $stars.tooltip();
+        if (window.point_index) {
+            markStarsAsActive(window.point_index);
+        }
+
     }
+
 })(jQuery);
+
+function undisable(course_id){
+    $.ajax({
+        url: "/admin/courseUndisable/" + course_id,
+        type: 'PUT',
+        dataType: 'json',
+        success: function (result) {
+            if (result) {
+                document.getElementById("admin" + course_id).onclick = function() { disable(course_id);};
+                document.getElementById("admin" + course_id).title = "disable";
+                document.getElementById("admin" + course_id).innerHTML = `<i class="fas fa fa-ban ml-3"></i>`;
+            }
+            else {
+                alert("Undisable fail");
+            }
+        }
+    });
+}
+
+function disable(course_id){
+    $.ajax({
+        url: "/admin/courseDisable/" + course_id,
+        type: 'PUT',
+        dataType: 'json',
+        success: function (result) {
+            if (result) {
+                document.getElementById("admin" + course_id).onclick = function() { undisable(course_id);};
+                document.getElementById("admin" + course_id).title = "undisable";
+                document.getElementById("admin" + course_id).innerHTML = `<i class="fas fa fa-unlock ml-3"></i>`;
+            }
+            else {
+                alert("Disable fail");
+            }
+        }
+    });
+}
 
 $('#rateMe2').mdbRate();

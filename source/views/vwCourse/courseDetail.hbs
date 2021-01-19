@@ -8,10 +8,12 @@
 {{#section 'js'}}
 <script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
 <script>
+  window.point_index = `${Number({{comment.point}}) - 1}`;
   $(() => {
     $('.toast').toast('show');
     const player = new Plyr('#player');
     window.player = player;
+    
   });
 </script>
 <script type="text/javascript" src="/js/vwCourse/courseDetail.js"></script>
@@ -116,7 +118,23 @@
                 <p class="mb-3 text-muted text-uppercase small">By {{instructorsStr}}
                 </p>
               </h5>
-              <a href="#productDetail" class="btn btn-primary">Button</a>
+              {{#if isBuy}}
+                <a class="btn btn-primary float-right" data-toggle="tooltip" data-placement="top" title="Was buy" href="/course/{{course.id}}/lecture">
+                  <i class="fas fa-check ml-3"></i> Start Learning
+                </a>
+                {{else}}
+                {{#if inCart}}
+                <a class="btn btn-primary float-right" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
+                  <i class="fas fa-luggage-cart"></i> Check your cart
+                </a>
+                {{else}}
+                <a class="btn btn-primary float-right" id="addToCard{{course.id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"
+                  onclick="addToCartFunction({{course.id}});">
+                  <i class="fas fa-cart-plus ml-3"></i> Add to cart
+                </a>
+                {{/if}}
+              {{/if}}
+              <!--a href="#productDetail" class="btn btn-primary">Button</a-->
             </div>
 
           </div>
@@ -249,7 +267,7 @@
           <div class="comments-list text-center text-md-left">
             {{#if review}}
             {{#each review}}
-              {{#if (not (eq username ../session.username))}}
+              {{#if true}}
               <div class="row mb-3">
                 <!-- Image column -->
                 {{#if photo}}
@@ -298,27 +316,35 @@
             {{/each}}
             {{/if}}
 
+            {{#and (is session.type "student") isBuy}}
             <div class="row">
               <div class="col-12">
                 <hr>
                 <h3 class="font-weight-normal">
                   Your comment
                 </h3>
-                <span id="rateMe2" class="empty-stars mdb-rating"></span>
+                <span id="rateMe2" class="empty-stars mdb-rating">
+                </span>
               </div>
               <div class="col-12">
-                <div class="form-group shadow-textarea">
-                  <label for="commentArea"></label>
-                  <textarea class="form-control z-depth-1" id="commentArea" rows="5"
-                    placeholder="Write something here..."></textarea>
-                </div>
-              </div>
-              <div class="col-12">
-                <form class="md-form" action="/course/{{course.id}}/postComment" method="POST">
-                  <button type="button" class="btn btn-info float-right">Save your comment</button>
+                <form class="text-center" action="/course/{{course.id}}/comment/" method="POST" id="commentForm">
+                  <div class="md-form">
+                    <div class="form-row shadow-textarea shadow-textarea">
+                      <label for="commentArea"></label>
+                      <textarea class="form-control md-row z-depth-1" name="comment" id="commentArea" rows="5" placeholder="Write something here...">{{#if comment}}{{comment.comment}}{{/if}}
+                      </textarea>
+                      <!--form class="md-form" action="/course/{{course.id}}/postComment" method="POST"-->
+                      <!--/form-->
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <input id="star" type="text" class="form-control" name="star" hidden value="{{#if comment}}{{comment.point}}{{/if}}"></input>
+                  </div>
+                  <button id="saveComment" type="submit" class="btn btn-info float-right">Save your comment</button>
                 </form>
               </div>
             </div>
+            {{/and}}
           </div>
           <!-- Main wrapper -->
 
@@ -330,15 +356,15 @@
             <h3 class="h3-responsive font-weight-bold blue-text mx-3">Related course</h3>
           </div>
           <!-- Carousel Wrapper -->
-          <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+          <div id="multi-course-items" class="carousel slide carousel-multi-item" data-ride="carousel">
 
             <!-- Controls -->
             <div class="controls-top">
-              <a class="btn-floating primary-color" href="#multi-item-example" data-slide="prev">
+              <a class="btn-floating primary-color" href="#multi-course-items" data-slide="prev">
                 <i class="fas fa-chevron-left"></i>
               </a>
 
-              <a class="btn-floating primary-color" href="#multi-item-example" data-slide="next">
+              <a class="btn-floating primary-color" href="#multi-course-items" data-slide="next">
                 <i class="fas fa-chevron-right"></i>
               </a>
 
@@ -347,9 +373,9 @@
 
             <!-- Indicators -->
             <ol class="carousel-indicators">
-              <li class="primary-color" data-target="#multi-item-example" data-slide-to="0" class="active"></li>
-              <li class="primary-color" data-target="#multi-item-example" data-slide-to="1"></li>
-              <li class="primary-color" data-target="#multi-item-example" data-slide-to="2"></li>
+              <li class="primary-color" data-target="#multi-course-items" data-slide-to="0" class="active"></li>
+              <li class="primary-color" data-target="#multi-course-items" data-slide-to="1"></li>
+              <li class="primary-color" data-target="#multi-course-items" data-slide-to="2"></li>
             </ol>
             <!-- Indicators -->
 
@@ -368,16 +394,19 @@
                 }
               </script>
 
-              <div class="col-md-4 clearfix d-none d-md-block mb-4">
-
+              <div class="col-4 clearfix d-none d-md-block mb-4">
                 <!-- Card -->
-                <div class="card card-ecommerce">
+                <div class="card">
 
                   <!-- Card image -->
-                  <div class="view overlay">
-                    <img src="{{image}}" class="imageSlide" alt="">
+                  <div class="card-img-top view overlay zoom">
+                    <img src="{{image}}" class="img-fluid" alt="{{title}}">
                     <a href="/course/{{id}}">
-                      <div class="mask rgba-white-slight"></div>
+                      <div class="mask flex-center waves-effect waves-light rgba-black-strong">
+                        <p class="white-text">
+                          {{title}}
+                        </p>
+                      </div>
                     </a>
                   </div>
                   <!-- Card image -->
@@ -385,12 +414,9 @@
                   <!-- Card content -->
                   <div class="card-body">
                     <!-- Category & Title -->
-                    <h5 class="card-title mb-1">
-                      <strong>
-                        <a href="/course/{{id}}" class="dark-grey-text">{{title}}</a>
-                      </strong>
-
-                    </h5>
+                      <div class="card-title mb-1">
+                          <a href="/course/{{id}}" class="dark-grey-text word-wrap-one-line" title="{{title}}">{{title}}</a>
+                      </div>
                     {{#each tag}}
                     <span class="badge badge-danger mb-2">{{name}}</span>
                     {{/each}}
@@ -413,19 +439,13 @@
                           point -= 1;
                         }
                       </script>
-                      <span class="mdb-color-text">total rating: {{total_rating}}</span>
+                      <span class="mdb-color-text"> {{total_rating}}</span>
                     </ul>
 
+                    <p class="mb-3 text-muted text-uppercase small word-wrap-one-line">By {{instructorsStr}}</p>
                     <!-- Card footer -->
-
-                  </div>
-                  <div class="card-footer pb-0">
-
-                    <div class="row mb-0">
-
-                      <span class="float-left">
-
-                        <h5 class="h5-responsive text-center text-md-left mb-1 ml-xl-0 ml-4">
+                    <hr>
+                        <h5 class="h5-responsive text-center text-md-left">
                           {{#is discount 0}}
                           <span class="red-text font-weight-bold">
                             <strong>{{this.full_price}} </strong>
@@ -434,7 +454,6 @@
                             </small>
                           </span>
                           {{else}}
-
                           <span class="grey-text">
                             <s>
                               <strong>{{this.full_price}} </strong>
@@ -450,36 +469,43 @@
                             </span>
                           </span>
                           {{/is}}
-
-                      </span>
-
+                      {{#if ../session/username}}
                       <span class="float-right">
+                      {{#if (eq ../session.type "student")}}
                         {{#if isBuy}}
-                        <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
-
-                          <i class="fas fa-check ml-3"></i>
-
+                      <a class="" data-toggle="tooltip" data-placement="top" title="Was buy">
+                        <i class="fas fa-check ml-3"></i>
+                      </a>
+                        {{else}}
+                          {{#if inCart}}
+                          <a class="" data-toggle="tooltip" data-placement="top" title="In Cart" href="/cart">&nbsp;&nbsp;
+                            <i class="fas fa-luggage-cart"></i>
+                          </a>
+                          {{else}}
+                          <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="addToCartFunction({{id}});">
+                            <i class="fas fa-cart-plus"></i>
+                          </a>
+                          {{/if}}
+                        {{/if}}
+                      {{/if}}
+                      {{#if (eq ../session.type "administrator")}}
+                        {{#if disable}}
+                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Undisable" onclick="undisable({{id}})">
+                          <i class="fas fa fa-unlock"></i>
                         </a>
                         {{else}}
-                        {{#if inCart}}
-                        <a class="" data-toggle="tooltip" data-placement="top" title="In Cart"
-                          href="/cart">&nbsp;&nbsp;
-                          <i class="fas fa-luggage-cart"></i>
-                        </a>
-                        {{else}}
-                        <a class="" id="addToCard{{id}}" data-toggle="tooltip" data-placement="top"
-                          title="Add to Cart" onclick="addToCartFunction({{id}});">
-                          <i class="fas fa-cart-plus ml-3"></i>
+                        <a class="" id="admin{{id}}" data-toggle="tooltip" data-placement="top" title="Disable" onclick="disable({{id}})">
+                          <i class="fas fa fa-ban"></i>
                         </a>
                         {{/if}}
-                        {{/if}}
-
+                      {{/if}}
+                      {{/if}}
                       </span>
-
-                    </div>
+                    </h5>
                   </div>
-
                 </div>
+
+
                 <!-- Card -->
 
               </div>

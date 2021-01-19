@@ -16,6 +16,9 @@ router.get('/byCat', async (req, res) => {
     var searchBefore = "default";
     var [allCategory, type] = await categoryModel.getAllCategory();
     var [allSubcategory, type] = await categoryModel.getAllSubCategory();
+    var SeeDisable = false;
+    if (req.session.type === "administrator" && req.session.username)
+        SeeDisable = true;
     let page = req.query.page || 1;
     page = page < 1 ? 1 : page;
     if (req.session.searchBefore) {
@@ -35,15 +38,15 @@ router.get('/byCat', async (req, res) => {
     }
     var total = 0;
     if (isNaN(searchBefore))
-        total = await courseModel.countCourseSort(searchBefore, null, null) || 0;
+        total = await courseModel.countCourseSort(searchBefore, null, null,SeeDisable) || 0;
     else
     {
         console.log(searchBefore);
         console.log(1);
         if (req.session.sub_category_id)
-            total = await courseModel.countCourseSort(null, null, req.session.sub_category_id) || 0;
+            total = await courseModel.countCourseSort(null, null, req.session.sub_category_id,SeeDisable) || 0;
         else
-            total = await courseModel.countCourseSort(null, searchBefore, null) || 0;
+            total = await courseModel.countCourseSort(null, searchBefore, null,SeeDisable) || 0;
     }
     console.log(total)
     let nPages = Math.floor(total / 6);
@@ -62,19 +65,24 @@ router.get('/byCat', async (req, res) => {
     const offset = (page - 1) * 6;
     if (req.session.searchBefore === searchBefore) {
         if (isNaN(searchBefore))
-            courses = await courseModel.courseSort(searchBefore, null, null,offset);
+            courses = await courseModel.courseSort(searchBefore, null, null,offset,SeeDisable);
         else
         {
             if (req.session.sub_category_id)
-                courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset);
+                courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset,SeeDisable);
             else
-                courses = await courseModel.courseSort(null, searchBefore, null,offset);
+                courses = await courseModel.courseSort(null, searchBefore, null,offset,SeeDisable);
         }
         if (courses)
         {
             for (let element of courses){
                 var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
+                var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryId(element.sub_category);
+                element.sub_category = sub_category;
                 element.category = category;
+                element.isHightlight = await courseModel.isHighlight(element.id);
+                element.isNew = await courseModel.isNew(element.id);
+                element.isSale = element.discount > 0;
                 element.isBuy = await courseModel.isBuy(element.id, req.session.username);
                 element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
             };
@@ -87,17 +95,19 @@ router.get('/byCat', async (req, res) => {
         });
     }
     if (isNaN(searchBefore))
-        courses = await courseModel.courseSort(searchBefore, null, null,offset);
+        courses = await courseModel.courseSort(searchBefore, null, null,offset,SeeDisable);
     else
     {
         if (req.session.sub_category_id)
-            courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset);
+            courses = await courseModel.courseSort(null, null, req.session.sub_category_id,offset,SeeDisable);
         else
-            courses = await courseModel.courseSort(null, searchBefore, null,offset);
+            courses = await courseModel.courseSort(null, searchBefore, null,offset,SeeDisable);
     }
     if (courses) {
         for (let element of courses){
             var [category, type] = await categoryModel.getCategoryByCategoryId(element.category);
+            var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryId(category.id);
+            element.sub_category = sub_category;
             element.category = category;
             element.isBuy = await courseModel.isBuy(element.id, req.session.username);
             element.inCart = await cartModel.hasItemInCart(req.session.username, element.id);
@@ -132,7 +142,7 @@ router.post('/add', async (req, res) => {
     }
     var [sub_category, type] = await categoryModel.getSubCategoryBySubCategoryName(req.body.course.sub_category);
     const course_new = {
-        // id: await courseModel.getCourseNewId(), // the id field is auto-increment, thus no need to get new ie
+        id: await courseModel.getCourseNewId(), // the id field is auto-increment, thus no need to get new ie
         title: req.body.course.title,
         category: sub_category.category_id,
         sub_category: sub_category.id,
@@ -151,6 +161,9 @@ router.post('/add', async (req, res) => {
         completion: 0
     };
     var result = await courseModel.createCourse(course_new);
+    if (!result.error) {
+        await courseModel.addInstructorToNewCourse(course_new.id, req.session.username);
+    }
     if (result.error) {
         req.fail = "Create with this query not success";
         return res.redirect('/course/add');
@@ -269,8 +282,7 @@ router.get('/:id', async (req, res, next) => {
     }
     // if (req.session.type === "student" || req.session.type === "adminstrator") {
     var [course, type] = await courseModel.getCourseDetail(req.params.id);
-    
-    
+
     if (course) {
         const id = req.params.id;
         const username = req.session.username;
@@ -286,6 +298,7 @@ router.get('/:id', async (req, res, next) => {
         var relateItem = await courseModel.get9RelateSort(course.sub_category, course.category, course.id)
         var isBuy = await courseModel.isBuy(course.id, username);
         var inCart = await cartModel.hasItemInCart(username, course.id);
+        const comment = await courseModel.getCommentOfAStudent(course.id, username);
         if (relateItem) {
             relateItem.forEach(async element => {
                 element.avgStar = await courseModel.getAverageStar(element.id);
@@ -320,7 +333,8 @@ router.get('/:id', async (req, res, next) => {
             chapters: chapters,
             relateItems: relateItem,
             instructorRows,
-            instructorsStr
+            instructorsStr,
+            comment
         });
     }
     res.render('home');
@@ -332,9 +346,6 @@ router.get('/:id/edit', async (req, res) => {
         return res.status(404).send('Course not found');
     }
 
-    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
-        return res.status(404).send('Lecture not found');
-    }
     var [course, type] = await courseModel.getCourseDetail(req.params.id)
     var [sub_categories, type] = await categoryModel.getAllSubCategory();
     res.render('vwCourse/editCourse', {
@@ -348,9 +359,9 @@ router.get('/:id/editVideo', async (req, res) => {
         return res.status(404).send('Course not found');
     }
 
-    if (! await lectureModel.isLectureIdExist(req.params.id, 1)) {
-        return res.status(404).send('Lecture not found');
-    }
+    // if (! await lectureModel.isLectureIdExist(req.params.id, req.session.username)) {
+    //     return res.status(404).send('Lecture not found');
+    // }
     var chapters = await lectureModel.getFullCourseContent(req.params.id);
     const lecture = await lectureModel.getLectures(req.params.id);
     const c = await courseModel.getCourseDetail(req.params.id);
@@ -469,11 +480,24 @@ router.post('/:id/edit', async (req, res) => {
         return res.redirect('/course/' + req.params.id + '/edit');
     }
     res.redirect('/course/' + req.params.id + '/edit');
-})
+});
+
+router.post('/:id/comment', async (req, res) => {
+
+    // var missing = await missingKeys(req.body, [
+    //     "comment"
+    // ]);
+
+    const comment = req.body.comment;
+    const point = req.body.star; 
+    await courseModel.updateCommentOfAStudent(req.params.id, req.session.username, point, comment);
+    res.redirect(`/course/${req.params.id}#reviews`);
+
+});
 
 router.route('/:id/lecture')
     .get(auth.authStudent, async (req, res) => {
-        var missing = await missingKeys(req.query, [
+        var missing = await missingKeys(req.body, [
             "lecture_id",
             "chapter_id"
         ]);
@@ -525,7 +549,7 @@ router.route('/:id/lecture')
             }
         }
         for (let element of chapters){
-            for (let subElements of element){
+            for (let subElements of element.lectures){
                 // console.log(`element.chapter_id ${element.chapter_id}`);
                 const progress_data = await lectureModel.getStudentProgressOfALecture(username, course_id, element.chapter_id, subElements.lecture_id);
 

@@ -18,3 +18,41 @@ function addToCartFunction(course_id){
             }
     }});
 }
+
+function undisable(course_id){
+    $.ajax({
+        url: "/admin/courseUndisable/" + course_id,
+        type: 'PUT',
+        dataType: 'json',
+        success: function (result) {
+            if (result) {
+                document.getElementById("admin" + course_id).onclick = function() { disable(course_id);};
+                document.getElementById("admin" + course_id).className = "text-danger";
+                document.getElementById("admin" + course_id).title = "disable";
+                document.getElementById("admin" + course_id).innerHTML = `<i class="fas fa fa-ban"></i> Disable this course`;
+            }
+            else {
+                alert("Undisable fail");
+            }
+        }
+    });
+}
+
+function disable(course_id){
+    $.ajax({
+        url: "/admin/courseDisable/" + course_id,
+        type: 'PUT',
+        dataType: 'json',
+        success: function (result) {
+            if (result) {
+                document.getElementById("admin" + course_id).onclick = function() { undisable(course_id);};
+                document.getElementById("admin" + course_id).className = "text-info";
+                document.getElementById("admin" + course_id).title = "undisable";
+                document.getElementById("admin" + course_id).innerHTML = `<i class="fas fa fa-unlock"></i> Enable this course`;
+            }
+            else {
+                alert("Disable fail");
+            }
+        }
+    });
+}

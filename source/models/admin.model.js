@@ -205,17 +205,17 @@ module.exports = {
     async createInstructor(account) {
 
         var [rows, fields] = await selectAccountTable("student", account.username, account.email);
-        if (rows.length !== 0) {
+        if (rows && rows.length !== 0) {
             return { "error": 'Username or email is exist' };
         }
 
         var [rows, fields] = await selectAccountTable("administrator", account.username, account.email);
-        if (rows.length !== 0) {
+        if (rows && rows.length !== 0) {
             return { "error": 'Username or email is exist' };
         }
 
         var [rows, fields] = await selectAccountTable("instructor", account.username, account.email);
-        if (rows.length !== 0) {
+        if (rows && rows.length !== 0) {
             return { "error": 'Username or email is exist' };
         }
 
@@ -266,5 +266,39 @@ module.exports = {
         await db.delete(condition,"lecture");
         await db.delete(condition,"course_content");
         await db.delete({id:course_id},"course");
+    },
+    async disableCourse(course_id)
+    {
+        var result = await db.update({disable:1},{id:course_id},"course");
+        if (result.error)
+            return false;
+        return true;
+    },
+    async undisableCourse(course_id)
+    {
+        var result = await db.update({disable:0},{id:course_id},"course");
+        if (result.error)
+            return false;
+        return true;
+    },
+    async disableAccount(username)
+    {
+        var result = await db.update({disable:1},{username:username},"student");
+        if (result.error)
+            return false;
+        result = await db.update({disable:1},{username:username},"instructor");
+        if (result.error)
+            return false;
+        return true;
+    },
+    async undisableAccount(username)
+    {
+        var result = await db.update({disable:0},{username:username},"student");
+        if (result.error)
+            return false;
+        result = await db.update({disable:0},{username:username},"instructor");
+        if (result.error)
+            return false;
+        return true;
     }
 }
