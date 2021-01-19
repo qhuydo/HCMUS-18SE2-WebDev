@@ -79,12 +79,7 @@ router.post('/profile/password', auth, async (req, res, next) => {
     }
     let sql = "";
     let data = [];
-<<<<<<< HEAD
     if (reqUser.newPass && reqUser.newPass.length !== 0) {
-=======
-    if (reqUser.newPass && reqUser.newPass.length !== 0)
-    {
->>>>>>> be0308c071eaf1515f9edfa39cdf47291d70f006
         sql = `UPDATE ${req.session.type} `
             + `SET password = ?,email = ? WHERE username = ?`;
 
@@ -94,12 +89,7 @@ router.post('/profile/password', auth, async (req, res, next) => {
             req.session.username,
         ];
     }
-<<<<<<< HEAD
     else {
-=======
-    else
-    {
->>>>>>> be0308c071eaf1515f9edfa39cdf47291d70f006
         sql = `UPDATE ${req.session.type} `
             + `SET email = ? WHERE username = ?`;
         data = [
